@@ -70,7 +70,7 @@ class DeviceProfile
     {
         if($x < 0 || $x > 255)
         {
-            throw new InvalidArgumentException("x has to be an integer from range 0-255");
+            throw new InvalidArgumentException("x has to be an integer in range 0-255");
         }
 
         if($x <= 100)

@@ -22,8 +22,9 @@ TAG;
     </li>
 </ul>
 <?php
-require_once(__DIR__."/../includes/DeviceProfile.php");
-$p = new DeviceProfile();
+require_once(__DIR__."/../includes/Data.php");
+
+
 ?>
 </body>
 </html>

@@ -1,0 +1,14 @@
+RewriteEngine on
+
+# First apply the language settings
+RewriteRule ^/?(pl|en)/(.*)$ /$2?lang=$1
+
+# This checks whether the file exsits,
+# if not the request will be redirected to the www/html folder
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule (?!www/)js/(.*?)\.js$ web/js/$1.js [L]
+RewriteRule (?!www/)css/(.*?)\.css$ web/css/$1.css [L]
+RewriteRule ^([^/]*)$ web/html/$1.php

@@ -17,8 +17,13 @@ TAG;
 <ul class="nav nav-tabs">
     <li role="presentation" class="active"><a href="#">Main setup</a></li>
     <li role="presentation"><a href="#">Profile 1</a></li>
-    <li role="presentation"><a href="#">Add profile&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+    <li role="presentation"><a href="#">Add profile&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"
+                                                                     aria-hidden="true"></span></a>
     </li>
 </ul>
+<?php
+require_once(__DIR__."/../includes/DeviceProfile.php");
+$p = new DeviceProfile();
+?>
 </body>
 </html>

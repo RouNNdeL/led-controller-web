@@ -64,7 +64,9 @@ class Navbar
         }
         if(sizeof($profiles) < 12)
         {
-            $this->addLink($utils->getString("add_profile"), "/profile/new");
+            $this->addLink($utils->getString("add_profile").
+                "&nbsp;&nbsp;<span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>",
+                "/profile/new");
         }
     }
 }

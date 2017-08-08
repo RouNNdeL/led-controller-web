@@ -22,6 +22,13 @@ class Profile
     function __construct($name)
     {
         $this->name = $name;
+        $this->devices = array();
+
+        array_push($this->devices, new DeviceProfile());
+        array_push($this->devices, new DeviceProfile());
+        array_push($this->devices, new DeviceProfile());
+        array_push($this->devices, new DeviceProfile());
+        array_push($this->devices, new DeviceProfile());
     }
 
     /**

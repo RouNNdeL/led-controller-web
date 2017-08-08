@@ -8,6 +8,10 @@
  */
 class DeviceProfile
 {
+    const MODE_STATIC = 0;
+    const MODE_BREATHING = 0;
+    const MODE_FADING = 0;
+
     public $mode;
     public $dynamic_modes;
     public $color_count;
@@ -27,7 +31,11 @@ class DeviceProfile
      */
     public function __construct()
     {
+        $this->colors = array();
+        array_push($this->colors, "FFFFFF");
 
+        $this->mode = self::MODE_STATIC;
+        $this->setTimings(0, 0, 4, 0);
     }
 
 

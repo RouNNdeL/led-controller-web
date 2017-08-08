@@ -19,9 +19,9 @@ class Profile
      */
     public $devices;
 
-    function __construct()
+    function __construct($name)
     {
-
+        $this->name = $name;
     }
 
     /**

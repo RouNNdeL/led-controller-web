@@ -1,3 +1,7 @@
 {
-    "title": "LED Control"
+    "title": "LED Control",
+    "global_options": "Global settings",
+    "add_profile": "Add profile",
+    "default_profile_name": "Profile $n",
+    "error_msg_404": "Page $url could not be found"
 }

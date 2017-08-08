@@ -1,7 +1,10 @@
+Options -Indexes
+
+ErrorDocument 404 /web/error/404.php
+
 RewriteEngine on
 
-# First apply the language settings
-RewriteRule ^/?(pl|en)/(.*)$ /$2?lang=$1
+RewriteRule ^$ main
 
 # This checks whether the file exsits,
 # if not the request will be redirected to the www/html folder
@@ -12,3 +15,5 @@ RewriteRule ^ - [L]
 RewriteRule (?!www/)js/(.*?)\.js$ web/js/$1.js [L]
 RewriteRule (?!www/)css/(.*?)\.css$ web/css/$1.css [L]
 RewriteRule ^([^/]*)$ web/html/$1.php
+RewriteRule ^/?profile/(\d{1,2})/?$ web/html/profile.php?n_profile=$1
+RewriteRule ^/?profile/new/?$ web/html/add_profile.php

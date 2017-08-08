@@ -22,7 +22,7 @@ class Utils
      */
     public function __construct()
     {
-        $lang = isset($_GET["lang"]) ? $_GET["lang"] : Utils::DEFAULT_LANG;
+        $lang = isset($_COOKIE["lang"]) ? $_COOKIE["lang"] : self::DEFAULT_LANG;
         $this->lang = $lang;
         $this->loadStrings();
     }
@@ -32,6 +32,12 @@ class Utils
         $lang = $this->lang;
         $path = $_SERVER["DOCUMENT_ROOT"]."/_lang/$lang.json";
         $file = file_get_contents($path);
+        if($file == false)
+        {
+            $this->lang = self::DEFAULT_LANG;
+            $this->loadStrings();
+            return;
+        }
         $this->strings = json_decode($file, true);
     }
 
@@ -47,11 +53,11 @@ class Utils
 
     public static function getInstance()
     {
-        if(Utils::$instance == null)
+        if(self::$instance == null)
         {
-            Utils::$instance = new Utils();
+            self::$instance = new self();
         }
 
-        return Utils::$instance;
+        return self::$instance;
     }
 }

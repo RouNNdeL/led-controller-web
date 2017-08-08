@@ -3,5 +3,12 @@
     "global_options": "Global settings",
     "add_profile": "Add profile",
     "default_profile_name": "Profile $n",
-    "error_msg_404": "Page $url could not be found"
+    "error_msg_404": "Page $url could not be found",
+    "options_enabled": "Enable LEDs",
+    "options_digital_count": "Number of LED fans",
+    "options_analog_count": "Number of LED strips",
+    "options_global_brightness": "Global brightness",
+    "options_color_config": "$port color config",
+    "options_reset_defaults": "Reset to defaults",
+    "options_save": "Save changes"
 }

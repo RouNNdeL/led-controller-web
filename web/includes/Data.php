@@ -37,7 +37,7 @@ class Data
     private $device_count;
     private $strip_configuration;
     /**
-     * @var array(Profile)
+     * @var Profile[]
      */
     private $profiles;
 
@@ -137,6 +137,9 @@ class Data
         return array_push($this->profiles, $profile);
     }
 
+    /**
+     * @return Profile[]
+     */
     public function getProfiles()
     {
         return $this->profiles;

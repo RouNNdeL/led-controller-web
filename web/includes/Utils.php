@@ -41,7 +41,7 @@ class Utils
         $this->strings = json_decode($file, true);
     }
 
-    public function getString(string $name)
+    public function _getString(string $name)
     {
         if($this->strings != null && isset($this->strings[$name]))
         {
@@ -59,5 +59,10 @@ class Utils
         }
 
         return self::$instance;
+    }
+
+    public static function getString(string $name)
+    {
+        return self::getInstance()->_getString($name);
     }
 }

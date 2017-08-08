@@ -32,7 +32,7 @@ class Navbar
         {
             $tab = $this->tabs[$i];
             $html .= "<li role=\"presentation\"" .
-                ($i == $this->active ? "class=\"active\"" : "") . ">$tab</li>";
+                ($i == $this->active ? " class=\"active\"" : "") . ">$tab</li>";
         }
         $html .= "</ul>";
         return $html;
@@ -55,16 +55,15 @@ class Navbar
 
     public function initDefault()
     {
-        $utils = Utils::getInstance();
         $profiles = Data::getInstance()->getProfiles();
-        $this->addLink($utils->getString("global_options"), "/main");
+        $this->addLink(Utils::getString("global_options"), "/main");
         for($i = 0; $i < sizeof($profiles); $i++)
         {
             $this->addLink($profiles[$i]->getName(), "/profile/".($i+1));
         }
         if(sizeof($profiles) < 12)
         {
-            $this->addLink($utils->getString("add_profile").
+            $this->addLink(Utils::getString("add_profile").
                 "&nbsp;&nbsp;<span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>",
                 "/profile/new");
         }

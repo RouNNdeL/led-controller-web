@@ -16,6 +16,9 @@ echo <<<TAG
     <script src="/web/js/jquery-3.2.1.min.js"></script>
     <script src="/web/js/color-picker.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/web/js/bootstrap-slider.min.js"></script>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/web/css/main.css"/>
+    <link rel="stylesheet" href="/web/css/bootstrap-slider.min.css"/>
 </head>
 TAG;

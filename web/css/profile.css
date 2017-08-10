@@ -1,0 +1,32 @@
+#device-settings
+{
+    height: calc(100% - 12px);
+    padding-left: 0;
+}
+
+#device-settings > div.panel
+{
+    height: 100%;
+    margin-bottom: 0;
+}
+
+#device-settings > div.panel > div.panel-body
+{
+    height: 100%;
+}
+
+html, body
+{
+    height: 100%;
+}
+
+.container-fluid
+{
+    height: calc(100% - 40px);
+}
+
+#device-settings-iframe
+{
+    height: 100%;
+    width: 100%;
+}

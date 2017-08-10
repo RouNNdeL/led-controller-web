@@ -204,23 +204,27 @@ class Data
         return self::$instance;
     }
 
-    public function getDeviceNavbarHtml()
+    public function getDeviceNavbarHtml($n_profile)
     {
-        $html = "<ul class=\"nav nav nav-pills nav-stacked\">";
+        $html = "<ul id=\"device-navbar\" class=\"nav nav nav-pills nav-stacked\">";
         $strip = Utils::getString("profile_analog");
         $fan = Utils::getString("profile_digital");
         for ($i = 0; $i < $this->getAnalogCount(); $i++)
         {
+            $device_url = $n_profile."a".$i;
             $html .= "<li role=\"presentation\""
-                .($i == 0 ? " class=\"active\"" : "")."><a href=\"#a$i\">"
+                .($i == 0 ? " class=\"active\"" : "")
+                ." data-device-url=\"$device_url\"><a>"
                 . str_replace("\$n", $i + 1, $strip) . "</a></li>";
         }
         if ($this->getDigitalCount() > 0 && $this->getAnalogCount() > 0)
             $html .= "<li role=\"separator\" class=\"nav-divider\"></li>";
         for ($i = 0; $i < $this->getDigitalCount(); $i++)
         {
+            $device_url = $n_profile."d".$i;
             $html .= "<li role=\"presentation\""
-                .($i == 0 && $this->getAnalogCount() == 0 ? " class=\"active\"" : "")."><a href=\"#d$i\">"
+                .($i == 0 && $this->getAnalogCount() == 0 ? " class=\"active\"" : "").
+                " data-device-url=\"$device_url\"><a>"
                 . str_replace("\$n", $i + 1, $fan) . "</a></li>";
         }
         $html .= "</ul>";

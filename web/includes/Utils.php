@@ -48,7 +48,9 @@ class Utils
             return $this->strings[$name];
         }
 
-        return null;
+        //return null;
+        //Only for development purposes
+        return $name;
     }
 
     public static function getInstance()

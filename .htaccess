@@ -12,8 +12,11 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
+RewriteRule ^(.*?\.(png|jpeg|jpg|svg))$ resources/$1 [L]
+
 RewriteRule (?!www/)js/(.*?)\.js$ web/js/$1.js [L]
 RewriteRule (?!www/)css/(.*?)\.css$ web/css/$1.css [L]
 RewriteRule ^([^/]*)$ web/html/$1.php
 RewriteRule ^/?profile/(\d{1,2})/?$ web/html/profile.php?n_profile=$1
 RewriteRule ^/?profile/new/?$ web/html/add_profile.php
+RewriteRule ^/?device_settings/(\d{1,2})([ad])(\d)/?$ web/html/device_settings.php?profile=$1&device_type=$2&device_n=$3

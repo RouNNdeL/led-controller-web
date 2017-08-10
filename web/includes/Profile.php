@@ -7,6 +7,8 @@
  * Time: 18:40
  */
 require_once(__DIR__."/DeviceProfile.php");
+require_once(__DIR__."/AnalogDevice.php");
+require_once(__DIR__."/DigitalDevice.php");
 
 class Profile
 {
@@ -15,20 +17,23 @@ class Profile
      */
     private $name;
     /**
-     * @var array
+     * @var DigitalDevice[]
      */
-    public $devices;
+    public $digital_devices = array();
+    /**
+     * @var AnalogDevice[]
+     */
+    public $analog_devices = array();
 
     function __construct($name)
     {
         $this->name = $name;
-        $this->devices = array();
 
-        array_push($this->devices, new DeviceProfile());
-        array_push($this->devices, new DeviceProfile());
-        array_push($this->devices, new DeviceProfile());
-        array_push($this->devices, new DeviceProfile());
-        array_push($this->devices, new DeviceProfile());
+        array_push($this->analog_devices, AnalogDevice::_static());
+        array_push($this->analog_devices, AnalogDevice::_static());
+        array_push($this->digital_devices, DigitalDevice::_filling());
+        array_push($this->digital_devices, DigitalDevice::_filling());
+        array_push($this->digital_devices, DigitalDevice::_filling());
     }
 
     /**

@@ -34,7 +34,7 @@ echo $navbar->toHtml();
             <input type="checkbox" <?php if(Data::getInstance()->enabled) echo " checked"?>> <?php echo Utils::getInstance()->getString("options_enabled")?>
         </label>
     </div>
-    <label>
+    <label class="inline-form">
         <?php echo Utils::getString("options_analog_count");?>
         <select class="form-control" name="analog_count">
             <?php
@@ -52,7 +52,7 @@ echo $navbar->toHtml();
             ?>
         </select>
     </label>
-    <label class="inline-select<?php if(Data::getInstance()->getAnalogCount() < 1) echo " hidden"?>">
+    <label class="inline-form<?php if(Data::getInstance()->getAnalogCount() < 1) echo " hidden"?>">
         <?php str_replace("\$port", "ANALOG1", Utils::getString("options_color_config"))?>
         <select class="form-control" name="color_config_1">
             <option value="0">RGB</option>
@@ -63,7 +63,7 @@ echo $navbar->toHtml();
             <option value="5">BGR</option>
         </select>
     </label>
-    <label class="inline-select<?php if(Data::getInstance()->getAnalogCount() < 2) echo " hidden"?>">
+    <label class="inline-form<?php if(Data::getInstance()->getAnalogCount() < 2) echo " hidden"?>">
         <?php str_replace("\$port", "ANALOG2", Utils::getString("options_color_config"))?>
         <select class="form-control" name="color_config_2">
             <option value="0">RGB</option>

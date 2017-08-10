@@ -4,6 +4,7 @@
     "add_profile": "Dodaj profil",
     "default_profile_name": "Profil $n",
     "error_msg_404": "Strona $url nie została odnaleziona",
+    "error_msg_500": "Wystąpił problem z serwerem",
     "options_enabled": "Włącz LEDy",
     "options_digital_count": "Liczba wiatraków",
     "options_analog_count": "Liczba taśm LED",

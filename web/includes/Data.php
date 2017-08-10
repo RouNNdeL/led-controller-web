@@ -22,8 +22,8 @@ class Data
     const MASK_STRIP1 = 0b111000;
     const MASK_STRIP2 = 0b000111;
 
-    const MASK_DIGITAL_COUNT = 0b0011;
-    const MASK_ANALOG_COUNT = 0b1100;
+    const MASK_DIGITAL_COUNT = 0b1100;
+    const MASK_ANALOG_COUNT = 0b0011;
 
     /**
      * @var Data
@@ -202,5 +202,29 @@ class Data
         }
 
         return self::$instance;
+    }
+
+    public function getDeviceNavbarHtml()
+    {
+        $html = "<ul class=\"nav nav nav-pills nav-stacked\">";
+        $strip = Utils::getString("profile_analog");
+        $fan = Utils::getString("profile_digital");
+        for ($i = 0; $i < $this->getAnalogCount(); $i++)
+        {
+            $html .= "<li role=\"presentation\""
+                .($i == 0 ? " class=\"active\"" : "")."><a href=\"#a$i\">"
+                . str_replace("\$n", $i + 1, $strip) . "</a></li>";
+        }
+        if ($this->getDigitalCount() > 0 && $this->getAnalogCount() > 0)
+            $html .= "<li role=\"separator\" class=\"nav-divider\"></li>";
+        for ($i = 0; $i < $this->getDigitalCount(); $i++)
+        {
+            $html .= "<li role=\"presentation\""
+                .($i == 0 && $this->getAnalogCount() == 0 ? " class=\"active\"" : "")."><a href=\"#d$i\">"
+                . str_replace("\$n", $i + 1, $fan) . "</a></li>";
+        }
+        $html .= "</ul>";
+
+        return $html;
     }
 }

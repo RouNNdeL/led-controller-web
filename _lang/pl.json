@@ -10,5 +10,9 @@
     "options_global_brightness": "Jasność globalna",
     "options_color_config": "Kolejność kolorów: $port",
     "options_reset_defaults": "Przywróć ustawienia domyślne",
-    "options_save": "Zapisz zmiany"
+    "options_save": "Zapisz zmiany",
+    "profile_analog": "Taśma $n",
+    "profile_digital": "Wiatrak $n",
+    "profile_name": "Nazwa profilu",
+    "profile_devices": "Urządzenia"
 }

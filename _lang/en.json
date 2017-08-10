@@ -10,5 +10,9 @@
     "options_global_brightness": "Global brightness",
     "options_color_config": "$port color config",
     "options_reset_defaults": "Reset to defaults",
-    "options_save": "Save changes"
+    "options_save": "Save changes",
+    "profile_analog": "Strip $n",
+    "profile_digital": "Fan $n",
+    "profile_name": "Profile name",
+    "profile_devices": "Devices"
 }

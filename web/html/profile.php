@@ -80,8 +80,12 @@ TAG;
                     <ul class="nav">
                         <li role="separator" class="nav-divider"></li>
                     </ul>
-                    <a role="button" class="btn btn-danger btn-block"
-                       href="/profile/remove/<?php echo $n_profile+1 ?>">Delete profile</a>
+                    <?php
+                    $profile_delete_explain = Utils::getString("profile_delete_explain");
+                    ?>
+                    <button id="btn-delete-profile" class="btn btn-danger btn-block
+                        <?php if($data->getProfileCount() === 1) echo " disabled\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"$profile_delete_explain\""?>>
+                        <?php echo Utils::getString("profile_delete")?></button>
                 </div>
             </div>
         </div>

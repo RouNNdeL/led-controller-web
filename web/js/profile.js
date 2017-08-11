@@ -4,11 +4,19 @@
 $(function()
 {
     enableLeds();
+    $('[data-toggle="tooltip"]').tooltip();
 
     const devices = $("#device-navbar").find("li[role=presentation]");
     const profile_text = $("#main-navbar").find("li.active a");
     const profile_name = $("#profile-name");
     const profile_n = $("#profile_n").val();
+    const delete_profile = $("#btn-delete-profile").not(".disabled");
+    let string_confirm_delete;
+
+    $.ajax("/api/get_string.php?name=profile_delete_confirm").done(function(response)
+    {
+        string_confirm_delete = response.string;
+    });
 
     devices.click(function()
     {
@@ -52,6 +60,20 @@ $(function()
         {
             console.error(e);
         });
+    });
+
+    delete_profile.click(function()
+    {
+        if(confirm(string_confirm_delete))
+        {
+            $.ajax("/api/remove/profile", {
+                method: "POST",
+                data: JSON.stringify({profile_n: profile_n})
+            }).done(function()
+            {
+                window.location.href = "/main";
+            });
+        }
     });
 });
 

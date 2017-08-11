@@ -142,6 +142,8 @@ class Data
 
     public function removeProfile(int $index)
     {
+        if(sizeof($this->profiles) == 1)
+            return false;
         if(isset($this->profiles[$index]))
         {
             array_splice($this->profiles, $index, 1);

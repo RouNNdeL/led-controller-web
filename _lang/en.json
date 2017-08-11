@@ -14,6 +14,8 @@
     "options_color_config": "$port color config",
     "options_reset_defaults": "Reset to defaults",
     "options_save": "Save changes",
+    "profile_delete": "Delete profile",
+    "profile_delete_explain": "You cannot delete the last profile",
     "profile_settings_analog": "Settings for Strip $n",
     "profile_settings_digital": "Settings for Fan $n",
     "profile_add_color": "Add color",
@@ -34,5 +36,6 @@
     "profile_direction_ccw": "Counter-clockwise",
     "profile_arguments": "Additional arguments",
     "profile_arguments_direction": "Direction",
-    "profile_argument_start_led": "Start LED"
+    "profile_argument_start_led": "Start LED",
+    "profile_delete_confirm": "Are you sure you want to delete this profile and all it's device subprofiles?"
 }

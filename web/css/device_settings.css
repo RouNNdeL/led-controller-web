@@ -9,7 +9,7 @@ div.color-box
 }
 .color-swatch
 {
-    width: 120px;
+    width: 126px;
     height: 40px;
 }
 .color-picker.static {
@@ -47,4 +47,8 @@ body
 .color-swatch-container
 {
     display: inline-block;
+}
+.device-title
+{
+    margin-top: 0;
 }

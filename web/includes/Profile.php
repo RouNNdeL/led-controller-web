@@ -38,14 +38,12 @@ class Profile
 
     /**
      * @param $name - string to set (max. 30 bytes)
-     * @return bool - <code>false</code> if string was longer than 30 bytes
      */
     public function setName(string $name)
     {
         if(strlen($name) > 30)
-            return false;
+            throw new InvalidArgumentException("Name can only be 30 bytes long");
         $this->name = $name;
-        return true;
     }
 
     /**

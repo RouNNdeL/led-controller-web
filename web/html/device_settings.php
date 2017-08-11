@@ -31,8 +31,8 @@ echo <<<TAG
 <!DOCTYPE html>
 <html lang="$lang">
 TAG;
-$additional_css = array("device_settings.css", "color-picker.css");
-$additional_js = array("color-picker.js", "device_settings.js");
+$additional_css = ["device_settings.css", "color-picker.css"];
+$additional_js = ["color-picker.js", "device_settings.js"];
 require_once(__DIR__ . "/../includes/html_head.php");
 ?>
 <body>
@@ -49,6 +49,7 @@ require_once(__DIR__ . "/../includes/html_head.php");
         $title = str_replace("\$n", $device_n+1, $title);
     }
     ?>
+    <h2 class="device-title"><?php echo $title?></h2>
     <?php echo $device->toHTML() ?>
 </div>
 </body>

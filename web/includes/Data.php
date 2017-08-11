@@ -140,6 +140,16 @@ class Data
         return array_push($this->profiles, $profile);
     }
 
+    public function removeProfile(int $index)
+    {
+        if(isset($this->profiles[$index]))
+        {
+            array_splice($this->profiles, $index, 1);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @return Profile[]
      */

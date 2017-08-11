@@ -17,7 +17,7 @@ $json = json_decode(file_get_contents("php://input"), true);
 if($json == false || !isset($json["analog_count"]) || !isset($json["color_config_1"]) ||
     !isset($json["color_config_2"]) || !isset($json["digital_count"]) || !isset($json["brightness"]))
 {
-    echo "{\"status\":\"error\",\"message\":\"Invalid json\"}";
+    echo "{\"status\":\"error\",\"message\":\"Invalid JSON\"}";
     http_response_code(400);
     exit(400);
 }

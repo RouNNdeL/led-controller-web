@@ -17,7 +17,7 @@ $additional_css = array("profile.css");
 $additional_js = array("profile.js");
 require_once(__DIR__ . "/../includes/html_head.php");
 ?>
-    <body>
+<body>
 
 <?php
 require_once(__DIR__ . "/../includes/Data.php");
@@ -45,7 +45,8 @@ echo $navbar->toHtml();
 $data = Data::getInstance();
 $profile = $data->getProfile($n_profile);
 ?>
-    <div class="container-fluid">
+<input id="profile_n" type="hidden" value="<?php echo $n_profile ?>">
+<div class="container-fluid">
     <div class="row profile-content">
         <?php if (!$data->enabled)
         {
@@ -58,7 +59,7 @@ $profile = $data->getProfile($n_profile);
             </div>
         </div>
 TAG;
-        }?>
+        } ?>
         <div class="col-sm-4 col-md-3 col-lg-2">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -74,21 +75,26 @@ TAG;
                         </label>
                     </div>
 
-                    <h3 style="margin-top: 0"><?php echo Utils::getString("profile_devices")?></h3>
+                    <h3 style="margin-top: 0"><?php echo Utils::getString("profile_devices") ?></h3>
                     <?php echo $data->getDeviceNavbarHtml($n_profile) ?>
+                    <ul class="nav">
+                        <li role="separator" class="nav-divider"></li>
+                    </ul>
+                    <a role="button" class="btn btn-danger btn-block"
+                       href="/profile/remove/<?php echo $n_profile+1 ?>">Delete profile</a>
                 </div>
             </div>
         </div>
         <div class="col-sm-8 col-md-9 col-lg-10" id="device-settings">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <?php if($data->getAnalogCount() > 0) $device = $n_profile."a0"; else $device = $n_profile."d0"?>
-                    <iframe id="device-settings-iframe" frameborder="0" src="/device_settings/<?php echo $device?>">
+                    <?php if ($data->getAnalogCount() > 0) $device = $n_profile . "a0";
+                    else $device = $n_profile . "d0" ?>
+                    <iframe id="device-settings-iframe" frameborder="0" src="/device_settings/<?php echo $device ?>">
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 </body>
 </html>

@@ -27,7 +27,7 @@ class Navbar
     public function toHtml()
     {
         $html = "";
-        $html .= "<ul class=\"nav nav-pills\">";
+        $html .= "<ul id=\"main-navbar\" class=\"nav nav-pills\">";
         for ($i = 0; $i < sizeof($this->tabs); $i++)
         {
             $tab = $this->tabs[$i];

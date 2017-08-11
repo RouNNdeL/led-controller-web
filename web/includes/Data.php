@@ -17,10 +17,10 @@ class Data
     const GRB = 0b010;
     const GBR = 0b011;
     const BRG = 0b100;
-    const BGR = 0b001;
+    const BGR = 0b101;
 
-    const MASK_STRIP1 = 0b111000;
-    const MASK_STRIP2 = 0b000111;
+    const MASK_ANALOG1 = 0b111000;
+    const MASK_ANALOG2 = 0b000111;
 
     const MASK_DIGITAL_COUNT = 0b1100;
     const MASK_ANALOG_COUNT = 0b0011;
@@ -35,7 +35,7 @@ class Data
 
     private $brightness;
     private $device_count;
-    private $strip_configuration;
+    private $color_configuration;
     /**
      * @var Profile[]
      */
@@ -57,31 +57,34 @@ class Data
         $this->enabled = $enabled;
         $this->brightness = $brightness;
         $this->device_count = $device_count;
-        $this->strip_configuration = $strip_configuration;
+        $this->color_configuration = $strip_configuration;
         $this->profiles = $profiles;
     }
 
 
-    public function setStripConfiguration(int $strip1, int $strip2)
+    public function setColorConfiguration(int $analog1, int $analog2)
     {
-        //($this->strip_configuration);
-        if ($strip1 == -1)
-            $strip1 = $this->getStripConfiguration(1);
-        if ($strip2 == -1)
-            $strip2 = $this->getStripConfiguration(2);
-        $this->strip_configuration = ($strip1 << 3) | $strip2;
-        //var_dump($this->strip_configuration);
+        if(($analog1 < 0 && $analog1 !== -1) || $analog1 > 5 ||
+            ($analog2 < 0 && $analog2 !== -1) || $analog2 > 5)
+        {
+            throw new InvalidArgumentException("Color configuration values need to be in range 0-5 or -1, when not updated");
+        }
+        if ($analog1 == -1)
+            $analog1 = $this->getColorConfiguration(1);
+        if ($analog2 == -1)
+            $analog2 = $this->getColorConfiguration(2);
+        $this->color_configuration = ($analog1 << 3) | $analog2;
     }
 
-    public function getStripConfiguration(int $n_strip)
+    public function getColorConfiguration(int $n_strip)
     {
         if ($n_strip == 1)
         {
-            return ($this->strip_configuration & self::MASK_STRIP1) >> 3;
+            return ($this->color_configuration & self::MASK_ANALOG1) >> 3;
         }
         else if ($n_strip == 2)
         {
-            return $this->strip_configuration & self::MASK_STRIP2;
+            return $this->color_configuration & self::MASK_ANALOG2;
         }
         throw new InvalidArgumentException("n_strip has to be either 1 or 2");
     }

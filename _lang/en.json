@@ -5,6 +5,8 @@
     "default_profile_name": "Profile $n",
     "error_msg_404": "Page $url could not be found",
     "error_msg_500": "An internal server error occurred",
+    "warning": "Warning!",
+    "warning_led_disabled": "The LEDs are disabled, <a href=\"#enable_leds\" class=\"alert-link\">enable them</a> in global settings to see the changes",
     "options_enabled": "Enable LEDs",
     "options_digital_count": "Number of LED fans",
     "options_analog_count": "Number of LED strips",

@@ -13,17 +13,17 @@ echo <<<TAG
 TAG;
 ?>
 <?php
-    $additional_css = array("profile.css");
-    $additional_js = array("profile.js");
-    require_once(__DIR__ . "/../includes/html_head.php");
+$additional_css = array("profile.css");
+$additional_js = array("profile.js");
+require_once(__DIR__ . "/../includes/html_head.php");
 ?>
-<body>
+    <body>
 
 <?php
 require_once(__DIR__ . "/../includes/Data.php");
 require_once(__DIR__ . "/../includes/Navbar.php");
 
-if(!isset($_GET["n_profile"]))
+if (!isset($_GET["n_profile"]))
 {
     http_response_code(500);
     include(__DIR__ . "/../error/500.php");
@@ -44,12 +44,21 @@ $navbar->setActive($n_profile + 1);
 echo $navbar->toHtml();
 $data = Data::getInstance();
 $profile = $data->getProfile($n_profile);
-$data->setAnalogCount(2);
-$data->setDigitalCount(3);
-Data::save();
 ?>
-<div class="container-fluid">
+    <div class="container-fluid">
     <div class="row profile-content">
+        <?php if (!$data->enabled)
+        {
+            $str_warning = Utils::getString("warning");
+            $str_led_disabled = Utils::getString("warning_led_disabled");
+            echo <<<TAG
+        <div class="col-md-12">
+            <div class="alert alert-warning">
+                <strong>$str_warning</strong> $str_led_disabled
+            </div>
+        </div>
+TAG;
+        }?>
         <div class="col-sm-4 col-md-3 col-lg-2">
             <div class="panel panel-default">
                 <div class="panel-body">

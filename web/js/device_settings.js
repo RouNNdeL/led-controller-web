@@ -16,6 +16,8 @@ const COLOR_TEMPLATE =
     "<button class=\"btn btn-danger color-delete-btn\"><span class=\"glyphicon glyphicon-trash\"></span></button>" +
     "</div>";
 
+const SELECTOR_RADIOS = "input[type=radio][name=color]";
+
 $(function()
 {
     let previous_color_value;
@@ -68,7 +70,7 @@ $(function()
 
     function refreshListeners()
     {
-        const radios = $("input[type=radio][name=color]");
+        const radios = $(SELECTOR_RADIOS);
         radios.off("change");
         radios.change(function()
         {
@@ -81,7 +83,25 @@ $(function()
         delete_btns.off("click");
         delete_btns.click(function()
         {
-            $(this).parent().remove();
+            const color_count = $(".color-swatch-container").length;
+            if(color_count > 1)
+            {
+                if($(this).parent().find(SELECTOR_RADIOS)[0].checked)
+                {
+                    const radios = $(SELECTOR_RADIOS);
+                    const index = radios.index($(this).parent().find(SELECTOR_RADIOS));
+                    console.log(index);
+                    let select_index;
+                    if(index === 0)
+                        select_index = 1;
+                    else
+                        select_index = index - 1;
+                    radios.eq(select_index).click();
+                }
+                $(this).parent().remove();
+            }
+            if(color_count === 2)
+                delete_btns.css("visibility", "hidden");
         });
     }
 
@@ -91,6 +111,8 @@ $(function()
     {
         const swatches = $(".color-swatch-container");
         const num = swatches.length + 1;
+        if(num === 2)
+            $(".color-delete-btn").css("visibility", "");
         if(num < 16)
         {
             const swatch = getColorSwatch(num);

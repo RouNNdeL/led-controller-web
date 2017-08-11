@@ -29,11 +29,11 @@ class Profile
     {
         $this->name = $name;
 
+        array_push($this->analog_devices, AnalogDevice::_blinking());
         array_push($this->analog_devices, AnalogDevice::_static());
-        array_push($this->analog_devices, AnalogDevice::_static());
         array_push($this->digital_devices, DigitalDevice::_filling());
-        array_push($this->digital_devices, DigitalDevice::_filling());
-        array_push($this->digital_devices, DigitalDevice::_filling());
+        array_push($this->digital_devices, DigitalDevice::_marquee());
+        array_push($this->digital_devices, DigitalDevice::_fading());
     }
 
     /**

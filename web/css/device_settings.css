@@ -35,7 +35,7 @@ div.color-box
 }
 body
 {
-    padding: 6px;
+    padding: 0 6px 6px 6px;
 }
 .color-delete-btn
 {

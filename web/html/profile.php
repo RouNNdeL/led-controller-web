@@ -45,7 +45,7 @@ echo $navbar->toHtml();
 $data = Data::getInstance();
 $profile = $data->getProfile($n_profile);
 $data->setAnalogCount(2);
-$data->setDigitalCount(1);
+$data->setDigitalCount(3);
 Data::save();
 ?>
 <div class="container-fluid">

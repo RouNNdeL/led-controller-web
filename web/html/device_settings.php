@@ -49,7 +49,6 @@ require_once(__DIR__ . "/../includes/html_head.php");
         $title = str_replace("\$n", $device_n+1, $title);
     }
     ?>
-    <h2><?php echo $title ?></h2>
     <?php echo $device->toHTML() ?>
 </div>
 </body>

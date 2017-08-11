@@ -268,23 +268,23 @@ class DigitalDevice extends DeviceProfile
     {
         $effects = array();
 
-        $effects[100] = "effect_off";
-        $effects[101] = "effect_static";
-        $effects[102] = "effect_breathing";
-        $effects[102] = "effect_blinking";
-        $effects[104] = "effect_fading";
-        $effects[105] = "effect_rainbow";
-        $effects[106] = "effect_filling";
-        $effects[107] = "effect_marquee";
-        $effects[108] = "effect_rotating";
-        $effects[109] = "effect_sweep";
-        $effects[110] = "effect_android_pb";
-        $effects[111] = "effect_two_halves";
-        $effects[112] = "effect_double_fill";
-        $effects[113] = "effect_highs";
-        $effects[114] = "effect_sources";
-        $effects[115] = "effect_pieces";
-        $effects[199] = "effect_demo";
+        $effects[self::EFFECT_OFF] = "effect_off";
+        $effects[self::EFFECT_STATIC] = "effect_static";
+        $effects[self::EFFECT_BREATHING] = "effect_breathing";
+        $effects[self::EFFECT_BLINKING] = "effect_blinking";
+        $effects[self::EFFECT_FADING] = "effect_fading";
+        $effects[self::EFFECT_RAINBOW] = "effect_rainbow";
+        $effects[self::EFFECT_FILLING] = "effect_filling";
+        $effects[self::EFFECT_MARQUEE] = "effect_marquee";
+        $effects[self::EFFECT_ROTATING] = "effect_rotating";
+        $effects[self::EFFECT_SWEEP] = "effect_sweep";
+        $effects[self::EFFECT_ANDROID_PB] = "effect_android_pb";
+        $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";
+        $effects[self::EFFECT_DOUBLE_FILL] = "effect_double_fill";
+        $effects[self::EFFECT_HIGHS] = "effect_highs";
+        $effects[self::EFFECT_SOURCES] = "effect_sources";
+        $effects[self::EFFECT_PIECES] = "effect_pieces";
+        $effects[self::EFFECT_DEMO] = "effect_demo";
 
         return $effects;
     }

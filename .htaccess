@@ -7,7 +7,7 @@ RewriteEngine on
 RewriteRule ^$ main
 
 # This checks whether the file exsits,
-# if not the request will be redirected to the www/html folder
+# if not the request will be redirected to the web/html folder
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]

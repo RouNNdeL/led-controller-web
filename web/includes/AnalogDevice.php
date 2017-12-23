@@ -8,142 +8,87 @@
  */
 class AnalogDevice extends DeviceProfile
 {
-    public function toHTML()
-    {
-        $html = "";
-        $timings = $this->getTimingsForEffect();
-        $timing_strings = self::TIMING_STRINGS;
-        $profile_colors = Utils::getString("profile_colors");
-        $profile_effect = Utils::getString("profile_effect");
-        $profile_timing = Utils::getString("profile_timing");
-        $profile_apply = Utils::getString("profile_apply");
-        $profile_color_input = Utils::getString("profile_color_input");
-        $profile_add_color = Utils::getString("profile_add_color");
+    const EFFECT_OFF = 100;
+    const EFFECT_STATIC = 101;
+    const EFFECT_BREATHING = 102;
+    const EFFECT_BLINKING = 102;
+    const EFFECT_FADING = 104;
+    const EFFECT_RAINBOW = 105;
+    const EFFECT_DEMO = 199;
 
-        $colors_html = "";
-        $timing_html = "";
-        $effects_html = "";
-
-        for ($i = 0; $i < sizeof($this->getColors()); $i++)
-        {
-            $template = self::COLOR_TEMPLATE;
-            $template = str_replace("\$active", $i == 0 ? "checked" : "", $template);
-            $template = str_replace("\$label", "color-$i", $template);
-            $template = str_replace("\$color", "#" . $this->getColors()[$i], $template);
-            $colors_html .= $template;
-        }
-
-        for ($i = 0; $i < 4; $i++)
-        {
-            if (($timings & (1 << $i)) > 0)
-            {
-                $template = self::INPUT_TEMPLATE;
-                $template = str_replace("\$label", Utils::getString("profile_timing_$timing_strings[$i]"), $template);
-                $template = str_replace("\$name", $timing_strings[$i], $template);
-                $template = str_replace("\$placeholder", "1", $template);
-                $template = str_replace("\$value", $this->timings[$i], $template);
-                $timing_html .= $template;
-            }
-        }
-
-        foreach (self::effects() as $id => $effect)
-        {
-            $string = Utils::getString("profile_" . $effect);
-            $effects_html .= "<option value=\"$id\"" . ($id == $this->effect ? " selected" : "") . ">$string</option>";
-        }
-
-        $html .= "<div class=\"inline\">
-        <label>
-            $profile_effect
-            <select class=\"form-control\">
-                $effects_html
-            </select>
-        </label>
-        <h3>$profile_colors</h3>
-        $colors_html
-        <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\">$profile_add_color</button>
-
-    </div>";
-        $html .= "<div id=\"picker-container\" class=\"inline\">
-                        <div id=\"color-picker\"></div>
-                        <div>
-                            <label>
-                                $profile_color_input
-                                <input class=\"form-control\" id=\"color-input\">
-                            </label>
-                        </div>
-                  </div>";
-        if ($timings != 0)
-            $html .= "<div><h3>$profile_timing</h3>$timing_html</div>";
-
-        $html .= "<button class=\"btn btn-primary\">$profile_apply</button>";
-        return $html;
-    }
+    const AVR_BREATHE = 0x00;
+    const AVR_FADE = 0x01;
+    const AVR_RAINBOW = 0x03;
 
     public function getTimingsForEffect()
     {
         switch ($this->effect)
         {
             case self::EFFECT_OFF:
-                return 0b0000;
+                return 0b000000;
             case self::EFFECT_STATIC:
-                return 0b0010;
+                return 0b001001;
             case self::EFFECT_BREATHING:
-                return 0b1111;
+                return 0b111101;
             case self::EFFECT_BLINKING:
-                return 0b1010;
+                return 0b101001;
             case self::EFFECT_FADING:
-                return 0b0110;
+                return 0b011001;
             case self::EFFECT_RAINBOW:
-                return 0b0100;
+                return 0b010001;
             case self::EFFECT_DEMO:
-                return 0b0000;
+                return 0b000000;
             default:
-                return 0b0000;
+                return 0b000000;
         }
     }
 
     public static function _static()
     {
-        return self::static (array("FFFFFF"), 8);
+        return self::static (array("FFFFFF"), 8, 0);
     }
 
-    public static function static (array $colors, int $on)
+    public static function static (array $colors, int $on, int $offset)
     {
-        return new self($colors, self::EFFECT_STATIC, 0, 0, $on, 0);
+        return new self($colors, self::AVR_BREATHE, 0, 0, $on, 0, 0, $offset);
     }
 
     public static function _breathing()
     {
-        return self::breathing(array("FF0000", "00FF00", "0000FF"), 4, 8, 4, 8);
+        return self::breathing(array("FF0000", "00FF00", "0000FF"), 4, 8, 4, 8, 0, 0, 255);
     }
 
-    public static function breathing(array $colors, int $off, int $fadein, int $on, int $fadeout)
+    public static function breathing(array $colors, int $off, int $fadein, int $on, int $fadeout, int $offset,
+                                     int $min_val, $max_value)
     {
-        return new self($colors, self::EFFECT_BREATHING, $off, $fadein, $on, $fadeout);
+        $args = [];
+        $args[0] = 0;
+        $args[1] = $min_val;
+        $args[2] = $max_value;
+        return new self($colors, self::AVR_BREATHE, $off, $fadein, $on, $fadeout, 0, $offset, $args);
     }
 
     public static function _fading()
     {
-        return self::fading(array("FF0000", "00FF00", "0000FF"), 4, 8);
+        return self::fading(array("FF0000", "00FF00", "0000FF"), 4, 8, 0);
     }
 
-    public static function fading(array $colors, int $fade, int $on)
+    public static function fading(array $colors, int $fade, int $on, int $offset)
     {
-        return new self($colors, self::EFFECT_FADING, 0, $fade, $on, $fade);
+        return new self($colors, self::AVR_FADE, 0, 0, $on, $fade, 0, $offset);
     }
 
     public static function _blinking()
     {
-        return self::blinking(array("FF0000", "00FF00", "0000FF"), 8, 8);
+        return self::blinking(array("FF0000", "00FF00", "0000FF"), 8, 8, 0);
     }
 
-    public static function blinking(array $colors, int $off, int $on)
+    public static function blinking(array $colors, int $off, int $on, int $offset)
     {
-        return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0);
+        return new self($colors, self::AVR_BREATHE, $off, 0, $on, 0, 0, $offset);
     }
 
-    public static final function effects()
+    public static function effects()
     {
         $effects = array();
 

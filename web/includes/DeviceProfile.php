@@ -32,6 +32,8 @@ abstract class DeviceProfile
                                 </label>
                             </div>";
 
+    const HIDDEN_TEMPLATE = "<input type=\"hidden\" name=\"\$name\" value=\"\$value\">";
+
     public $effect;
     public $color_count;
     public $timings;
@@ -140,7 +142,7 @@ abstract class DeviceProfile
                         $str_dir = Utils::getString("profile_arguments_direction");
                         $arguments_html .= "<label class=\"inline-form\">
                                             $str_dir
-                                            <select class=\"form-control\">
+                                            <select class=\"form-control\" name=\"arg_$name\">
                                                 <option value=\"" . DigitalDevice::DIRECTION_CW . "\">$str_cw</option>
                                                 <option value=\"" . DigitalDevice::DIRECTION_CCW . "\">$str_ccw</option>
                                             </select>
@@ -152,7 +154,7 @@ abstract class DeviceProfile
                         $str_smth = Utils::getString("profile_arguments_smooth");
                         $arguments_html .= "<label class=\"inline-form\">
                                             $str_smth
-                                            <select class=\"form-control\">
+                                            <select class=\"form-control\" name=\"arg_$name\">
                                                 <option value=\"" . 1 . "\">$str_yes</option>
                                                 <option value=\"" . 0 . "\">$str_no</option>
                                             </select>
@@ -161,7 +163,7 @@ abstract class DeviceProfile
                     default:
                         $template = self::INPUT_TEMPLATE;
                         $template = str_replace("\$label", Utils::getString("profile_argument_$name"), $template);
-                        $template = str_replace("\$name", $name, $template);
+                        $template = str_replace("\$name", "arg_".$name, $template);
                         $template = str_replace("\$placeholder", "", $template);
                         $template = str_replace("\$value", $argument, $template);
                         $arguments_html .= $template;
@@ -175,9 +177,16 @@ abstract class DeviceProfile
             {
                 $template = self::INPUT_TEMPLATE;
                 $template = str_replace("\$label", Utils::getString("profile_timing_$timing_strings[$i]"), $template);
-                $template = str_replace("\$name", $timing_strings[$i], $template);
+                $template = str_replace("\$name", "time_".$timing_strings[$i], $template);
                 $template = str_replace("\$placeholder", "1", $template);
                 $template = str_replace("\$value", $this->timings[$i], $template);
+                $timing_html .= $template;
+            }
+            else
+            {
+                $template = self::HIDDEN_TEMPLATE;
+                $template = str_replace("\$name", "time_".$timing_strings[$i], $template);
+                $template = str_replace("\$value", 0, $template);
                 $timing_html .= $template;
             }
         }
@@ -191,13 +200,13 @@ abstract class DeviceProfile
         $html .= "<div class=\"inline\">
         <label>
             $profile_effect
-            <select class=\"form-control\">
+            <select class=\"form-control\" name=\"effect\">
                 $effects_html
             </select>
         </label>
         <h3>$profile_colors</h3>
         $colors_html
-        <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\">$profile_add_color</button>
+        <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\" type=\"button\">$profile_add_color</button>
 
     </div>";
         $html .= "<div id=\"picker-container\" class=\"inline\">
@@ -209,8 +218,10 @@ abstract class DeviceProfile
                             </label>
                         </div>
                   </div>";
+        $html .= "<div>";
         if ($timings != 0)
-            $html .= "<div><h3>$profile_timing</h3>$timing_html</div>";
+            $html .= "<h3>$profile_timing</h3>";
+        $html .= "$timing_html</div>";
         if (sizeof($this->args) > 0)
             $html .= "<div><h3>$profile_arguments</h3>$arguments_html</div>";
 

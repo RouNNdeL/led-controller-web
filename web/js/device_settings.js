@@ -124,7 +124,64 @@ $(function()
             $(this).css("display", "none");
         }
     });
+
+    $("#device-settings-submit").click(() => {
+        console.log(formToJson());
+    });
 });
+
+function formToJson()
+{
+    const array = $("form").serializeArray();
+    const json = {};
+    json.times = [];
+    json.args = {};
+    json.colors = [];
+
+    for(let i = 0; i < array.length; i++)
+    {
+        let timeMatch = array[i].name.match(/time_(.*)/);
+        let argsMatch = array[i].name.match(/arg_(.*)/);
+
+        if(timeMatch !== null)
+        {
+            switch(timeMatch[1])
+            {
+                case "off": json.times[0] = parseInt(array[i].value); break;
+                case "fadein": json.times[1] = parseInt(array[i].value); break;
+                case "on": json.times[2] = parseInt(array[i].value); break;
+                case "fadeout": json.times[3] = parseInt(array[i].value); break;
+                case "rotation": json.times[4] = parseInt(array[i].value); break;
+                case "offset": json.times[5] = parseInt(array[i].value); break;
+            }
+        }
+        else if(argsMatch !== null)
+        {
+            json.args[argsMatch[1]] = array[i].value;
+        }
+        else if(array[i].name !== "color")
+        {
+            json[array[i].name] = array[i].value;
+        }
+    }
+
+    json.colors = getColors();
+
+    return json;
+}
+
+function getColors()
+{
+    const colors = [];
+    const swatches = $(".color-swatch-container div.color-box");
+
+    for(let i = 0; i < swatches.length; i++)
+    {
+        colors.push(rgb2hex(swatches.eq(i).css("background-color")));
+    }
+
+    return colors;
+}
 
 //Source: http://wowmotty.blogspot.com/2009/06/convert-jquery-rgb-output-to-hex-color.html
 let hexDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];

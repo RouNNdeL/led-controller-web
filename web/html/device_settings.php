@@ -53,9 +53,11 @@ require_once(__DIR__ . "/../includes/html_head.php");
     ?>
 
     <h2 class="device-title"><?php echo $title?></h2>
-    <?php echo $device->toHTML() ?>
+    <form>
+        <?php echo $device->toHTML() ?>
+    </form>
 
 </div>
-<button class="btn btn-primary" style="margin-top: 12px"><?php echo Utils::getString("profile_apply"); ?></button>
+<button id="device-settings-submit" class="btn btn-primary" style="margin-top: 12px"><?php echo Utils::getString("profile_apply"); ?></button>
 </body>
 </html>

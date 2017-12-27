@@ -1,4 +1,6 @@
 Options -Indexes
+Deny from all
+Allow from 192.168
 
 ErrorDocument 404 /web/error/404.php
 

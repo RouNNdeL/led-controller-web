@@ -86,16 +86,15 @@ class Data
     {
         if (sizeof($this->profiles) >= 12)
             return false;
-        put($this->profiles[sizeof($this->profiles)-1]->getName());
+        put($this->profiles[sizeof($this->profiles) - 1]->getName());
         return array_push($this->profiles, $profile);
     }
 
     public function removeProfile(int $index)
     {
-        if(sizeof($this->profiles) == 1)
+        if (sizeof($this->profiles) == 1)
             return false;
-        if(isset($this->profiles[$index]))
-        {
+        if (isset($this->profiles[$index])) {
             delete($this->profiles[$index]->getName());
             array_splice($this->profiles, $index, 1);
             return true;
@@ -135,24 +134,34 @@ class Data
         return Device::getTiming($timing);
     }
 
-
     public function globalsToJson()
     {
         $array = array();
+
         $array["brightness"] = $this->brightness;
         $array["profile_count"] = sizeof($this->profiles);
         $array["current_profile"] = $this->active_profile;
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
-        $array["auto_increment"] = $this->fan_count;
+        $array["auto_increment"] = $this->auto_increment;
+        $array["fan_config"] = array([2, 0, 0]);
+
+        return json_encode(array("type"=>"globals_update", "data"=>$array));
+    }
+
+    public function globalsFromJson($json)
+    {
+        $array = json_decode($json);
+
+        $this->active_profile = $array["current_profile"];
+        $this->enabled = $array["leds_enabled"];
     }
 
     private function _save()
     {
         $path = $_SERVER["DOCUMENT_ROOT"] . self::SAVE_PATH;
         $filename = dirname($path);
-        if (!is_dir($filename))
-        {
+        if (!is_dir($filename)) {
             mkdir(dirname($path));
         }
         file_put_contents($path, serialize($this));
@@ -191,8 +200,7 @@ class Data
 
     public static function getInstance()
     {
-        if (self::$instance == null)
-        {
+        if (self::$instance == null) {
             $data = self::fromFile();
             self::$instance = $data == false ? self::default() : $data;
         }
@@ -207,21 +215,20 @@ class Data
         $gpu = Utils::getString("profile_gpu");
         $fan = Utils::getString("profile_digital");
 
-        $device_url = $n_profile."a0";
+        $device_url = $n_profile . "a0";
         $html .= "<li role=\"presentation\" class=\"active\"" .
             " data-device-url=\"$device_url\"><a>"
             . $pc . "</a></li>";
 
-        $device_url = $n_profile."a1";
+        $device_url = $n_profile . "a1";
         $html .= "<li role=\"presentation\"" .
             " data-device-url=\"$device_url\"><a>"
             . $gpu . "</a></li>";
 
         if ($this->getFanCount() > 0)
             $html .= "<li role=\"separator\" class=\"nav-divider\"></li>";
-        for ($i = 0; $i < $this->getFanCount(); $i++)
-        {
-            $device_url = $n_profile."d".$i;
+        for ($i = 0; $i < $this->getFanCount(); $i++) {
+            $device_url = $n_profile . "d" . $i;
             $html .= "<li role=\"presentation\"" .
                 " data-device-url=\"$device_url\"><a>"
                 . str_replace("\$n", $i + 1, $fan) . "</a></li>";

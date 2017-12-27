@@ -41,6 +41,8 @@ try
     $data->setBrightness($brightness);
     $auto_increment = $data->setAutoIncrement($auto_increment);
 
+    tcp_send($data->globalsToJson());
+
     Data::save();
     $success_msg = Utils::getString("options_save_success");
     echo "{\"status\":\"success\",\"message\":\"$success_msg\", \"auto_increment_val\": $auto_increment}";

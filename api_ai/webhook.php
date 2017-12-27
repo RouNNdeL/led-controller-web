@@ -28,7 +28,7 @@ else if($headers["Authorization"] !== $dialogflow_auth)
 }
 error_reporting(0);
 $body = file_get_contents("php://input");
-send("{\"type\": \"dialogflow\", \"data\": ".$body."}");
+tcp_send("{\"type\": \"dialogflow\", \"data\": ".$body."}");
 l($body);
 header("Content-Type: application/json");
 echo "{}";

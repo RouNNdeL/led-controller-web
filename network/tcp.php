@@ -6,7 +6,7 @@
  * Time: 16:15
  */
 
-function send($string)
+function tcp_send($string)
 {
 
     $interface = explode(":", file_get_contents(__DIR__."/interface.data"));

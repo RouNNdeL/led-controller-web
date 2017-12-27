@@ -71,7 +71,7 @@ class Data
 
     public function setBrightness($percent)
     {
-        $this->brightness = floor($percent * 2.55);
+        $this->brightness = ceil($percent * 2.55);
     }
 
     /**

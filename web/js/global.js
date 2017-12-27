@@ -4,9 +4,9 @@
 $(function()
 {
     const form = $("#global-form");
-    const save_btn = $("#btn-save");
+    //const save_btn = $("#btn-save");
     let changes = false;
-    save_btn.click(function()
+    let save = () =>
     {
         let json = objectifyForm(form.serializeArray());
         let data = JSON.stringify(json);
@@ -28,13 +28,11 @@ $(function()
             showSnackbar(e.responseJSON.message);
             console.error(e);
         });
-    });
+    };
 
-    form.find("input,select").change(function()
-    {
-        save_btn.prop("disabled", false);
-        changes = true;
-    });
+    //save_btn.click(save);
+
+    form.find("input,select").change(save);
 
     $(window).on("beforeunload", function(e)
     {

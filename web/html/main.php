@@ -96,7 +96,7 @@ echo $navbar->toHtml();
         </label>
     </form>
     <br>
-    <button id="btn-save" class="btn btn-primary" disabled><?php echo Utils::getString("options_save") ?></button>
+    <!--<button id="btn-save" class="btn btn-primary" disabled><?php /*echo Utils::getString("options_save") */?></button>-->
     <button id="btn-restore-defaults"
             class="btn btn-danger"><?php echo Utils::getString("options_reset_defaults") ?></button>
 </div>

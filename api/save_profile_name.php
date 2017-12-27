@@ -23,10 +23,13 @@ $profile_n = $json["profile_n"];
 $name = $json["name"];
 
 require_once(__DIR__."/../web/includes/Data.php");
+require_once(__DIR__."/../api_ai/update_profile_entities.php");
 $data = Data::getInstance();
 try
 {
-    $data->getProfile($profile_n)->setName($name);
+    $profile = $data->getProfile($profile_n);
+    rename_entity($profile->getName(), $name);
+    $profile->setName($name);
     Data::save();
     echo "{\"status\":\"success\"}";
 }

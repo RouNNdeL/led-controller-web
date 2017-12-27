@@ -7,6 +7,7 @@
  */
 
 require_once(__DIR__ . "/Profile.php");
+require_once(__DIR__ . "/../../api_ai/update_profile_entities.php");
 
 class Data
 {
@@ -83,6 +84,7 @@ class Data
     {
         if (sizeof($this->profiles) >= 12)
             return false;
+        put($this->profiles[sizeof($this->profiles)-1]->getName());
         return array_push($this->profiles, $profile);
     }
 
@@ -92,6 +94,7 @@ class Data
             return false;
         if(isset($this->profiles[$index]))
         {
+            delete($this->profiles[$index]->getName());
             array_splice($this->profiles, $index, 1);
             return true;
         }

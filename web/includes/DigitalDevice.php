@@ -6,7 +6,7 @@
  * Date: 10/08/2017
  * Time: 15:48
  */
-class DigitalDevice extends DeviceProfile
+class DigitalDevice extends Device
 {
     const EFFECT_OFF = 100;
     const EFFECT_STATIC = 101;

@@ -6,7 +6,7 @@
  * Date: 07/08/2017
  * Time: 18:42
  */
-abstract class DeviceProfile
+abstract class Device
 {
     const TIMING_STRINGS = ["off", "fadein", "on", "fadeout", "rotation", "offset"];
 
@@ -45,7 +45,7 @@ abstract class DeviceProfile
     private $colors;
 
     /**
-     * DeviceProfile constructor.
+     * Device constructor.
      * @param array $colors
      * @param int $effect
      * @param int $off

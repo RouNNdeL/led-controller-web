@@ -6,7 +6,7 @@
  * Date: 10/08/2017
  * Time: 15:47
  */
-class AnalogDevice extends DeviceProfile
+class AnalogDevice extends Device
 {
     const EFFECT_OFF = 100;
     const EFFECT_STATIC = 101;

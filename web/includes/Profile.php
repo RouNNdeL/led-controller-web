@@ -6,7 +6,7 @@
  * Date: 07/08/2017
  * Time: 18:40
  */
-require_once(__DIR__."/DeviceProfile.php");
+require_once(__DIR__ . "/Device.php");
 require_once(__DIR__."/AnalogDevice.php");
 require_once(__DIR__."/DigitalDevice.php");
 

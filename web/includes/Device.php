@@ -232,7 +232,7 @@ abstract class Device
 
     public static abstract function effects();
 
-    private static function getTiming(int $x)
+    public static function getTiming(int $x)
     {
         if ($x < 0 || $x > 255)
         {
@@ -256,6 +256,15 @@ abstract class Device
             return 10 * 60;
         }
         return $x * 30 - 7080;
+    }
+
+    public static function convertToTiming($float)
+    {
+        foreach (self::getTimings() as $i => $timing)
+        {
+            if($float > $timing) return $i-1;
+        }
+        return 0;
     }
 
     public static function getTimings()

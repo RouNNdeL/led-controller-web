@@ -21,6 +21,7 @@ $(function()
         {
             showSnackbar(response.message, 2500);
             save_btn.prop("disabled", true);
+            $("#auto-increment").val(response.auto_increment_val);
             changes = false;
         }).fail(function(e)
         {

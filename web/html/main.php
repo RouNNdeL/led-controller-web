@@ -73,6 +73,12 @@ echo $navbar->toHtml();
         </label>
         <br>
         <label>
+            <?php echo Utils::getString("options_global_auto_increment") ?>
+            <input type="text" class="form-control" id="auto-increment" value="<?php echo $data->getAutoIncrement() ?>"
+                   placeholder="0" name="auto_increment">
+        </label>
+        <br>
+        <label>
             <?php echo Utils::getString("options_global_brightness") ?>
             <br>
             <input

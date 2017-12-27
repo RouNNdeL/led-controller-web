@@ -23,9 +23,9 @@ class Data
 
     private $brightness;
     private $fan_count;
-    /**
-     * @var Profile[]
-     */
+    private $auto_increment;
+
+    /** @var Profile[] */
     private $profiles;
 
     /**
@@ -37,12 +37,14 @@ class Data
      * @param $strip_configuration
      * @param array $profiles
      */
-    private function __construct(int $active_profile, bool $enabled, int $brightness, int $fan_count, array $profiles)
+    private function __construct(int $active_profile, bool $enabled, int $brightness, int $fan_count,
+                                 int $auto_increment, array $profiles)
     {
         $this->active_profile = $active_profile;
         $this->enabled = $enabled;
         $this->brightness = $brightness;
         $this->fan_count = $fan_count;
+        $this->auto_increment = $auto_increment;
         $this->profiles = $profiles;
     }
 
@@ -114,6 +116,37 @@ class Data
         return $this->profiles[$n];
     }
 
+    /**
+     * @return mixed
+     */
+    public function getAutoIncrement()
+    {
+        return Device::getTiming($this->auto_increment);
+    }
+
+    /**
+     * @param $value
+     * @return float|int
+     */
+    public function setAutoIncrement($value)
+    {
+        $timing = Device::convertToTiming($value);
+        $this->auto_increment = $timing;
+        return Device::getTiming($timing);
+    }
+
+
+    public function globalsToJson()
+    {
+        $array = array();
+        $array["brightness"] = $this->brightness;
+        $array["profile_count"] = sizeof($this->profiles);
+        $array["current_profile"] = $this->active_profile;
+        $array["leds_enabled"] = $this->enabled;
+        $array["fan_count"] = $this->fan_count;
+        $array["auto_increment"] = $this->fan_count;
+    }
+
     private function _save()
     {
         $path = $_SERVER["DOCUMENT_ROOT"] . self::SAVE_PATH;
@@ -151,7 +184,7 @@ class Data
         $profile1 = new Profile($name);
         array_push($profiles, $profile1);
 
-        $data = new Data(0, true, 255, 0, $profiles);
+        $data = new Data(0, true, 255, 0, 0, $profiles);
         $data->_save();
         return $data;
     }

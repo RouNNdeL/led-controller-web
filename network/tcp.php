@@ -12,7 +12,7 @@ function send($string)
     $interface = explode(":", file_get_contents(__DIR__."/interface.data"));
     $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 30);
     if (!$fp) {
-        echo "$errstr ($errno)<br />\n";
+        //echo "$errstr ($errno)<br />\n";
     } else {
         fwrite($fp, $string);
         fclose($fp);

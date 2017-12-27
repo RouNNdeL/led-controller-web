@@ -40,8 +40,10 @@ require_once(__DIR__ . "/../includes/html_head.php");
     <?php
     if ($device_type == "a")
     {
-        $title = Utils::getString("profile_settings_analog");
-        $title = str_replace("\$n", $device_n+1, $title);
+        if($device_n == 0)
+            $title = Utils::getString("profile_settings_pc");
+        else
+            $title =  Utils::getString("profile_settings_gpu");
     }
     else
     {
@@ -49,8 +51,11 @@ require_once(__DIR__ . "/../includes/html_head.php");
         $title = str_replace("\$n", $device_n+1, $title);
     }
     ?>
+
     <h2 class="device-title"><?php echo $title?></h2>
     <?php echo $device->toHTML() ?>
+
 </div>
+<button class="btn btn-primary" style="margin-top: 12px"><?php echo Utils::getString("profile_apply"); ?></button>
 </body>
 </html>

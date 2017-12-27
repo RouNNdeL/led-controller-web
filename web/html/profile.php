@@ -85,15 +85,15 @@ TAG;
                     ?>
                     <button id="btn-delete-profile" class="btn btn-danger btn-block
                         <?php if($data->getProfileCount() === 1) echo " disabled\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"$profile_delete_explain\""; else echo "\""?>>
-                        <?php echo Utils::getString("profile_delete")?></button>
+                        <?php echo Utils::getString("profile_delete")?>
+                        </button>
                 </div>
             </div>
         </div>
         <div class="col-sm-8 col-md-9 col-lg-10" id="device-settings">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <?php if ($data->getAnalogCount() > 0) $device = $n_profile . "a0";
-                    else $device = $n_profile . "d0" ?>
+                    <?php $device = $n_profile."a0" ?>
                     <iframe id="device-settings-iframe" frameborder="0" src="/device_settings/<?php echo $device ?>">
                 </div>
             </div>

@@ -7,6 +7,8 @@
  */
 
 require_once __DIR__."/../secure.php";
+require_once __DIR__."/../network/tcp.php";
+
 function l($text)
 {
     file_put_contents("webhook.txt", $text, FILE_APPEND);
@@ -26,5 +28,7 @@ else if($headers["Authorization"] !== $dialogflow_auth)
 }
 error_reporting(0);
 $body = file_get_contents("php://input");
+send("{\"type\": \"dialogflow\", \"data\": ".$body."}");
 l($body);
 header("Content-Type: application/json");
+echo "{}";

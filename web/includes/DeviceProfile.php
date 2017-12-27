@@ -114,7 +114,6 @@ abstract class DeviceProfile
         $profile_effect = Utils::getString("profile_effect");
         $profile_timing = Utils::getString("profile_timing");
         $profile_arguments = Utils::getString("profile_arguments");
-        $profile_apply = Utils::getString("profile_apply");
         $profile_color_input = Utils::getString("profile_color_input");
         $profile_add_color = Utils::getString("profile_add_color");
 
@@ -215,7 +214,6 @@ abstract class DeviceProfile
         if (sizeof($this->args) > 0)
             $html .= "<div><h3>$profile_arguments</h3>$arguments_html</div>";
 
-        $html .= "<button class=\"btn btn-primary\">$profile_apply</button>";
         return $html;
     }
 

@@ -38,55 +38,13 @@ echo $navbar->toHtml();
                 <input name="enabled" type="checkbox" <?php if (Data::getInstance()->enabled) echo " checked" ?>> <?php echo Utils::getInstance()->getString("options_enabled") ?>
             </label>
         </div>
-        <label class="inline-form">
-            <?php echo Utils::getString("options_analog_count"); ?>
-            <select class="form-control" name="analog_count">
-                <?php
-                for ($i = 0; $i < 3; $i++)
-                {
-                    if ($i == Data::getInstance()->getAnalogCount())
-                    {
-                        echo "<option value=\"$i\" selected>$i</option>";
-                    }
-                    else
-                    {
-                        echo "<option value=\"$i\">$i</option>";
-                    }
-                }
-                ?>
-            </select>
-        </label>
-        <label class="inline-form<?php if (Data::getInstance()->getAnalogCount() < 1) echo " hidden" ?>">
-            <?php str_replace("\$port", "ANALOG1", Utils::getString("options_color_config")) ?>
-            <select class="form-control" name="color_config_1">
-                <option value="0">RGB</option>
-                <option value="1">RBG</option>
-                <option value="2">GRB</option>
-                <option value="3">GBR</option>
-                <option value="4">BRG</option>
-                <option value="5">BGR</option>
-            </select>
-        </label>
-        <label class="inline-form<?php if (Data::getInstance()->getAnalogCount() < 2) echo " hidden" ?>">
-            <?php str_replace("\$port", "ANALOG2", Utils::getString("options_color_config")) ?>
-            <select class="form-control" name="color_config_2">
-                <option value="0">RGB</option>
-                <option value="1">RBG</option>
-                <option value="2">GRB</option>
-                <option value="3">GBR</option>
-                <option value="4">BRG</option>
-                <option value="5">BGR</option>
-            </select>
-        </label>
-        <br>
-        <br>
         <label>
             <?php echo Utils::getString("options_digital_count"); ?>
-            <select class="form-control" name="digital_count">
+            <select class="form-control" name="fan_count">
                 <?php
                 for ($i = 0; $i < 4; $i++)
                 {
-                    if ($i == Data::getInstance()->getDigitalCount())
+                    if ($i == Data::getInstance()->getFanCount())
                     {
                         echo "<option value=\"$i\" selected>$i</option>";
                     }
@@ -98,7 +56,9 @@ echo $navbar->toHtml();
                 ?>
             </select>
         </label>
-        <br>
+        <?php
+
+        ?>
         <br>
         <label>
             <?php echo Utils::getString("options_global_brightness") ?>

@@ -12,19 +12,6 @@ class Data
 {
     const SAVE_PATH = "/_data/data.dat";
 
-    const RGB = 0b000;
-    const RBG = 0b001;
-    const GRB = 0b010;
-    const GBR = 0b011;
-    const BRG = 0b100;
-    const BGR = 0b101;
-
-    const MASK_ANALOG1 = 0b111000;
-    const MASK_ANALOG2 = 0b000111;
-
-    const MASK_DIGITAL_COUNT = 0b1100;
-    const MASK_ANALOG_COUNT = 0b0011;
-
     /**
      * @var Data
      */
@@ -34,8 +21,7 @@ class Data
     public $enabled;
 
     private $brightness;
-    private $device_count;
-    private $color_configuration;
+    private $fan_count;
     /**
      * @var Profile[]
      */
@@ -46,73 +32,33 @@ class Data
      * @param $active_profile
      * @param $enabled
      * @param $brightness
-     * @param $device_count
+     * @param $fan_count
      * @param $strip_configuration
      * @param array $profiles
      */
-    private function __construct(int $active_profile, bool $enabled, int $brightness, int $device_count,
-                                 int $strip_configuration, array $profiles)
+    private function __construct(int $active_profile, bool $enabled, int $brightness, int $fan_count, array $profiles)
     {
         $this->active_profile = $active_profile;
         $this->enabled = $enabled;
         $this->brightness = $brightness;
-        $this->device_count = $device_count;
-        $this->color_configuration = $strip_configuration;
+        $this->fan_count = $fan_count;
         $this->profiles = $profiles;
     }
 
-
-    public function setColorConfiguration(int $analog1, int $analog2)
+    /**
+     * @return int
+     */
+    public function getFanCount(): int
     {
-        if(($analog1 < 0 && $analog1 !== -1) || $analog1 > 5 ||
-            ($analog2 < 0 && $analog2 !== -1) || $analog2 > 5)
-        {
-            throw new InvalidArgumentException("Color configuration values need to be in range 0-5 or -1, when not updated");
-        }
-        if ($analog1 == -1)
-            $analog1 = $this->getColorConfiguration(1);
-        if ($analog2 == -1)
-            $analog2 = $this->getColorConfiguration(2);
-        $this->color_configuration = ($analog1 << 3) | $analog2;
+        return $this->fan_count;
     }
 
-    public function getColorConfiguration(int $n_strip)
+    /**
+     * @param int $fan_count
+     */
+    public function setFanCount(int $fan_count)
     {
-        if ($n_strip == 1)
-        {
-            return ($this->color_configuration & self::MASK_ANALOG1) >> 3;
-        }
-        else if ($n_strip == 2)
-        {
-            return $this->color_configuration & self::MASK_ANALOG2;
-        }
-        throw new InvalidArgumentException("n_strip has to be either 1 or 2");
-    }
-
-    public function getAnalogCount()
-    {
-        return $this->device_count & self::MASK_ANALOG_COUNT;
-    }
-
-    public function getDigitalCount()
-    {
-        return ($this->device_count & self::MASK_DIGITAL_COUNT) >> 2;
-    }
-
-    public function setAnalogCount($count)
-    {
-        if ($count < 0 || $count > 2)
-            throw new InvalidArgumentException("Analog count has to be in range 0-2");
-        $digital = $this->getDigitalCount();
-        $this->device_count = ($digital << 2) | $count;
-    }
-
-    public function setDigitalCount($count)
-    {
-        if ($count < 0 || $count > 3)
-            throw new InvalidArgumentException("Digital count has to be in range 0-3");
-        $analog = $this->getAnalogCount();
-        $this->device_count = ($count << 2) | $analog;
+        $this->fan_count = $fan_count;
     }
 
     public function getBrightness()
@@ -202,8 +148,7 @@ class Data
         $profile1 = new Profile($name);
         array_push($profiles, $profile1);
 
-        $data = new Data(0, true, 255, 0,
-            self::RGB << 3 | self::RGB, $profiles);
+        $data = new Data(0, true, 255, 0, $profiles);
         $data->_save();
         return $data;
     }
@@ -222,23 +167,26 @@ class Data
     public function getDeviceNavbarHtml($n_profile)
     {
         $html = "<ul id=\"device-navbar\" class=\"nav nav nav-pills nav-stacked\">";
-        $strip = Utils::getString("profile_analog");
+        $pc = Utils::getString("profile_pc");
+        $gpu = Utils::getString("profile_gpu");
         $fan = Utils::getString("profile_digital");
-        for ($i = 0; $i < $this->getAnalogCount(); $i++)
-        {
-            $device_url = $n_profile."a".$i;
-            $html .= "<li role=\"presentation\""
-                .($i == 0 ? " class=\"active\"" : "")
-                ." data-device-url=\"$device_url\"><a>"
-                . str_replace("\$n", $i + 1, $strip) . "</a></li>";
-        }
-        if ($this->getDigitalCount() > 0 && $this->getAnalogCount() > 0)
+
+        $device_url = $n_profile."a0";
+        $html .= "<li role=\"presentation\" class=\"active\"" .
+            " data-device-url=\"$device_url\"><a>"
+            . $pc . "</a></li>";
+
+        $device_url = $n_profile."a1";
+        $html .= "<li role=\"presentation\"" .
+            " data-device-url=\"$device_url\"><a>"
+            . $gpu . "</a></li>";
+
+        if ($this->getFanCount() > 0)
             $html .= "<li role=\"separator\" class=\"nav-divider\"></li>";
-        for ($i = 0; $i < $this->getDigitalCount(); $i++)
+        for ($i = 0; $i < $this->getFanCount(); $i++)
         {
             $device_url = $n_profile."d".$i;
-            $html .= "<li role=\"presentation\""
-                .($i == 0 && $this->getAnalogCount() == 0 ? " class=\"active\"" : "").
+            $html .= "<li role=\"presentation\"" .
                 " data-device-url=\"$device_url\"><a>"
                 . str_replace("\$n", $i + 1, $fan) . "</a></li>";
         }

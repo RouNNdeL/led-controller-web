@@ -9,7 +9,7 @@
 function send($string)
 {
 
-    $interface = explode(":", file_get_contents("interface.data"));
+    $interface = explode(":", file_get_contents(__DIR__."/interface.data"));
     $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 30);
     if (!$fp) {
         echo "$errstr ($errno)<br />\n";
@@ -18,5 +18,3 @@ function send($string)
         fclose($fp);
     }
 }
-
-send("Hello!");

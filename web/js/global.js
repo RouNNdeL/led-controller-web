@@ -8,9 +8,15 @@ $(function()
     let changes = false;
     save_btn.click(function()
     {
+        let json = objectifyForm(form.serializeArray());
+        let data = JSON.stringify(json);
+
+        $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
+        $("ul.nav-pills > li[role=presentation]").eq(parseInt(json.current_profile)+1).addClass("highlight");
+
         $.ajax("/api/save/global", {
             method: "POST",
-            data: JSON.stringify(objectifyForm(form.serializeArray()))
+            data: data
         }).done(function(response)
         {
             showSnackbar(response.message, 2500);

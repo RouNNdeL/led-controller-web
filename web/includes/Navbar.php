@@ -12,6 +12,7 @@ class Navbar
 {
     private $tabs;
     private $active;
+    private $highlight;
 
     function __construct()
     {
@@ -32,7 +33,8 @@ class Navbar
         {
             $tab = $this->tabs[$i];
             $html .= "<li role=\"presentation\"" .
-                ($i == $this->active ? " class=\"active\"" : "") . ">$tab</li>";
+                ($i == $this->active ? " class=\"active\"" :
+                    ($i == $this->highlight ? " class=\"highlight\"" : "")) . ">$tab</li>";
         }
         $html .= "</ul>";
         return $html;
@@ -57,6 +59,7 @@ class Navbar
     {
         $profiles = Data::getInstance()->getProfiles();
         $this->addLink(Utils::getString("global_options"), "/main");
+        $this->highlight = Data::getInstance()->active_profile+1;
         for($i = 0; $i < sizeof($profiles); $i++)
         {
             $this->addLink($profiles[$i]->getName(), "/profile/".($i+1));

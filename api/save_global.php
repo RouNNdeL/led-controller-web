@@ -14,7 +14,7 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST')
     exit(400);
 }
 $json = json_decode(file_get_contents("php://input"), true);
-if($json == false || !isset($json["fan_count"]) || !isset($json["brightness"]))
+if($json == false || !isset($json["fan_count"]) || !isset($json["brightness"]) || !isset($json["current_profile"]))
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid JSON\"}";
     http_response_code(400);
@@ -24,6 +24,7 @@ if($json == false || !isset($json["fan_count"]) || !isset($json["brightness"]))
 $enabled = isset($json["enabled"]);
 $fan_count = $json["fan_count"];
 $brightness = $json["brightness"];
+$current_profile = $json["current_profile"];
 
 require_once(__DIR__."/../web/includes/Data.php");
 require_once(__DIR__."/../web/includes/Utils.php");
@@ -31,6 +32,7 @@ $data = Data::getInstance();
 try
 {
     $data->enabled = $enabled;
+    $data->active_profile = $current_profile;
     $data->setFanCount($fan_count);
     $data->setBrightness($brightness);
     Data::save();
@@ -40,5 +42,6 @@ try
 catch (InvalidArgumentException $exception)
 {
     http_response_code(400);
-    echo "{\"status\":\"error\",\"message\":\"$exception->getMessage()\"}";
+    $message = $exception->getMessage();
+    echo "{\"status\":\"error\",\"message\":\"$message\"}";
 }

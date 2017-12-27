@@ -56,9 +56,21 @@ echo $navbar->toHtml();
                 ?>
             </select>
         </label>
-        <?php
-
-        ?>
+        <br>
+        <label>
+            <?php echo Utils::getString("options_global_current") ?>
+            <select class="form-control" name="current_profile">
+                <?php
+                $data = Data::getInstance();
+                foreach ($data->getProfiles() as $i => $profile)
+                {
+                    $name = $profile->getName();
+                    $selected = Data::getInstance()->active_profile == $i ? "selected" : "";
+                    echo "<option value=\"$i\" $selected>$name</option>";
+                }
+                ?>
+            </select>
+        </label>
         <br>
         <label>
             <?php echo Utils::getString("options_global_brightness") ?>
@@ -75,8 +87,8 @@ echo $navbar->toHtml();
                     data-slider-value="<?php echo Data::getInstance()->getBrightness() ?>"
                     data-slider-tooltip="show"
             >
-        </label></form>
-    <br>
+        </label>
+    </form>
     <br>
     <button id="btn-save" class="btn btn-primary" disabled><?php echo Utils::getString("options_save") ?></button>
     <button id="btn-restore-defaults"

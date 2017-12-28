@@ -10,11 +10,12 @@ function tcp_send($string)
 {
 
     $interface = explode(":", file_get_contents(__DIR__."/interface.data"));
-    $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 30);
+    $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 2);
     if (!$fp) {
-        //echo "$errstr ($errno)<br />\n";
+        return false;
     } else {
         fwrite($fp, $string);
         fclose($fp);
+        return true;
     }
 }

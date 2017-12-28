@@ -33,6 +33,7 @@ require_once(__DIR__."/../web/includes/Utils.php");
 require_once(__DIR__."/../network/tcp.php");
 
 $data = Data::getInstance();
+error_reporting(0);
 try
 {
     $data->enabled = $enabled;
@@ -41,11 +42,16 @@ try
     $data->setBrightness($brightness);
     $auto_increment = $data->setAutoIncrement($auto_increment);
 
-    tcp_send($data->globalsToJson());
-
     Data::save();
-    $success_msg = Utils::getString("options_save_success");
-    echo "{\"status\":\"success\",\"message\":\"$success_msg\", \"auto_increment_val\": $auto_increment}";
+    $success_msg = Utils::getString(tcp_send($data->globalsToJson()) ?
+        "options_save_success" : "options_save_success_offilne");
+
+    $resp = array();
+    $resp["status"] = "success";
+    $resp["auto_increment_val"] = $auto_increment;
+    $resp["message"] = $success_msg;
+
+    echo json_encode($resp);
 }
 catch (InvalidArgumentException $exception)
 {

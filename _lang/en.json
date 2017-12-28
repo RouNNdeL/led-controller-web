@@ -14,6 +14,8 @@
     "options_color_config": "$port color config",
     "options_reset_defaults": "Reset to defaults",
     "options_save": "Save changes",
+    "options_save_success": "Successfully saved changes!",
+    "options_save_success_offline": "The device is offline, changes will be applied when it goes online",
     "profile_delete": "Delete profile",
     "profile_delete_explain": "You cannot delete the last profile",
     "profile_settings_pc": "Settings for PC",

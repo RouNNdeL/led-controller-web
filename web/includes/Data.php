@@ -144,7 +144,7 @@ class Data
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
         $array["auto_increment"] = $this->auto_increment;
-        $array["fan_config"] = array([2, 0, 0]);
+        $array["fan_config"] = array(2, 0, 0);
 
         return json_encode(array("type"=>"globals_update", "data"=>$array));
     }

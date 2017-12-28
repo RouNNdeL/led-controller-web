@@ -239,23 +239,31 @@ abstract class Device
             throw new InvalidArgumentException("x has to be an integer in range 0-255");
         }
 
-        if ($x <= 100)
+        if ($x <= 80)
         {
-            return $x / 8;
+            return $x / 16;
         }
-        if ($x <= 180)
+        if ($x <= 120)
         {
-            return $x / 2 - 30;
+            return $x / 8 - 5;
         }
-        if ($x <= 240)
+        if ($x <= 160)
         {
-            return $x - 120;
+            return $x / 2 - 50;
         }
-        if ($x == 255)
+        if ($x <= 190)
         {
-            return 10 * 60;
+            return $x - 130;
         }
-        return $x * 30 - 7080;
+        if ($x <= 235)
+        {
+            return 2 * $x - 320;
+        }
+        if ($x <= 245)
+        {
+            return 15 * $x - 3375;
+        }
+        return 60 * $x - 14400;
     }
 
     public static function convertToTiming($float)

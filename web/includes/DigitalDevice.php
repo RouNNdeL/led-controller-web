@@ -11,7 +11,7 @@ class DigitalDevice extends Device
     const EFFECT_OFF = 100;
     const EFFECT_STATIC = 101;
     const EFFECT_BREATHING = 102;
-    const EFFECT_BLINKING = 102;
+    const EFFECT_BLINKING = 103;
     const EFFECT_FADING = 104;
     const EFFECT_RAINBOW = 105;
     const EFFECT_FILLING = 106;
@@ -49,12 +49,12 @@ class DigitalDevice extends Device
 
     public function getTimingsForEffect()
     {
-        switch ($this->effect)
+        switch($this->effect)
         {
             case self::EFFECT_OFF:
                 return 0b000000;
             case self::EFFECT_STATIC:
-                return 0b001001;
+                return 0b000000;
             case self::EFFECT_BREATHING:
                 return 0b111101;
             case self::EFFECT_BLINKING:
@@ -90,19 +90,29 @@ class DigitalDevice extends Device
         }
     }
 
-    public static function _static()
+    public static function _off()
     {
-        return self::static (array("FFFFFF"), 8, 0);
+        return self::off();
     }
 
-    public static function static (array $colors, int $on, int $offset)
+    public static function off()
     {
-        return new self($colors, self::EFFECT_STATIC, 0, 0, $on, 0, 0, $offset);
+        return new self(array("000000"), self::EFFECT_OFF, 0, 0, 1, 0, 0, 0);
+    }
+
+    public static function _static()
+    {
+        return self::static (array("FFFFFF"));
+    }
+
+    public static function static(array $colors)
+    {
+        return new self($colors, self::EFFECT_STATIC, 0, 0, 1, 0, 0, 0);
     }
 
     public static function _breathing()
     {
-        return self::breathing(array("FF0000", "00FF00", "0000FF"), 4, 8, 4, 8, 0, 0, 255);
+        return self::breathing(array("FF0000", "00FF00", "0000FF"), 1, 2, 1, 2, 0, 0, 255);
     }
 
     public static function breathing(array $colors, int $off, int $fadein, int $on, int $fadeout, int $offset,
@@ -136,7 +146,7 @@ class DigitalDevice extends Device
 
     public static function _filling()
     {
-        return self::filling(array("FF0000", "00FF00", "0000FF"), 0, 4, 0, 0,0,
+        return self::filling(array("FF0000", "00FF00", "0000FF"), 0, 1, 1, 0, 0,
             self::DIRECTION_CW, 1, 1, 1);
     }
 
@@ -146,22 +156,51 @@ class DigitalDevice extends Device
         $args = array();
         $args["direction"] = $direction;
         $args["smooth"] = $smooth;
-        $args["piece_count"] = $piece_count;
-        $args["color_count"] = $color_count;
+        $args["fill_fade_piece_count"] = $piece_count;
+        $args["fill_fade_color_count"] = $color_count;
         return new self($colors, self::EFFECT_FILLING, $off, $fadein, $on, 0, 0, 0, $args);
     }
 
     public static function _marquee()
     {
         return self::marquee(array("FF0000", "00FF00", "0000FF"),
-            0, 4, 16, 0, 0, 6);
+            1, 5, 2, 0);
     }
 
-    public static function marquee(array $colors, int $off, int $fadein, int $on, int $rotating, int $offset, int $led_count)
+    public static function marquee(array $colors, int $fade, int $on, int $rotating, int $offset)
     {
-        $args = array();
-        $args["led_count"] = $led_count;
-        return new self($colors, self::EFFECT_MARQUEE, $off, $fadein, $on, 0, $rotating, $offset, $args);
+        return new self($colors, self::EFFECT_MARQUEE, 0, $fade, $on, 0, $rotating, $offset);
+    }
+
+    /**
+     * @param int $effect
+     * @return DigitalDevice
+     */
+    public static function defaultFromEffect(int $effect)
+    {
+        switch($effect)
+        {
+            case self::EFFECT_OFF:
+                return self::_off();
+            case self::EFFECT_STATIC:
+                return self::_static();
+            case self::EFFECT_BREATHING:
+                return self::_breathing();
+            case self::EFFECT_BLINKING:
+                return self::_blinking();
+            case self::EFFECT_FADING:
+                return self::_fading();
+            case self::EFFECT_RAINBOW:
+                return null;
+            case self::EFFECT_FILLING:
+                return self::_filling();
+            case self::EFFECT_MARQUEE:
+                return self::_marquee();
+            case self::EFFECT_ROTATING:
+                return null;
+            default:
+                throw new InvalidArgumentException("Unknown effect: " . $effect);
+        }
     }
 
     public static function effects()

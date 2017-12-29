@@ -23,6 +23,7 @@ RewriteRule ^/?profile/(\d{1,2})/?$ web/html/profile.php?n_profile=$1
 RewriteRule ^/?profile/new/?$ web/html/add_profile.php [L]
 RewriteRule ^/?device_settings/(\d{1,2})([ad])(\d)/?$ web/html/device_settings.php?profile=$1&device_type=$2&device_n=$3 [L]
 RewriteRule ^/?api/save/global/?$ api/save_global.php
+RewriteRule ^/?api/get_html/timing_args/?$ api/timing_args.php
 RewriteRule ^/?api/remove/profile/?$ api/remove_profile.php
 RewriteRule ^/?api/save/profile/?$ api/save_profile_name.php
 RewriteRule ^/?api/enable_leds/?$ api/enable_leds.php

@@ -12,7 +12,7 @@ abstract class Device
 
     const /** @noinspection CssInvalidPropertyValue */
         COLOR_TEMPLATE =
-        "<div>
+        "<div class=\"color-container\">
             <div class=\"color-swatch-container\">
                 <div class=\"input-group color-swatch\">
                     <span class=\"input-group-addon\">
@@ -45,7 +45,8 @@ abstract class Device
     private $colors;
 
     /**
-     * Device constructor.
+     * Device constructor. <b>Note:</b> Timings are interpreted as raw values input by user,
+     * unless <code>$t_converted</code> is explicitly set to <code>true</code>
      * @param array $colors
      * @param int $effect
      * @param int $off
@@ -55,13 +56,15 @@ abstract class Device
      * @param int $rotate
      * @param int $offset
      * @param array $args
+     * @param bool $t_converted
      */
     protected function __construct(array $colors, int $effect, int $off, int $fadein, int $on, int $fadeout,
-                                   int $rotate, int $offset, array $args = array())
+                                   int $rotate, int $offset, array $args = array(), bool $t_converted = false)
     {
         $this->colors = $colors;
         $this->effect = $effect;
-        $this->setTimings($off, $fadein, $on, $fadeout, $rotate, $offset);
+        $t_converted ? $this->setTimings($off, $fadein, $on, $fadeout, $rotate, $offset) :
+            $this->setTimingsRaw($off, $fadein, $on, $fadeout, $rotate, $offset);
         $this->args = $args;
     }
 
@@ -87,7 +90,13 @@ abstract class Device
         return $this->colors;
     }
 
-    public function setTimings(int $off, int $fadein, int $on, int $fadeout, int $rotation, $offset)
+    public function setTimingsRaw(int $off, int $fadein, int $on, int $fadeout, int $rotation, int $offset)
+    {
+        $this->setTimings(self::convertToTiming($off), self::convertToTiming($fadein), self::convertToTiming($on),
+            self::convertToTiming($fadeout), self::convertToTiming($rotation), self::convertToTiming($offset));
+    }
+
+    public function setTimings(int $off, int $fadein, int $on, int $fadeout, int $rotation, int $offset)
     {
         if ($off > 255 || $off < 0 || $fadein > 255 || $fadein < 0 ||
             $on > 255 || $on < 0 || $fadeout > 255 || $fadeout < 0 ||
@@ -110,18 +119,12 @@ abstract class Device
     public function toHTML()
     {
         $html = "";
-        $timings = $this->getTimingsForEffect();
-        $timing_strings = self::TIMING_STRINGS;
         $profile_colors = Utils::getString("profile_colors");
         $profile_effect = Utils::getString("profile_effect");
-        $profile_timing = Utils::getString("profile_timing");
-        $profile_arguments = Utils::getString("profile_arguments");
         $profile_color_input = Utils::getString("profile_color_input");
         $profile_add_color = Utils::getString("profile_add_color");
 
         $colors_html = "";
-        $arguments_html = "";
-        $timing_html = "";
         $effects_html = "";
 
         for ($i = 0; $i < sizeof($this->getColors()); $i++)
@@ -132,6 +135,52 @@ abstract class Device
             $template = str_replace("\$color", "#" . $this->getColors()[$i], $template);
             $colors_html .= $template;
         }
+
+        foreach (static::effects() as $id => $effect)
+        {
+            $string = Utils::getString("profile_" . $effect);
+            $effects_html .= "<option value=\"$id\"" . ($id == $this->effect ? " selected" : "") . ">$string</option>";
+        }
+
+        $html .= "<div class=\"inline\">
+        <label>
+            $profile_effect
+            <select class=\"form-control\" name=\"effect\" id=\"effect-select\">
+                $effects_html
+            </select>
+        </label>
+        <h3>$profile_colors</h3>
+        $colors_html
+        <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\" type=\"button\">$profile_add_color</button>
+
+    </div>";
+        $html .= "<div id=\"picker-container\" class=\"inline\">
+                        <div id=\"color-picker\"></div>
+                        <div>
+                            <label>
+                                $profile_color_input
+                                <input class=\"form-control\" id=\"color-input\">
+                            </label>
+                        </div>
+                  </div>";
+        $html .= "<div id=\"timing-arg-container\">";
+        $html .= $this->timingArgHtml();
+        $html .= "</div>";
+
+        return $html;
+    }
+
+    public function timingArgHtml()
+    {
+        $html = "";
+
+        $timings = $this->getTimingsForEffect();
+        $timing_strings = self::TIMING_STRINGS;
+        $profile_timing = Utils::getString("profile_timing");
+        $profile_arguments = Utils::getString("profile_arguments");
+
+        $arguments_html = "";
+        $timing_html = "";
 
         if(sizeof($this->args) > 0) {
             foreach ($this->args as $name => $argument) {
@@ -191,33 +240,6 @@ abstract class Device
             }
         }
 
-        foreach (static::effects() as $id => $effect)
-        {
-            $string = Utils::getString("profile_" . $effect);
-            $effects_html .= "<option value=\"$id\"" . ($id == $this->effect ? " selected" : "") . ">$string</option>";
-        }
-
-        $html .= "<div class=\"inline\">
-        <label>
-            $profile_effect
-            <select class=\"form-control\" name=\"effect\">
-                $effects_html
-            </select>
-        </label>
-        <h3>$profile_colors</h3>
-        $colors_html
-        <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\" type=\"button\">$profile_add_color</button>
-
-    </div>";
-        $html .= "<div id=\"picker-container\" class=\"inline\">
-                        <div id=\"color-picker\"></div>
-                        <div>
-                            <label>
-                                $profile_color_input
-                                <input class=\"form-control\" id=\"color-input\">
-                            </label>
-                        </div>
-                  </div>";
         $html .= "<div>";
         if ($timings != 0)
             $html .= "<h3>$profile_timing</h3>";
@@ -231,6 +253,8 @@ abstract class Device
     public abstract function getTimingsForEffect();
 
     public static abstract function effects();
+
+    public static abstract function defaultFromEffect(int $effect);
 
     public static function getTiming(int $x)
     {

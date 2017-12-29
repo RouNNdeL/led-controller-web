@@ -4,7 +4,7 @@
 "use strict";
 const REGEX_COLOR = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 const COLOR_TEMPLATE =
-    "<div>" +
+    "<div class=\"color-container\">" +
     "<div class=\"color-swatch-container\" style=\"margin-right: 4px;\">" +
     "<div class=\"input-group color-swatch\">" +
     "<span class=\"input-group-addon\">" +
@@ -17,6 +17,8 @@ const COLOR_TEMPLATE =
     "</div>";
 
 const SELECTOR_RADIOS = "input[type=radio][name=color]";
+const type = document.location.pathname.match(/\d([da])\d/)[1];
+let limit_colors = 16;
 
 $(function()
 {
@@ -83,14 +85,14 @@ $(function()
         delete_btns.off("click");
         delete_btns.click(function()
         {
-            const color_count = $(".color-swatch-container").length;
+            const color_count = $(".color-container").length;
             if(color_count > 1)
             {
                 if($(this).parent().find(SELECTOR_RADIOS)[0].checked)
                 {
                     const radios = $(SELECTOR_RADIOS);
-                    const index = radios.index($(this).parent().find(SELECTOR_RADIOS));
-                    console.log(index);
+                    const index = radios.index($(this).find(SELECTOR_RADIOS));
+
                     let select_index;
                     if(index === 0)
                         select_index = 1;
@@ -105,28 +107,81 @@ $(function()
         });
     }
 
+    function refreshColorsLimit()
+    {
+        let swatches = $(".color-swatch-container");
+        if(limit_colors > 0 && swatches.length === 0)
+        {
+            const swatch = getColorSwatch(0);
+            $(swatch).insertBefore($("#add-color-btn"));
+            $(swatch).find(SELECTOR_RADIOS)[0].checked = true;
+            refreshListeners();
+        }
+        swatches = $(".color-swatch-container");
+        if(swatches.length < limit_colors)
+        {
+            $("#add-color-btn").css("display", "");
+        }
+        else
+        {
+            $("#add-color-btn").css("display", "none");
+            limit_colors === 0 ? $(".color-container").remove() : $(".color-container:gt(" + (limit_colors - 1) + ")").remove();
+            const delete_btns = $(".color-delete-btn");
+            if(delete_btns.length === 1)
+                delete_btns.css("visibility", "hidden");
+        }
+    }
+
     refreshListeners();
 
     $("#add-color-btn").click(function()
     {
-        const swatches = $(".color-swatch-container");
-        const num = swatches.length + 1;
-        if(num === 2)
+        const swatches = $(".color-container");
+        const num = swatches.length;
+        if(num === 1)
             $(".color-delete-btn").css("visibility", "");
-        if(num < 16)
+        if(num < limit_colors)
         {
             const swatch = getColorSwatch(num);
-            $(swatch).insertAfter(swatches.eq(num - 2).parent());
+            $(swatch).insertBefore($(this));
             refreshListeners();
-        }
-        else
-        {
-            $(this).css("display", "none");
+            if(num === limit_colors - 1)
+                $(this).css("display", "none");
         }
     });
 
-    $("#device-settings-submit").click(() => {
+    $("#device-settings-submit").click(() =>
+    {
         console.log(formToJson());
+    });
+
+    $("#effect-select").change(event =>
+    {
+        const data = JSON.stringify({
+            type: type,
+            effect: parseInt($(event.target).val())
+        });
+        $.ajax("/api/get_html/timing_args", {
+            method: "POST",
+            data: data
+        }).done(response =>
+        {
+            if(response.status !== "success")
+            {
+                console.error("Error getting args, timings: ", response);
+            }
+            else
+            {
+                const container = $("#timing-arg-container");
+                container.empty();
+                container.append($.parseHTML(response.html));
+                limit_colors = response.limit_colors;
+                refreshColorsLimit();
+            }
+        }).fail(err =>
+        {
+            console.error(err);
+        })
     });
 });
 
@@ -147,12 +202,24 @@ function formToJson()
         {
             switch(timeMatch[1])
             {
-                case "off": json.times[0] = parseInt(array[i].value); break;
-                case "fadein": json.times[1] = parseInt(array[i].value); break;
-                case "on": json.times[2] = parseInt(array[i].value); break;
-                case "fadeout": json.times[3] = parseInt(array[i].value); break;
-                case "rotation": json.times[4] = parseInt(array[i].value); break;
-                case "offset": json.times[5] = parseInt(array[i].value); break;
+                case "off":
+                    json.times[0] = parseInt(array[i].value);
+                    break;
+                case "fadein":
+                    json.times[1] = parseInt(array[i].value);
+                    break;
+                case "on":
+                    json.times[2] = parseInt(array[i].value);
+                    break;
+                case "fadeout":
+                    json.times[3] = parseInt(array[i].value);
+                    break;
+                case "rotation":
+                    json.times[4] = parseInt(array[i].value);
+                    break;
+                case "offset":
+                    json.times[5] = parseInt(array[i].value);
+                    break;
             }
         }
         else if(argsMatch !== null)

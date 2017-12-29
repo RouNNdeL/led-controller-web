@@ -50,7 +50,7 @@ class Utils
 
         //return null;
         //Only for development purposes
-        return $name;
+        return "_".$name;
     }
 
     public static function getInstance()

@@ -11,7 +11,7 @@ class AnalogDevice extends Device
     const EFFECT_OFF = 100;
     const EFFECT_STATIC = 101;
     const EFFECT_BREATHING = 102;
-    const EFFECT_BLINKING = 102;
+    const EFFECT_BLINKING = 103;
     const EFFECT_FADING = 104;
     const EFFECT_RAINBOW = 105;
     const EFFECT_DEMO = 199;
@@ -22,12 +22,12 @@ class AnalogDevice extends Device
 
     public function getTimingsForEffect()
     {
-        switch ($this->effect)
+        switch($this->effect)
         {
             case self::EFFECT_OFF:
                 return 0b000000;
             case self::EFFECT_STATIC:
-                return 0b001001;
+                return 0b000000;
             case self::EFFECT_BREATHING:
                 return 0b111101;
             case self::EFFECT_BLINKING:
@@ -43,29 +43,38 @@ class AnalogDevice extends Device
         }
     }
 
-    public static function _static()
+    public static function _off()
     {
-        return self::static (array("FFFFFF"), 8, 0);
+        return self::off();
     }
 
-    public static function static (array $colors, int $on, int $offset)
+    public static function off()
     {
-        return new self($colors, self::AVR_BREATHE, 0, 0, $on, 0, 0, $offset);
+        return new self(array("000000"), self::EFFECT_OFF, 0, 0, 1, 0, 0, 0);
+    }
+
+    public static function _static()
+    {
+        return self::static (array("FFFFFF"), 1, 0);
+    }
+
+    public static function static(array $colors, int $on, int $offset)
+    {
+        return new self($colors, self::EFFECT_STATIC, 0, 0, $on, 0, 0, $offset);
     }
 
     public static function _breathing()
     {
-        return self::breathing(array("FF0000", "00FF00", "0000FF"), 4, 8, 4, 8, 0, 0, 255);
+        return self::breathing(array("FF0000", "00FF00", "0000FF"), 1, 2, 1, 2, 0, 0, 255);
     }
 
     public static function breathing(array $colors, int $off, int $fadein, int $on, int $fadeout, int $offset,
                                      int $min_val, $max_value)
     {
         $args = [];
-        $args[0] = 0;
-        $args[1] = $min_val;
-        $args[2] = $max_value;
-        return new self($colors, self::AVR_BREATHE, $off, $fadein, $on, $fadeout, 0, $offset, $args);
+        $args["breathe_min_val"] = $min_val;
+        $args["breathe_max_val"] = $max_value;
+        return new self($colors, self::EFFECT_BREATHING, $off, $fadein, $on, $fadeout, 0, $offset, $args);
     }
 
     public static function _fading()
@@ -75,7 +84,7 @@ class AnalogDevice extends Device
 
     public static function fading(array $colors, int $fade, int $on, int $offset)
     {
-        return new self($colors, self::AVR_FADE, 0, 0, $on, $fade, 0, $offset);
+        return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset);
     }
 
     public static function _blinking()
@@ -85,7 +94,32 @@ class AnalogDevice extends Device
 
     public static function blinking(array $colors, int $off, int $on, int $offset)
     {
-        return new self($colors, self::AVR_BREATHE, $off, 0, $on, 0, 0, $offset);
+        return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0, 0, $offset);
+    }
+
+    /**
+     * @param int $effect
+     * @return AnalogDevice
+     */
+    public static function defaultFromEffect(int $effect)
+    {
+        switch($effect)
+        {
+            case self::EFFECT_OFF:
+                return self::_off();
+            case self::EFFECT_STATIC:
+                return self::_static();
+            case self::EFFECT_BREATHING:
+                return self::_breathing();
+            case self::EFFECT_BLINKING:
+                return self::_blinking();
+            case self::EFFECT_FADING:
+                return self::_fading();
+            case self::EFFECT_RAINBOW:
+                return null;
+            default:
+                throw new InvalidArgumentException("Unknown effect: ".$effect);
+        }
     }
 
     public static function effects()
@@ -98,7 +132,6 @@ class AnalogDevice extends Device
         $effects[self::EFFECT_BLINKING] = "effect_blinking";
         $effects[self::EFFECT_FADING] = "effect_fading";
         $effects[self::EFFECT_RAINBOW] = "effect_rainbow";
-        $effects[self::EFFECT_DEMO] = "effect_demo";
 
         return $effects;
     }

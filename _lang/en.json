@@ -7,6 +7,7 @@
     "error_msg_500": "An internal server error occurred",
     "warning": "Warning!",
     "warning_led_disabled": "The LEDs are disabled, <a href=\"#enable_leds\" class=\"alert-link\">enable them</a> in global settings to see the changes",
+    "warning_device_offline": "The device is offline, the changes will be applied when it goes online",
     "options_enabled": "Enable LEDs",
     "options_digital_count": "Number of LED fans",
     "options_analog_count": "Number of LED strips",

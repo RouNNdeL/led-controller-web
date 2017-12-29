@@ -13,14 +13,15 @@ echo <<<TAG
 TAG;
 ?>
 <?php
-    $additional_js = ["global.js"];
-    require_once(__DIR__ . "/../includes/html_head.php");
+$additional_js = ["global.js"];
+require_once(__DIR__ . "/../includes/html_head.php");
 ?>
 <body>
 
 <?php
 require_once(__DIR__ . "/../includes/Data.php");
 require_once(__DIR__ . "/../includes/Navbar.php");
+require_once(__DIR__ . "/../../network/tcp.php");
 
 $profiles = Data::getInstance()->getProfiles();
 
@@ -31,20 +32,34 @@ echo $navbar->toHtml();
 ?>
 
 <div class="container-fluid">
+    <?php
+    if(!tcp_send(null))
+    {
+        $warning = Utils::getString("warning");
+        $message = Utils::getString("warning_device_offline");;
+        echo <<< TAG
+    <div class="col-md-12" style="margin-top: 12px">
+        <div class="alert alert-danger">
+            <strong>$warning</strong> $message
+        </div>
+    </div>
+TAG;
+    }
+    ?>
     <form id="global-form">
-        <br>
         <div class="checkbox">
             <label>
-                <input name="enabled" type="checkbox" <?php if (Data::getInstance()->enabled) echo " checked" ?>> <?php echo Utils::getInstance()->getString("options_enabled") ?>
+                <input name="enabled"
+                       type="checkbox" <?php if(Data::getInstance()->enabled) echo " checked" ?>> <?php echo Utils::getInstance()->getString("options_enabled") ?>
             </label>
         </div>
         <label>
             <?php echo Utils::getString("options_digital_count"); ?>
             <select class="form-control" name="fan_count">
                 <?php
-                for ($i = 0; $i < 4; $i++)
+                for($i = 0; $i < 4; $i++)
                 {
-                    if ($i == Data::getInstance()->getFanCount())
+                    if($i == Data::getInstance()->getFanCount())
                     {
                         echo "<option value=\"$i\" selected>$i</option>";
                     }
@@ -62,7 +77,7 @@ echo $navbar->toHtml();
             <select class="form-control" name="current_profile">
                 <?php
                 $data = Data::getInstance();
-                foreach ($data->getProfiles() as $i => $profile)
+                foreach($data->getProfiles() as $i => $profile)
                 {
                     $name = $profile->getName();
                     $selected = Data::getInstance()->active_profile == $i ? "selected" : "";
@@ -96,7 +111,7 @@ echo $navbar->toHtml();
         </label>
     </form>
     <br>
-    <!--<button id="btn-save" class="btn btn-primary" disabled><?php /*echo Utils::getString("options_save") */?></button>-->
+    <!--<button id="btn-save" class="btn btn-primary" disabled><?php /*echo Utils::getString("options_save") */ ?></button>-->
     <button id="btn-restore-defaults"
             class="btn btn-danger"><?php echo Utils::getString("options_reset_defaults") ?></button>
 </div>

@@ -6,15 +6,19 @@
  * Time: 16:15
  */
 
+error_reporting(0);
 function tcp_send($string)
 {
 
-    $interface = explode(":", file_get_contents(__DIR__."/interface.data"));
+    $interface = explode(":", file_get_contents(__DIR__ . "/interface.data"));
     $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 0.1);
-    if (!$fp) {
+    if(!$fp)
+    {
         return false;
-    } else {
-        fwrite($fp, $string);
+    }
+    else
+    {
+        if($string !== null) fwrite($fp, $string);
         fclose($fp);
         return true;
     }

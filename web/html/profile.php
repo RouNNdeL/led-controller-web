@@ -23,7 +23,7 @@ require_once(__DIR__ . "/../includes/html_head.php");
 require_once(__DIR__ . "/../includes/Data.php");
 require_once(__DIR__ . "/../includes/Navbar.php");
 
-if (!isset($_GET["n_profile"]))
+if(!isset($_GET["n_profile"]))
 {
     http_response_code(500);
     include(__DIR__ . "/../error/500.php");
@@ -31,7 +31,7 @@ if (!isset($_GET["n_profile"]))
 }
 $n_profile = $_GET["n_profile"] - 1;
 
-if (Data::getInstance()->getProfileCount() <= $n_profile)
+if(Data::getInstance()->getProfileCount() <= $n_profile)
 {
     http_response_code(404);
     include(__DIR__ . "/../error/404.php");
@@ -48,7 +48,21 @@ $profile = $data->getProfile($n_profile);
 <input id="profile_n" type="hidden" value="<?php echo $n_profile ?>">
 <div class="container-fluid">
     <div class="row profile-content">
-        <?php if (!$data->enabled)
+        <?php
+        require_once(__DIR__ . "/../../network/tcp.php");
+        if(!tcp_send(null))
+        {
+            $warning = Utils::getString("warning");
+            $message = Utils::getString("warning_device_offline");;
+            echo <<< TAG
+    <div class="col-md-12" style="margin-top: 12px">
+        <div class="alert alert-danger">
+            <strong>$warning</strong> $message
+        </div>
+    </div>
+TAG;
+        }
+        if(!$data->enabled)
         {
             $str_warning = Utils::getString("warning");
             $str_led_disabled = Utils::getString("warning_led_disabled");
@@ -84,21 +98,23 @@ TAG;
                     $profile_delete_explain = Utils::getString("profile_delete_explain");
                     ?>
                     <button id="btn-delete-profile" class="btn btn-danger btn-block
-                        <?php if($data->getProfileCount() === 1) echo " disabled\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"$profile_delete_explain\""; else echo "\""?>>
-                        <?php echo Utils::getString("profile_delete")?>
+                        <?php if($data->getProfileCount() === 1) echo " disabled\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"$profile_delete_explain\""; else echo "\"" ?>>
+                        <?php echo Utils::getString("profile_delete") ?>
                         </button>
                 </div>
             </div>
         </div>
-        <div class="col-sm-8 col-md-9 col-lg-10" id="device-settings">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <?php $device = $n_profile."a0" ?>
-                    <iframe id="device-settings-iframe" frameborder="0" src="/device_settings/<?php echo $device ?>">
+        <div class=" col-sm-8 col-md-9 col-lg-10
+                    " id="device-settings">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <?php $device = $n_profile . "a0" ?>
+                            <iframe id="device-settings-iframe" frameborder="0"
+                                    src="/device_settings/<?php echo $device ?>">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 </body>
 </html>

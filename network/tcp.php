@@ -10,7 +10,7 @@ function tcp_send($string)
 {
 
     $interface = explode(":", file_get_contents(__DIR__."/interface.data"));
-    $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 2);
+    $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 0.1);
     if (!$fp) {
         return false;
     } else {

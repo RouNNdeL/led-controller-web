@@ -44,7 +44,7 @@ try
 
     Data::save();
     $success_msg = Utils::getString(tcp_send($data->globalsToJson()) ?
-        "options_save_success" : "options_save_success_offilne");
+        "options_save_success" : "options_save_success_offline");
 
     $resp = array();
     $resp["status"] = "success";

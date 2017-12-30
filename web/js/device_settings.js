@@ -22,7 +22,7 @@ let limit_colors = 16;
 
 $(function()
 {
-    let previous_color_value;
+    let previous_color_value = "#FFFFFF";
     const container = document.getElementById("color-picker");
     const picker = new CP(container, false);
 
@@ -42,12 +42,12 @@ $(function()
         previous_color_value = "#" + color;
     });
 
-    color_input.change(function(e)
+    color_input.change(event =>
     {
-        let val = $(this).val();
+        let val = $(event.target).val();
         if(val[0] !== "#")
         {
-            $(this).val("#" + val);
+            $(event.target).val("#" + val);
             val = "#" + val;
         }
 
@@ -56,7 +56,7 @@ $(function()
             $("input:checked[type=radio][name=color]")
                 .parent().siblings(".color-box").css("background-color", val);
 
-            if(e.originalEvent)
+            if(event.originalEvent)
             {
                 picker.set(val);
             }
@@ -64,9 +64,28 @@ $(function()
         }
         else
         {
-            if(previous_color_value === null)
-                previous_color_value = "#FFFFFF";
-            $(this).val(previous_color_value);
+            $(event.target).val(previous_color_value);
+        }
+    });
+
+    color_input.on("input", event =>
+    {
+        let val = $(event.target).val();
+        if(val[0] !== "#")
+        {
+            $(event.target).val("#" + val);
+            val = "#" + val;
+        }
+        if(REGEX_COLOR.exec(val) !== null)
+        {
+            $("input:checked[type=radio][name=color]")
+                .parent().siblings(".color-box").css("background-color", val);
+
+            if(event.originalEvent)
+            {
+                picker.set(val);
+            }
+            previous_color_value = val;
         }
     });
 
@@ -182,6 +201,15 @@ $(function()
         {
             console.error(err);
         })
+    });
+
+    $(window).keydown(function(event)
+    {
+        if(event.keyCode === 13)
+        {
+            event.preventDefault();
+            return false;
+        }
     });
 });
 

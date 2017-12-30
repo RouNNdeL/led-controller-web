@@ -31,6 +31,7 @@ $(function()
     let previous_color_value = "#FFFFFF";
     const container = document.getElementById("color-picker");
     const picker = new CP(container, false);
+    limit_colors = parseInt($("#swatches-container").data("color-limit"));
 
     picker.fit = function()
     {

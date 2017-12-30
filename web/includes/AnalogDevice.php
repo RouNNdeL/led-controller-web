@@ -43,6 +43,17 @@ class AnalogDevice extends Device
         }
     }
 
+    public function colorLimit()
+    {
+        switch($this->effect)
+        {
+            case self::EFFECT_OFF: return 0;
+            case self::EFFECT_RAINBOW: return 0;
+            case self::EFFECT_STATIC: return 1;
+            default: return 16;
+        }
+    }
+
     public static function _off()
     {
         return self::off();

@@ -35,24 +35,14 @@ if($type === "a")
     require_once (__DIR__."/../web/includes/DigitalDevice.php");
     $device = AnalogDevice::defaultFromEffect($effect);
     $response["html"] = $device->timingArgHtml();
-    switch($effect)
-    {
-        case AnalogDevice::EFFECT_OFF: $response["limit_colors"] = 0; break;
-        case AnalogDevice::EFFECT_STATIC: $response["limit_colors"] = 1; break;
-        default: $response["limit_colors"] = 16;
-    }
+    $response["limit_colors"] = $device->colorLimit();
 }
 else
 {
     require_once (__DIR__."/../web/includes/DigitalDevice.php");
     $device = DigitalDevice::defaultFromEffect($effect);
     $response["html"] = $device->timingArgHtml();
-    switch($effect)
-    {
-        case DigitalDevice::EFFECT_OFF: $response["limit_colors"] = 0; break;
-        case DigitalDevice::EFFECT_STATIC: $response["limit_colors"] = 1; break;
-        default: $response["limit_colors"] = 16;
-    }
+    $response["limit_colors"] = $device->colorLimit();
 }
 
 echo json_encode($response);

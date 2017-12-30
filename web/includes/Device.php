@@ -121,6 +121,7 @@ abstract class Device
         $profile_effect = Utils::getString("profile_effect");
         $profile_color_input = Utils::getString("profile_color_input");
         $profile_add_color = Utils::getString("profile_add_color");
+        $color_limit = $this->colorLimit();
 
         $colors_html = "";
         $effects_html = "";
@@ -140,6 +141,7 @@ abstract class Device
             $effects_html .= "<option value=\"$id\"" . ($id == $this->effect ? " selected" : "") . ">$string</option>";
         }
 
+        $btn_style = sizeof($this->colors) >= $color_limit ? " style=\"display: none\"" : "";
         $html .= "<div class=\"inline\">
         <label>
             $profile_effect
@@ -148,8 +150,10 @@ abstract class Device
             </select>
         </label>
         <h3>$profile_colors</h3>
-        $colors_html
-        <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\" type=\"button\">$profile_add_color</button>
+        <div id=\"swatches-container\" data-color-limit=\"$color_limit\">
+            $colors_html
+            <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\" type=\"button\"$btn_style>$profile_add_color</button>
+        </div>
 
     </div>";
         $html .= "<div id=\"picker-container\" class=\"inline\">
@@ -261,6 +265,8 @@ abstract class Device
     }
 
     public abstract function getTimingsForEffect();
+
+    public abstract function colorLimit();
 
     public static abstract function fromJson(array $json);
 

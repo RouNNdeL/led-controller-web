@@ -194,7 +194,7 @@ $(function()
             method: "POST",
             data: JSON.stringify(formToJson()),
             contentType: "application/json"
-        }).done(response => console.log).fail(err => console.log)
+        }).done(response => console.log).fail(err => console.log);
     });
 
     $("#effect-select").change(event =>

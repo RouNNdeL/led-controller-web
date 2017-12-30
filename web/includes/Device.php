@@ -202,23 +202,29 @@ abstract class Device
                         $str_cw = Utils::getString("profile_direction_cw");
                         $str_ccw = Utils::getString("profile_direction_ccw");
                         $str_dir = Utils::getString("profile_arguments_direction");
+                        $selected0 = $argument ? " selected" : "";
+                        $selected1 = $argument ? "" : " selected";
                         $arguments_html .= "<label class=\"inline-form\">
                                             $str_dir
                                             <select class=\"form-control\" name=\"arg_$name\">
-                                                <option value=\"" . DigitalDevice::DIRECTION_CW . "\">$str_cw</option>
-                                                <option value=\"" . DigitalDevice::DIRECTION_CCW . "\">$str_ccw</option>
+                                                <option value=\"" . DigitalDevice::DIRECTION_CW . "\"$selected0>$str_cw</option>
+                                                <option value=\"" . DigitalDevice::DIRECTION_CCW . "\"$selected1>$str_ccw</option>
                                             </select>
                                         </label>";
                         break;
                     case "smooth":
+                    case "fade_smooth":
+                    case "fill_fade_return":
                         $str_yes = Utils::getString("yes");
                         $str_no = Utils::getString("no");
-                        $str_smth = Utils::getString("profile_arguments_smooth");
+                        $str = Utils::getString("profile_arguments_" . $name);
+                        $selected0 = $argument ? " selected" : "";
+                        $selected1 = $argument ? "" : " selected";
                         $arguments_html .= "<label class=\"inline-form\">
-                                            $str_smth
+                                            $str
                                             <select class=\"form-control\" name=\"arg_$name\">
-                                                <option value=\"" . 1 . "\">$str_yes</option>
-                                                <option value=\"" . 0 . "\">$str_no</option>
+                                                <option value=\"" . 1 . "\"$selected0>$str_yes</option>
+                                                <option value=\"" . 0 . "\"$selected1>$str_no</option>
                                             </select>
                                         </label>";
                         break;

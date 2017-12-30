@@ -33,17 +33,19 @@ class DigitalDevice extends Device
      * DigitalDevice constructor.
      * @param array $colors
      * @param int $effect
-     * @param int $off
-     * @param int $fadein
-     * @param int $on
-     * @param int $fadeout
-     * @param int $rotating
-     * @param int $offset
+     * @param float|int $off
+     * @param float|int $fadein
+     * @param float|int $on
+     * @param float|int $fadeout
+     * @param float|int $rotating
+     * @param float|int $offset
      * @param array $args
      */
     public function __construct(array $colors, int $effect, float $off, float $fadein, float $on, float $fadeout,
                                 float $rotating, float $offset, array $args = array())
     {
+        if($effect === self::EFFECT_OFF || $effect === self::EFFECT_STATIC)
+            $on = 1;
         parent::__construct($colors, $effect, $off, $fadein, $on, $fadeout, $rotating, $offset, $args);
     }
 
@@ -94,11 +96,68 @@ class DigitalDevice extends Device
     {
         switch($this->effect)
         {
-            case self::EFFECT_OFF: return 0;
-            case self::EFFECT_RAINBOW: return 0;
-            case self::EFFECT_STATIC: return 1;
-            default: return 16;
+            case self::EFFECT_OFF:
+                return 0;
+            case self::EFFECT_RAINBOW:
+                return 0;
+            case self::EFFECT_STATIC:
+                return 1;
+            default:
+                return 16;
         }
+    }
+
+    public function avrEffect()
+    {
+        switch($this->effect)
+        {
+            case self::EFFECT_OFF:
+            case self::EFFECT_STATIC:
+            case self::EFFECT_BREATHING:
+            case self::EFFECT_BLINKING:
+                return self::AVR_EFFECT_BREATHE;
+            case self::EFFECT_RAINBOW:
+                return self::AVR_EFFECT_RAINBOW;
+            case self::EFFECT_ROTATING:
+                return self::AVR_EFFECT_ROTATING;
+            case self::EFFECT_PIECES:
+                return self::AVR_EFFECT_PIECES;
+            case self::EFFECT_FILLING:
+                return self::AVR_EFFECT_FILL;
+            default:
+                return self::AVR_EFFECT_BREATHE;
+        }
+    }
+
+    public function argsToArray()
+    {
+        $array = array(0, 0, 0, 0, 0);
+
+        switch($this->effect)
+        {
+            case self::EFFECT_BREATHING:
+            {
+                $array[1] = $this->args["breathe_min_val"];
+                $array[2] = $this->args["breathe_max_val"];
+                break;
+            }
+            case self::EFFECT_FILLING:
+            {
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                $array[1] = $this->args["fill_fade_piece_count"];
+                $array[2] = $this->args["fill_fade_color_count"];
+                break;
+            }
+            case self::EFFECT_STATIC:
+            case self::EFFECT_BLINKING:
+            {
+                $array[1] = 0;
+                $array[2] = 255;
+                break;
+            }
+        }
+
+        return $array;
     }
 
     public static function _off()
@@ -141,7 +200,7 @@ class DigitalDevice extends Device
         return self::fading(array("FF0000", "00FF00", "0000FF"), 0.5, 1, 0, 1);
     }
 
-    public static function fading(array $colors, float $fade, float $on, float $offset,  int $color_cycles)
+    public static function fading(array $colors, float $fade, float $on, float $offset, int $color_cycles)
     {
         $args = array("color_cycles" => $color_cycles);
         return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset, $args);
@@ -161,7 +220,7 @@ class DigitalDevice extends Device
     public static function _filling()
     {
         return self::filling(array("FF0000", "00FF00", "0000FF"), 0, 1, 1, 0, 0,
-            self::DIRECTION_CW, 1, 1, 1, 1);
+            self::DIRECTION_CW, 1, 1, 1, 1, 1);
     }
 
     public static function filling(array $colors, float $off, float $fadein, float $on, float $fadeout, float $rotating,

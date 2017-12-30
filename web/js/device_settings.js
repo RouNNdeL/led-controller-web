@@ -170,6 +170,8 @@ $(function()
 
     refreshListeners();
 
+    refreshColorsLimit();
+
     $("#add-color-btn").click(function()
     {
         const swatches = $(".color-container");
@@ -254,22 +256,22 @@ function formToJson()
             switch(timeMatch[1])
             {
                 case "off":
-                    json.times[0] = parseInt(array[i].value);
+                    json.times[0] = parseFloat(array[i].value);
                     break;
                 case "fadein":
-                    json.times[1] = parseInt(array[i].value);
+                    json.times[1] = parseFloat(array[i].value);
                     break;
                 case "on":
-                    json.times[2] = parseInt(array[i].value);
+                    json.times[2] = parseFloat(array[i].value);
                     break;
                 case "fadeout":
-                    json.times[3] = parseInt(array[i].value);
+                    json.times[3] = parseFloat(array[i].value);
                     break;
                 case "rotation":
-                    json.times[4] = parseInt(array[i].value);
+                    json.times[4] = parseFloat(array[i].value);
                     break;
                 case "offset":
-                    json.times[5] = parseInt(array[i].value);
+                    json.times[5] = parseFloat(array[i].value);
                     break;
             }
         }

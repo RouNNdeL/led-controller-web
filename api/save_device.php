@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST')
 }
 $json = json_decode(file_get_contents("php://input"), true);
 if($json == false || !isset($json["times"]) || !isset($json["args"]) || !isset($json["effect"])
-    || !isset($json["colors"])|| !isset($json["device"]) || !isset($json["device"]["type"])
+    || !isset($json["colors"]) || !isset($json["device"]) || !isset($json["device"]["type"])
     || ($json["device"]["type"] !== "a" && $json["device"]["type"] !== "d"))
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid JSON\"}";
@@ -28,14 +28,21 @@ require_once(__DIR__ . "/../web/includes/Data.php");
 require_once(__DIR__ . "/../web/includes/Device.php");
 require_once(__DIR__ . "/../web/includes/DigitalDevice.php");
 require_once(__DIR__ . "/../web/includes/AnalogDevice.php");
+require_once(__DIR__ . "/../network/tcp.php");
 
 $data = Data::getInstance();
+$response = array();
+$response["status"] = "success";
+
 if($json["device"]["type"] === "a")
 {
     $device = AnalogDevice::fromJson($json);
     $profile = $data->getProfile($json["device"]["profile"]);
     $profile->analog_devices[$json["device"]["num"]] = $device;
     Data::save();
+    tcp_send($profile->toSend($json["device"]["profile"])) ?
+        $response["message"] = Utils::getString("options_save_success") :
+        Utils::getString("options_save_success_offline");
 }
 else
 {
@@ -43,4 +50,9 @@ else
     $profile = $data->getProfile($json["device"]["profile"]);
     $profile->digital_devices[$json["device"]["num"]] = $device;
     Data::save();
+    tcp_send($profile->toSend($json["device"]["profile"])) ?
+        $response["message"] = Utils::getString("options_save_success") :
+        Utils::getString("options_save_success_offline");
 }
+
+echo json_encode($response);

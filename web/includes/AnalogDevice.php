@@ -20,6 +20,29 @@ class AnalogDevice extends Device
     const AVR_FADE = 0x01;
     const AVR_RAINBOW = 0x03;
 
+    /**
+     * AnalogDevice constructor.
+     * @param array $colors
+     * @param int $effect
+     * @param float|int $off
+     * @param float|int $fadein
+     * @param float|int $on
+     * @param float|int $fadeout
+     * @param float|int $rotating
+     * @param float|int $offset
+     * @param array $args
+     */
+    public function __construct(array $colors, int $effect, float $off, float $fadein, float $on, float $fadeout,
+                                float $rotating, float $offset, array $args = array())
+    {
+        if($effect === self::EFFECT_OFF || $effect === self::EFFECT_STATIC)
+            $on = 1;
+        if($effect === self::EFFECT_OFF)
+            $colors = array("000000");
+        parent::__construct($colors, $effect, $off, $fadein, $on, $fadeout, $rotating, $offset, $args);
+    }
+
+
     public function getTimingsForEffect()
     {
         switch($this->effect)
@@ -47,11 +70,55 @@ class AnalogDevice extends Device
     {
         switch($this->effect)
         {
-            case self::EFFECT_OFF: return 0;
-            case self::EFFECT_RAINBOW: return 0;
-            case self::EFFECT_STATIC: return 1;
-            default: return 16;
+            case self::EFFECT_OFF:
+                return 0;
+            case self::EFFECT_RAINBOW:
+                return 0;
+            case self::EFFECT_STATIC:
+                return 1;
+            default:
+                return 16;
         }
+    }
+
+    public function avrEffect()
+    {
+        switch($this->effect)
+        {
+            case self::EFFECT_OFF:
+            case self::EFFECT_STATIC:
+            case self::EFFECT_BREATHING:
+            case self::EFFECT_BLINKING:
+                return self::AVR_EFFECT_BREATHE;
+            case self::EFFECT_RAINBOW:
+                return self::AVR_EFFECT_RAINBOW;
+            default:
+                return self::AVR_EFFECT_BREATHE;
+        }
+    }
+
+    public function argsToArray()
+    {
+        $array = array(0, 0, 0, 0, 0);
+
+        switch($this->effect)
+        {
+            case self::EFFECT_BREATHING:
+            {
+                $array[1] = $this->args["breathe_min_val"];
+                $array[2] = $this->args["breathe_max_val"];
+                break;
+            }
+            case self::EFFECT_STATIC:
+            case self::EFFECT_BLINKING:
+            {
+                $array[1] = 0;
+                $array[2] = 255;
+                break;
+            }
+        }
+
+        return $array;
     }
 
     public static function _off()
@@ -138,7 +205,7 @@ class AnalogDevice extends Device
             case self::EFFECT_RAINBOW:
                 return null;
             default:
-                throw new InvalidArgumentException("Unknown effect: ".$effect);
+                throw new InvalidArgumentException("Unknown effect: " . $effect);
         }
     }
 

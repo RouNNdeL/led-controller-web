@@ -10,6 +10,14 @@ abstract class Device
 {
     const TIMING_STRINGS = ["off", "fadein", "on", "fadeout", "rotation", "offset"];
 
+    const AVR_EFFECT_BREATHE = 0x00;
+    const AVR_EFFECT_FADE = 0x01;
+    const AVR_EFFECT_FILLING_FADE = 0x02;
+    const AVR_EFFECT_RAINBOW = 0x03;
+    const AVR_EFFECT_FILL = 0x04;
+    const AVR_EFFECT_ROTATING = 0x05;
+    const AVR_EFFECT_PIECES = 0x0C;
+
     const /** @noinspection CssInvalidPropertyValue */
         COLOR_TEMPLATE =
         "<div class=\"color-container\">
@@ -257,16 +265,23 @@ abstract class Device
 
     public function toJson()
     {
-        $json = array();
+        $data = array();
 
-        $json["color_count"] = sizeof($this->colors);
-        $json["times"] = $this->timings;
-        $json["colors"] = $this->colors;
+        $data["color_count"] = sizeof($this->colors);
+        $data["times"] = $this->timings;
+        $data["colors"] = $this->colors;
+        $data["color_cycles"] = isset($this->args["color_cycles"]) ? $this->args["color_cycles"] : 1;
+        $data["effect"] = $this->avrEffect();
+        $data["args"] = $this->argsToArray();
+
+        return $data;
     }
 
     public abstract function getTimingsForEffect();
 
     public abstract function colorLimit();
+
+    public abstract function argsToArray();
 
     public static abstract function fromJson(array $json);
 
@@ -326,4 +341,6 @@ abstract class Device
         }
         return $a;
     }
+
+    public abstract function avrEffect();
 }

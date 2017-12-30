@@ -53,4 +53,26 @@ class Profile
     {
         return $this->name;
     }
+
+    public function toJson()
+    {
+        $arr = array();
+        /** @type Device[] */
+        $merge = array_merge($this->analog_devices, $this->digital_devices);
+        foreach($merge as $i => $device)
+        {
+            $arr[$i] = $device->toJson();
+        }
+        return $arr;
+    }
+
+    public function toSend($num)
+    {
+        $json = array();
+        $json["type"] = "profile_update";
+        $json["options"] = array("n" => $num);
+        $json["data"] = $this->toJson();
+
+        return json_encode($json);
+    }
 }

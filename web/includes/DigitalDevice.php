@@ -17,6 +17,7 @@ class DigitalDevice extends Device
     const EFFECT_FILLING = 106;
     const EFFECT_MARQUEE = 107;
     const EFFECT_ROTATING = 108;
+    const EFFECT_RAINBOW_ROTATING = 116;
     const EFFECT_SWEEP = 109;
     const EFFECT_ANDROID_PB = 110;
     const EFFECT_TWO_HALVES = 111;
@@ -63,8 +64,9 @@ class DigitalDevice extends Device
                 return 0b101001;
             case self::EFFECT_FADING:
                 return 0b001101;
+            case self::EFFECT_RAINBOW_ROTATING:
             case self::EFFECT_RAINBOW:
-                return 0b010001;
+                return 0b000101;
             case self::EFFECT_FILLING:
                 return 0b111111;
             case self::EFFECT_MARQUEE:
@@ -98,6 +100,7 @@ class DigitalDevice extends Device
         {
             case self::EFFECT_OFF:
             case self::EFFECT_RAINBOW:
+            case self::EFFECT_RAINBOW_ROTATING:
                 return 0;
             case self::EFFECT_STATIC:
                 return 1;
@@ -117,6 +120,7 @@ class DigitalDevice extends Device
                 return self::AVR_EFFECT_BREATHE;
 
             case self::EFFECT_RAINBOW:
+            case self::EFFECT_RAINBOW_ROTATING:
                 return self::AVR_EFFECT_RAINBOW;
 
             case self::EFFECT_MARQUEE:
@@ -170,6 +174,20 @@ class DigitalDevice extends Device
                 $array[3] = 2;
                 break;
             }
+            case self::EFFECT_RAINBOW:
+            {
+                $array[0] = (1 << 3);
+                $array[1] = $this->args["rainbow_brightness"];
+                break;
+            }
+            case self::EFFECT_RAINBOW_ROTATING:
+            {
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
+                    ($this->args["rainbow_mode"] << 2);
+                $array[1] = $this->args["rainbow_brightness"];
+                $array[2] = $this->args["rainbow_sources"];
+            }
+            break;
         }
 
         return $array;
@@ -267,6 +285,34 @@ class DigitalDevice extends Device
         return new self($colors, self::EFFECT_MARQUEE, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 
+    public static function _rainbow()
+    {
+        return self::rainbow(array(), 8, 0, 2, 0, 255);
+    }
+
+    public static function rainbow(array $colors, int $fade, int $offset, bool $smooth, bool $direction, int $brightness)
+    {
+        $args = array();
+        $args["rainbow_brightness"] = $brightness;
+        return new self($colors, self::EFFECT_RAINBOW, 0, 0, 0, $fade, 0, $offset, $args);
+    }
+
+    public static function _rainbowRotating()
+    {
+        return self::rainbowRotating(array(), 2, 0, 1, 1, 1,255, 1);
+    }
+
+    public static function rainbowRotating(array $colors, int $fade, int $offset, bool $smooth, bool $direction,
+                                           int $mode, int $brightness, int $sources)
+    {
+        $args = array();
+        $args["direction"] = $direction;
+        $args["rainbow_mode"] = $mode;
+        $args["rainbow_brightness"] = $brightness;
+        $args["rainbow_sources"] = $sources;
+        return new self($colors, self::EFFECT_RAINBOW_ROTATING, 0, 0, 0, $fade, 0, $offset, $args);
+    }
+
     public static function fromJson(array $json)
     {
         $t = $json["times"];
@@ -292,7 +338,9 @@ class DigitalDevice extends Device
             case self::EFFECT_FADING:
                 return self::_fading();
             case self::EFFECT_RAINBOW:
-                return null;
+                return self::_rainbow();
+            case self::EFFECT_RAINBOW_ROTATING:
+                return self::_rainbowRotating();
             case self::EFFECT_FILLING:
                 return self::_filling();
             case self::EFFECT_MARQUEE:
@@ -314,6 +362,7 @@ class DigitalDevice extends Device
         $effects[self::EFFECT_BLINKING] = "effect_blinking";
         $effects[self::EFFECT_FADING] = "effect_fading";
         $effects[self::EFFECT_RAINBOW] = "effect_rainbow";
+        $effects[self::EFFECT_RAINBOW_ROTATING] = "effect_rainbow_rotating";
         $effects[self::EFFECT_FILLING] = "effect_filling";
         $effects[self::EFFECT_MARQUEE] = "effect_marquee";
         $effects[self::EFFECT_ROTATING] = "effect_rotating";

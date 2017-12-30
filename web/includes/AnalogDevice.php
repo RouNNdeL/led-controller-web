@@ -56,9 +56,9 @@ class AnalogDevice extends Device
             case self::EFFECT_BLINKING:
                 return 0b101001;
             case self::EFFECT_FADING:
-                return 0b011001;
+                return 0b001101;
             case self::EFFECT_RAINBOW:
-                return 0b010001;
+                return 0b000101;
             case self::EFFECT_DEMO:
                 return 0b000000;
             default:
@@ -71,7 +71,6 @@ class AnalogDevice extends Device
         switch($this->effect)
         {
             case self::EFFECT_OFF:
-                return 0;
             case self::EFFECT_RAINBOW:
                 return 0;
             case self::EFFECT_STATIC:
@@ -90,6 +89,8 @@ class AnalogDevice extends Device
             case self::EFFECT_BREATHING:
             case self::EFFECT_BLINKING:
                 return self::AVR_EFFECT_BREATHE;
+            case self::EFFECT_FADING:
+                return self::AVR_EFFECT_FADE;
             case self::EFFECT_RAINBOW:
                 return self::AVR_EFFECT_RAINBOW;
             default:
@@ -114,6 +115,11 @@ class AnalogDevice extends Device
             {
                 $array[1] = 0;
                 $array[2] = 255;
+                break;
+            }
+            case self::EFFECT_RAINBOW:
+            {
+                $array[1] = $this->args["rainbow_brightness"];
                 break;
             }
         }
@@ -178,6 +184,19 @@ class AnalogDevice extends Device
         return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0, 0, $offset, $args);
     }
 
+    public static function _rainbow()
+    {
+        return self::rainbow(array("FF0000", "00FF00", "0000FF"), 8, 0, 1, 1, 1, 255);
+    }
+
+    public static function rainbow(array $colors, float $fade, float $offset, int $color_cycles,
+                                   bool $directions, bool $smooth, int $brightness)
+    {
+        $args = array();
+        $args["rainbow_brightness"] = $brightness;
+        return new self($colors, self::EFFECT_RAINBOW, 0, 0, 0, $fade, 0, $offset, $args);
+    }
+
     public static function fromJson(array $json)
     {
         $t = $json["times"];
@@ -203,7 +222,7 @@ class AnalogDevice extends Device
             case self::EFFECT_FADING:
                 return self::_fading();
             case self::EFFECT_RAINBOW:
-                return null;
+                return self::_rainbow();
             default:
                 throw new InvalidArgumentException("Unknown effect: " . $effect);
         }

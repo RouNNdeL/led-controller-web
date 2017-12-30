@@ -58,42 +58,45 @@ class AnalogDevice extends Device
         return self::static (array("FFFFFF"), 1, 0);
     }
 
-    public static function static(array $colors, int $on, int $offset)
+    public static function static(array $colors, float $on, float $offset)
     {
         return new self($colors, self::EFFECT_STATIC, 0, 0, $on, 0, 0, $offset);
     }
 
     public static function _breathing()
     {
-        return self::breathing(array("FF0000", "00FF00", "0000FF"), 1, 2, 1, 2, 0, 0, 255);
+        return self::breathing(array("FF0000", "00FF00", "0000FF"), 1, .5, 1, .5, 0, 0, 255, 1);
     }
 
-    public static function breathing(array $colors, int $off, int $fadein, int $on, int $fadeout, int $offset,
-                                     int $min_val, $max_value)
+    public static function breathing(array $colors, float $off, float $fadein, float $on, float $fadeout, float $offset,
+                                     int $min_val, int $max_value, int $color_cycles)
     {
-        $args = [];
+        $args = array();
         $args["breathe_min_val"] = $min_val;
         $args["breathe_max_val"] = $max_value;
+        $args["color_cycles"] = $color_cycles;
         return new self($colors, self::EFFECT_BREATHING, $off, $fadein, $on, $fadeout, 0, $offset, $args);
     }
 
     public static function _fading()
     {
-        return self::fading(array("FF0000", "00FF00", "0000FF"), 4, 8, 0);
+        return self::fading(array("FF0000", "00FF00", "0000FF"), 0.5, 1, 0, 1);
     }
 
-    public static function fading(array $colors, int $fade, int $on, int $offset)
+    public static function fading(array $colors, float $fade, float $on, float $offset, int $color_cycles)
     {
+        $args = array("color_cycles" => $color_cycles);
         return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset);
     }
 
     public static function _blinking()
     {
-        return self::blinking(array("FF0000", "00FF00", "0000FF"), 8, 8, 0);
+        return self::blinking(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 1);
     }
 
-    public static function blinking(array $colors, int $off, int $on, int $offset)
+    public static function blinking(array $colors, float $off, float $on, float $offset, int $color_cycles)
     {
+        $args = array("color_cycles" => $color_cycles);
         return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0, 0, $offset);
     }
 

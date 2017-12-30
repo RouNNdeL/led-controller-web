@@ -35,7 +35,6 @@ abstract class Device
     const HIDDEN_TEMPLATE = "<input type=\"hidden\" name=\"\$name\" value=\"\$value\">";
 
     public $effect;
-    public $color_count;
     public $timings;
     public $args;
 
@@ -58,8 +57,8 @@ abstract class Device
      * @param array $args
      * @param bool $t_converted
      */
-    protected function __construct(array $colors, int $effect, int $off, int $fadein, int $on, int $fadeout,
-                                   int $rotate, int $offset, array $args = array(), bool $t_converted = false)
+    protected function __construct(array $colors, int $effect, float $off, float $fadein, float $on, float $fadeout,
+                                   float $rotate, float $offset, array $args = array(), bool $t_converted = false)
     {
         $this->colors = $colors;
         $this->effect = $effect;
@@ -75,7 +74,7 @@ abstract class Device
      */
     public function addColor(string $color)
     {
-        if (sizeof($this->colors) >= 16)
+        if(sizeof($this->colors) >= 16)
             return false;
         return array_push($this->colors, $color);
     }
@@ -90,7 +89,7 @@ abstract class Device
         return $this->colors;
     }
 
-    public function setTimingsRaw(int $off, int $fadein, int $on, int $fadeout, int $rotation, int $offset)
+    public function setTimingsRaw(float $off, float $fadein, float $on, float $fadeout, float $rotation, float $offset)
     {
         $this->setTimings(self::convertToTiming($off), self::convertToTiming($fadein), self::convertToTiming($on),
             self::convertToTiming($fadeout), self::convertToTiming($rotation), self::convertToTiming($offset));
@@ -98,7 +97,7 @@ abstract class Device
 
     public function setTimings(int $off, int $fadein, int $on, int $fadeout, int $rotation, int $offset)
     {
-        if ($off > 255 || $off < 0 || $fadein > 255 || $fadein < 0 ||
+        if($off > 255 || $off < 0 || $fadein > 255 || $fadein < 0 ||
             $on > 255 || $on < 0 || $fadeout > 255 || $fadeout < 0 ||
             $rotation > 255 || $rotation < 0 || $offset > 255 || $offset < 0)
         {
@@ -127,7 +126,7 @@ abstract class Device
         $colors_html = "";
         $effects_html = "";
 
-        for ($i = 0; $i < sizeof($this->getColors()); $i++)
+        for($i = 0; $i < sizeof($this->getColors()); $i++)
         {
             $template = self::COLOR_TEMPLATE;
             $template = str_replace("\$active", $i == 0 ? "checked" : "", $template);
@@ -136,7 +135,7 @@ abstract class Device
             $colors_html .= $template;
         }
 
-        foreach (static::effects() as $id => $effect)
+        foreach(static::effects() as $id => $effect)
         {
             $string = Utils::getString("profile_" . $effect);
             $effects_html .= "<option value=\"$id\"" . ($id == $this->effect ? " selected" : "") . ">$string</option>";
@@ -182,9 +181,12 @@ abstract class Device
         $arguments_html = "";
         $timing_html = "";
 
-        if(sizeof($this->args) > 0) {
-            foreach ($this->args as $name => $argument) {
-                switch ($name) {
+        if(sizeof($this->args) > 0)
+        {
+            foreach($this->args as $name => $argument)
+            {
+                switch($name)
+                {
                     case "direction":
                         $str_cw = Utils::getString("profile_direction_cw");
                         $str_ccw = Utils::getString("profile_direction_ccw");
@@ -212,7 +214,7 @@ abstract class Device
                     default:
                         $template = self::INPUT_TEMPLATE;
                         $template = str_replace("\$label", Utils::getString("profile_argument_$name"), $template);
-                        $template = str_replace("\$name", "arg_".$name, $template);
+                        $template = str_replace("\$name", "arg_" . $name, $template);
                         $template = str_replace("\$placeholder", "", $template);
                         $template = str_replace("\$value", $argument, $template);
                         $arguments_html .= $template;
@@ -220,34 +222,43 @@ abstract class Device
             }
         }
 
-        for ($i = 0; $i < 6; $i++)
+        for($i = 0; $i < 6; $i++)
         {
-            if (($timings & (1 << $i)) > 0)
+            if(($timings & (1 << (5 - $i))) > 0)
             {
                 $template = self::INPUT_TEMPLATE;
                 $template = str_replace("\$label", Utils::getString("profile_timing_$timing_strings[$i]"), $template);
-                $template = str_replace("\$name", "time_".$timing_strings[$i], $template);
+                $template = str_replace("\$name", "time_" . $timing_strings[$i], $template);
                 $template = str_replace("\$placeholder", "1", $template);
-                $template = str_replace("\$value", $this->timings[$i], $template);
+                $template = str_replace("\$value", self::getTiming($this->timings[$i]), $template);
                 $timing_html .= $template;
             }
             else
             {
                 $template = self::HIDDEN_TEMPLATE;
-                $template = str_replace("\$name", "time_".$timing_strings[$i], $template);
+                $template = str_replace("\$name", "time_" . $timing_strings[$i], $template);
                 $template = str_replace("\$value", 0, $template);
                 $timing_html .= $template;
             }
         }
 
         $html .= "<div>";
-        if ($timings != 0)
+        if($timings != 0)
             $html .= "<h3>$profile_timing</h3>";
         $html .= "$timing_html</div>";
-        if (sizeof($this->args) > 0)
+        if(sizeof($this->args) > 0)
             $html .= "<div><h3>$profile_arguments</h3>$arguments_html</div>";
 
         return $html;
+    }
+
+    public function toJson()
+    {
+        $json = array();
+
+        $json["color_count"] = sizeof($this->colors);
+        $json["times"] = $this->timings;
+        $json["colors"] = $this->colors;
     }
 
     public abstract function getTimingsForEffect();
@@ -258,32 +269,32 @@ abstract class Device
 
     public static function getTiming(int $x)
     {
-        if ($x < 0 || $x > 255)
+        if($x < 0 || $x > 255)
         {
             throw new InvalidArgumentException("x has to be an integer in range 0-255");
         }
 
-        if ($x <= 80)
+        if($x <= 80)
         {
             return $x / 16;
         }
-        if ($x <= 120)
+        if($x <= 120)
         {
             return $x / 8 - 5;
         }
-        if ($x <= 160)
+        if($x <= 160)
         {
             return $x / 2 - 50;
         }
-        if ($x <= 190)
+        if($x <= 190)
         {
             return $x - 130;
         }
-        if ($x <= 235)
+        if($x <= 235)
         {
             return 2 * $x - 320;
         }
-        if ($x <= 245)
+        if($x <= 245)
         {
             return 15 * $x - 3375;
         }
@@ -292,9 +303,9 @@ abstract class Device
 
     public static function convertToTiming($float)
     {
-        foreach (self::getTimings() as $i => $timing)
+        foreach(self::getTimings() as $i => $timing)
         {
-            if($float < $timing) return $i-1;
+            if($float < $timing) return $i - 1;
         }
         return 0;
     }
@@ -302,7 +313,7 @@ abstract class Device
     public static function getTimings()
     {
         $a = array();
-        for ($i = 0; $i < 256; $i++)
+        for($i = 0; $i < 256; $i++)
         {
             $a[$i] = self::getTiming($i);
         }

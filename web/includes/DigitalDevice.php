@@ -41,8 +41,8 @@ class DigitalDevice extends Device
      * @param int $offset
      * @param array $args
      */
-    public function __construct(array $colors, int $effect, int $off, int $fadein, int $on, int $fadeout,
-                                int $rotating, int $offset, array $args = array())
+    public function __construct(array $colors, int $effect, float $off, float $fadein, float $on, float $fadeout,
+                                float $rotating, float $offset, array $args = array())
     {
         parent::__construct($colors, $effect, $off, $fadein, $on, $fadeout, $rotating, $offset, $args);
     }
@@ -60,13 +60,13 @@ class DigitalDevice extends Device
             case self::EFFECT_BLINKING:
                 return 0b101001;
             case self::EFFECT_FADING:
-                return 0b011001;
+                return 0b001101;
             case self::EFFECT_RAINBOW:
                 return 0b010001;
             case self::EFFECT_FILLING:
-                return 0b111011;
+                return 0b111111;
             case self::EFFECT_MARQUEE:
-                return 0b001011;
+                return 0b001111;
             case self::EFFECT_ROTATING:
                 return 0b0110;
             case self::EFFECT_SWEEP:
@@ -112,64 +112,70 @@ class DigitalDevice extends Device
 
     public static function _breathing()
     {
-        return self::breathing(array("FF0000", "00FF00", "0000FF"), 1, 2, 1, 2, 0, 0, 255);
+        return self::breathing(array("FF0000", "00FF00", "0000FF"), 1, .5, 1, .5, 0, 0, 255, 1);
     }
 
-    public static function breathing(array $colors, int $off, int $fadein, int $on, int $fadeout, int $offset,
-                                     int $min_val, $max_value)
+    public static function breathing(array $colors, float $off, float $fadein, float $on, float $fadeout, float $offset,
+                                     int $min_val, int $max_value, int $color_cycles)
     {
         $args = [];
         $args["breathe_min_val"] = $min_val;
         $args["breathe_max_val"] = $max_value;
+        $args["color_cycles"] = $color_cycles;
         return new self($colors, self::EFFECT_BREATHING, $off, $fadein, $on, $fadeout, 0, $offset, $args);
     }
 
     public static function _fading()
     {
-        return self::fading(array("FF0000", "00FF00", "0000FF"), 4, 8, 0);
+        return self::fading(array("FF0000", "00FF00", "0000FF"), 0.5, 1, 0, 1);
     }
 
-    public static function fading(array $colors, int $fade, int $on, int $offset)
+    public static function fading(array $colors, float $fade, float $on, float $offset,  int $color_cycles)
     {
-        return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset);
+        $args = array("color_cycles" => $color_cycles);
+        return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset, $args);
     }
 
     public static function _blinking()
     {
-        return self::blinking(array("FF0000", "00FF00", "0000FF"), 8, 8, 0);
+        return self::blinking(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 1);
     }
 
-    public static function blinking(array $colors, int $off, int $on, int $offset)
+    public static function blinking(array $colors, float $off, float $on, float $offset, int $color_cycles)
     {
-        return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0, 0, $offset);
+        $args = array("color_cycles" => $color_cycles);
+        return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0, 0, $offset, $args);
     }
 
     public static function _filling()
     {
         return self::filling(array("FF0000", "00FF00", "0000FF"), 0, 1, 1, 0, 0,
-            self::DIRECTION_CW, 1, 1, 1);
+            self::DIRECTION_CW, 1, 1, 1, 1);
     }
 
-    public static function filling(array $colors, int $off, int $fadein, int $on, int $rotating, int $offset,
-                                   bool $direction, bool $smooth, int $piece_count, int $color_count)
+    public static function filling(array $colors, float $off, float $fadein, float $on, float $fadeout, float $rotating,
+                                   float $offset, bool $direction, bool $smooth, int $piece_count, int $color_count,
+                                   int $color_cycles)
     {
         $args = array();
         $args["direction"] = $direction;
         $args["smooth"] = $smooth;
         $args["fill_fade_piece_count"] = $piece_count;
         $args["fill_fade_color_count"] = $color_count;
-        return new self($colors, self::EFFECT_FILLING, $off, $fadein, $on, 0, 0, 0, $args);
+        $args["color_cycles"] = $color_cycles;
+        return new self($colors, self::EFFECT_FILLING, $off, $fadein, $on, $fadeout, $rotating, $offset, $args);
     }
 
     public static function _marquee()
     {
         return self::marquee(array("FF0000", "00FF00", "0000FF"),
-            1, 5, 2, 0);
+            1, 5, 2, 0, 1);
     }
 
-    public static function marquee(array $colors, int $fade, int $on, int $rotating, int $offset)
+    public static function marquee(array $colors, int $fade, int $on, int $rotating, int $offset, int $color_cycles)
     {
-        return new self($colors, self::EFFECT_MARQUEE, 0, $fade, $on, 0, $rotating, $offset);
+        $args = array("color_cycles" => $color_cycles);
+        return new self($colors, self::EFFECT_MARQUEE, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 
     /**

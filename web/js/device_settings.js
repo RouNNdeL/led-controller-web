@@ -277,7 +277,7 @@ function formToJson()
         }
         else if(argsMatch !== null)
         {
-            json.args[argsMatch[1]] = array[i].value;
+            json.args[argsMatch[1]] = parseInt(array[i].value);
         }
         else if(array[i].name !== "color")
         {

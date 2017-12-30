@@ -26,8 +26,8 @@ class DigitalDevice extends Device
     const EFFECT_PIECES = 115;
     const EFFECT_DEMO = 199;
 
-    const DIRECTION_CW = 0;
-    const DIRECTION_CCW = 1;
+    const DIRECTION_CW = 1;
+    const DIRECTION_CCW = 0;
 
     /**
      * DigitalDevice constructor.
@@ -97,7 +97,6 @@ class DigitalDevice extends Device
         switch($this->effect)
         {
             case self::EFFECT_OFF:
-                return 0;
             case self::EFFECT_RAINBOW:
                 return 0;
             case self::EFFECT_STATIC:
@@ -116,14 +115,20 @@ class DigitalDevice extends Device
             case self::EFFECT_BREATHING:
             case self::EFFECT_BLINKING:
                 return self::AVR_EFFECT_BREATHE;
+
             case self::EFFECT_RAINBOW:
                 return self::AVR_EFFECT_RAINBOW;
+
+            case self::EFFECT_MARQUEE:
             case self::EFFECT_ROTATING:
                 return self::AVR_EFFECT_ROTATING;
+
             case self::EFFECT_PIECES:
                 return self::AVR_EFFECT_PIECES;
+
             case self::EFFECT_FILLING:
                 return self::AVR_EFFECT_FILL;
+
             default:
                 return self::AVR_EFFECT_BREATHE;
         }
@@ -143,9 +148,11 @@ class DigitalDevice extends Device
             }
             case self::EFFECT_FILLING:
             {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
-                $array[1] = $this->args["fill_fade_piece_count"];
-                $array[2] = $this->args["fill_fade_color_count"];
+                $array[0] = ($this->args["smooth"] << 1);
+                $array[1] = $this->args["fill_fade_color_count"];
+                $array[2] = $this->args["fill_fade_piece_count"];
+                $array[3] = $this->args["direction"] ? 0 : 255;
+                $array[4] = $this->args["direction"] ? 0 : 255;
                 break;
             }
             case self::EFFECT_STATIC:
@@ -153,6 +160,14 @@ class DigitalDevice extends Device
             {
                 $array[1] = 0;
                 $array[2] = 255;
+                break;
+            }
+            case self::EFFECT_MARQUEE:
+            {
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                $array[1] = 1;
+                $array[2] = 4;
+                $array[3] = 2;
                 break;
             }
         }
@@ -230,8 +245,8 @@ class DigitalDevice extends Device
         $args = array();
         $args["direction"] = $direction;
         $args["smooth"] = $smooth;
-        $args["fill_fade_piece_count"] = $piece_count;
         $args["fill_fade_color_count"] = $color_count;
+        $args["fill_fade_piece_count"] = $piece_count;
         $args["color_cycles"] = $color_cycles;
         return new self($colors, self::EFFECT_FILLING, $off, $fadein, $on, $fadeout, $rotating, $offset, $args);
     }
@@ -239,12 +254,16 @@ class DigitalDevice extends Device
     public static function _marquee()
     {
         return self::marquee(array("FF0000", "00FF00", "0000FF"),
-            1, 5, 2, 0, 1);
+            1, 5, 2, 0, 1, 1, 1);
     }
 
-    public static function marquee(array $colors, int $fade, int $on, int $rotating, int $offset, int $color_cycles)
+    public static function marquee(array $colors, int $fade, int $on, int $rotating, int $offset, int $color_cycles,
+                                   bool $smooth, bool $direction)
     {
-        $args = array("color_cycles" => $color_cycles);
+        $args = array();
+        $args["direction"] = $direction;
+        $args["smooth"] = $smooth;
+        $args["color_cycles"] = $color_cycles;
         return new self($colors, self::EFFECT_MARQUEE, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 

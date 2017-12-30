@@ -3,6 +3,7 @@
  */
 "use strict";
 const REGEX_COLOR = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+const REGEX_URL = /(\d)([da])(\d)/;
 const COLOR_TEMPLATE =
     "<div class=\"color-container\">" +
     "<div class=\"color-swatch-container\" style=\"margin-right: 4px;\">" +
@@ -17,7 +18,12 @@ const COLOR_TEMPLATE =
     "</div>";
 
 const SELECTOR_RADIOS = "input[type=radio][name=color]";
-const type = document.location.pathname.match(/\d([da])\d/)[1];
+let url_match = document.location.pathname.match(REGEX_URL);
+const device = {
+    profile: parseInt(url_match[1]),
+    type: url_match[2],
+    num: parseInt(url_match[3]),
+};
 let limit_colors = 16;
 
 $(function()
@@ -179,20 +185,25 @@ $(function()
         }
     });
 
-    $("#device-settings-submit").click(() =>
+    $("#device-settings-submit").click(event =>
     {
-        console.log(formToJson());
+        $.ajax("/api/save/device", {
+            method: "POST",
+            data: JSON.stringify(formToJson()),
+            contentType: "application/json"
+        }).done(response => console.log).fail(err => console.log)
     });
 
     $("#effect-select").change(event =>
     {
         const data = JSON.stringify({
-            type: type,
+            type: device.type,
             effect: parseInt($(event.target).val())
         });
         $.ajax("/api/get_html/timing_args", {
             method: "POST",
-            data: data
+            data: data,
+            contentType: "application/json"
         }).done(response =>
         {
             if(response.status !== "success")
@@ -230,6 +241,7 @@ function formToJson()
     json.times = [];
     json.args = {};
     json.colors = [];
+    json.device = device;
 
     for(let i = 0; i < array.length; i++)
     {
@@ -282,7 +294,7 @@ function getColors()
 
     for(let i = 0; i < swatches.length; i++)
     {
-        colors.push(rgb2hex(swatches.eq(i).css("background-color")));
+        colors.push(rgb2hex(swatches.eq(i).css("background-color"), false));
     }
 
     return colors;
@@ -292,10 +304,10 @@ function getColors()
 let hexDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
 
 //Function to convert rgb color to hex format
-function rgb2hex(rgb)
+function rgb2hex(rgb, hash = true)
 {
     rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    return (hash ? "#" : "") + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
 }
 
 function hex(x)

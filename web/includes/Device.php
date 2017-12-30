@@ -48,12 +48,12 @@ abstract class Device
      * unless <code>$t_converted</code> is explicitly set to <code>true</code>
      * @param array $colors
      * @param int $effect
-     * @param int $off
-     * @param int $fadein
-     * @param int $on
-     * @param int $fadeout
-     * @param int $rotate
-     * @param int $offset
+     * @param float|int $off
+     * @param float|int $fadein
+     * @param float|int $on
+     * @param float|int $fadeout
+     * @param float|int $rotate
+     * @param float|int $offset
      * @param array $args
      * @param bool $t_converted
      */
@@ -66,7 +66,6 @@ abstract class Device
             $this->setTimingsRaw($off, $fadein, $on, $fadeout, $rotate, $offset);
         $this->args = $args;
     }
-
 
     /**
      * @param string $color
@@ -262,6 +261,8 @@ abstract class Device
     }
 
     public abstract function getTimingsForEffect();
+
+    public static abstract function fromJson(array $json);
 
     public static abstract function effects();
 

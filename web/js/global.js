@@ -16,7 +16,8 @@ $(function()
 
         $.ajax("/api/save/global", {
             method: "POST",
-            data: data
+            data: data,
+            contentType: "application/json"
         }).done(function(response)
         {
             showSnackbar(response.message, 2500);

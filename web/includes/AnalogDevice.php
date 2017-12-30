@@ -86,7 +86,7 @@ class AnalogDevice extends Device
     public static function fading(array $colors, float $fade, float $on, float $offset, int $color_cycles)
     {
         $args = array("color_cycles" => $color_cycles);
-        return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset);
+        return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset, $args);
     }
 
     public static function _blinking()
@@ -97,7 +97,13 @@ class AnalogDevice extends Device
     public static function blinking(array $colors, float $off, float $on, float $offset, int $color_cycles)
     {
         $args = array("color_cycles" => $color_cycles);
-        return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0, 0, $offset);
+        return new self($colors, self::EFFECT_BLINKING, $off, 0, $on, 0, 0, $offset, $args);
+    }
+
+    public static function fromJson(array $json)
+    {
+        $t = $json["times"];
+        return new self($json["colors"], $json["effect"], $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $json["args"]);
     }
 
     /**

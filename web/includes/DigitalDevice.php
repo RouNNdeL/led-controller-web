@@ -178,6 +178,12 @@ class DigitalDevice extends Device
         return new self($colors, self::EFFECT_MARQUEE, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 
+    public static function fromJson(array $json)
+    {
+        $t = $json["times"];
+        return new self($json["colors"], $json["effect"], $t[0], $t[1], $t[2], $t[3], $t[4], $t[5], $json["args"]);
+    }
+
     /**
      * @param int $effect
      * @return DigitalDevice

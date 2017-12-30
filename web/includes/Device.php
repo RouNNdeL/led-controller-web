@@ -201,11 +201,11 @@ abstract class Device
                     case "direction":
                         $str_cw = Utils::getString("profile_direction_cw");
                         $str_ccw = Utils::getString("profile_direction_ccw");
-                        $str_dir = Utils::getString("profile_arguments_direction");
+                        $str = Utils::getString("profile_arguments_".$name);
                         $selected0 = $argument ? " selected" : "";
                         $selected1 = $argument ? "" : " selected";
                         $arguments_html .= "<label class=\"inline-form\">
-                                            $str_dir
+                                            $str
                                             <select class=\"form-control\" name=\"arg_$name\">
                                                 <option value=\"" . DigitalDevice::DIRECTION_CW . "\"$selected0>$str_cw</option>
                                                 <option value=\"" . DigitalDevice::DIRECTION_CCW . "\"$selected1>$str_ccw</option>

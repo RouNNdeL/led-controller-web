@@ -139,6 +139,9 @@ class DigitalDevice extends Device
             case self::EFFECT_FILLING:
                 return self::AVR_EFFECT_FILL;
 
+            case self::EFFECT_FILLING_FADE:
+                return self::AVR_EFFECT_FILLING_FADE;
+
             default:
                 return self::AVR_EFFECT_BREATHE;
         }
@@ -158,7 +161,8 @@ class DigitalDevice extends Device
             }
             case self::EFFECT_FILLING:
             {
-                $array[0] = ($this->args["smooth"] << 1) | ($this->args["fill_fade_return"] << 2);
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
+                    ($this->args["fill_fade_return"] << 2);
                 $array[1] = $this->args["fill_fade_color_count"];
                 $array[2] = $this->args["fill_fade_piece_count"];
                 $array[3] = $this->args["fill_fade_direction1"];
@@ -167,8 +171,8 @@ class DigitalDevice extends Device
             }
             case self::EFFECT_FILLING_FADE:
             {
-                $array[0] = ($this->args["smooth"] << 1) | ($this->args["fill_fade_return"] << 2) |
-                    ($this->args["fade_smooth"] << 3);
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
+                    ($this->args["fill_fade_return"] << 2) | ($this->args["fade_smooth"] << 3);
                 $array[1] = $this->args["fill_fade_color_count"];
                 $array[2] = $this->args["fill_fade_piece_count"];
                 $array[3] = $this->args["fill_fade_direction1"];
@@ -268,17 +272,18 @@ class DigitalDevice extends Device
 
     public static function _fillingFade()
     {
-        return self::fillingFade(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1);
+        return self::fillingFade(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1);
     }
 
     public static function fillingFade(array $colors, float $on, float $fadeout, float $rotating, float $offset,
                                        bool $smooth, int $piece_count, int $color_count, int $color_cycles,
-                                       int $dir1, int $dir2, int $return, int $fade_smooth)
+                                       int $dir1, int $dir2, int $return, int $fade_smooth, int $direction)
     {
         $args = array();
+        $args["direction"] = $direction;
         $args["smooth"] = $smooth;
         $args["fill_fade_return"] = $return;
-        $args["fade_smooth"] = $return;
+        $args["fade_smooth"] = $fade_smooth;
         $args["fill_fade_color_count"] = $color_count;
         $args["fill_fade_piece_count"] = $piece_count;
         $args["fill_fade_direction1"] = $dir1;
@@ -289,14 +294,15 @@ class DigitalDevice extends Device
 
     public static function _filling()
     {
-        return self::filling(array("FF0000", "00FF00", "0000FF"), 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0);
+        return self::filling(array("FF0000", "00FF00", "0000FF"), 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1);
     }
 
     public static function filling(array $colors, float $off, float $fadein, float $on, float $fadeout, float $rotating,
                                    float $offset, bool $smooth, int $piece_count, int $color_count, int $color_cycles,
-                                   int $dir1, int $dir2, int $return)
+                                   int $dir1, int $dir2, int $return, int $direction)
     {
         $args = array();
+        $args["direction"] = $direction;
         $args["smooth"] = $smooth;
         $args["fill_fade_return"] = $return;
         $args["fill_fade_color_count"] = $color_count;

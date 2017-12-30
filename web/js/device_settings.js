@@ -128,7 +128,7 @@ $(function()
 
     function refreshColorsLimit()
     {
-        let swatches = $(".color-swatch-container");
+        let swatches = $(".color-container");
         if(limit_colors > 0 && swatches.length === 0)
         {
             const swatch = getColorSwatch(0);
@@ -136,7 +136,7 @@ $(function()
             $(swatch).find(SELECTOR_RADIOS)[0].checked = true;
             refreshListeners();
         }
-        swatches = $(".color-swatch-container");
+        swatches = $(".color-container");
         if(swatches.length < limit_colors)
         {
             $("#add-color-btn").css("display", "");
@@ -144,10 +144,20 @@ $(function()
         else
         {
             $("#add-color-btn").css("display", "none");
-            limit_colors === 0 ? $(".color-container").remove() : $(".color-container:gt(" + (limit_colors - 1) + ")").remove();
+            limit_colors === 0 ? swatches.remove() : $(".color-container:gt(" + (limit_colors - 1) + ")").remove();
             const delete_btns = $(".color-delete-btn");
             if(delete_btns.length === 1)
                 delete_btns.css("visibility", "hidden");
+
+            let radios = $(".color-container "+SELECTOR_RADIOS);
+            if(!radios.is(":checked") && limit_colors > 0)
+            {
+                let last = radios.last();
+                last[0].checked = true;
+                let color = last.parent().siblings(".color-box").css("background-color");
+                picker.set(color);
+                color_input.val(rgb2hex(color));
+            }
         }
     }
 

@@ -9,6 +9,7 @@ $(function()
     let save = () =>
     {
         let json = objectifyForm(form.serializeArray());
+        json.enabled = $("input[name=enabled]")[0].checked;
         let data = JSON.stringify(json);
 
         $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");

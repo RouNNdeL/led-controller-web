@@ -14,19 +14,12 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST')
     exit(400);
 }
 $json = json_decode(file_get_contents("php://input"), true);
-if($json == false || !isset($json["fan_count"]) || !isset($json["brightness"])
-    || !isset($json["current_profile"]) || !isset($json["auto_increment"]))
+if($json == false)
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid JSON\"}";
     http_response_code(400);
     exit(400);
 }
-
-$enabled = isset($json["enabled"]);
-$fan_count = $json["fan_count"];
-$brightness = $json["brightness"];
-$current_profile = $json["current_profile"];
-$auto_increment = $json["auto_increment"];
 
 require_once(__DIR__."/../web/includes/Data.php");
 require_once(__DIR__."/../web/includes/Utils.php");
@@ -36,11 +29,20 @@ $data = Data::getInstance();
 error_reporting(0);
 try
 {
-    $data->enabled = $enabled;
-    $data->active_profile = $current_profile;
-    $data->setFanCount($fan_count);
-    $data->setBrightness($brightness);
-    $auto_increment = $data->setAutoIncrement($auto_increment);
+    if(isset($json["enabled"]) && is_bool($json["enabled"]))
+        $data->enabled = $json["enabled"];
+
+    if(isset($json["current_profile"]) && is_int($json["current_profile"]))
+        $data->active_profile = $json["current_profile"];
+
+    if(isset($json["fan_count"]) && is_int($json["fan_count"]) && $json["fan_count"] >= 0 && $json["fan_count"] <= 3)
+        $data->setFanCount($json["fan_count"]);
+
+    if(isset($json["brightness"]) && is_int($json["brightness"]) && $json["brightness"] >= 0 && $json["brightness"] <= 100)
+        $data->setBrightness($json["brightness"]);
+
+    if(isset($json["auto_increment"]))
+        $auto_increment = $data->setAutoIncrement($json["auto_increment"]);
 
     Data::save();
     $success_msg = Utils::getString(tcp_send($data->globalsToJson()) ?
@@ -48,7 +50,7 @@ try
 
     $resp = array();
     $resp["status"] = "success";
-    $resp["auto_increment_val"] = $auto_increment;
+    if(isset($auto_increment)) $resp["auto_increment_val"] = $auto_increment;
     $resp["message"] = $success_msg;
 
     echo json_encode($resp);

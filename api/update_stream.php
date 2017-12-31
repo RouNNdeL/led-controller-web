@@ -9,27 +9,37 @@
 header('Cache-Control: no-cache');
 header("Content-Type: text/event-stream\n\n");
 
-require_once (__DIR__."/../web/includes/Data.php");
+require_once(__DIR__ . "/../web/includes/Data.php");
 
 $filename = $_SERVER["DOCUMENT_ROOT"] . Data::UPDATE_PATH;
-$sent = false;
-
+$runs = 0;
+echo "retry: 500\n\n";
+flush();
+ob_end_flush();
+error_reporting(0);
 while(1)
 {
-    if($sent)
-    {
-        unlink($filename);
-        $sent = false;
-    }
     if(file_exists($filename))
     {
-        sleep(.5);
         echo "event: globals\n";
-        echo "data: ".Data::getInstance(true)->globalsToJson()."\n\n";
+        echo "data: " . file_get_contents($filename) . "\n\n";
 
         ob_end_flush();
         flush();
-        $sent = true;
+        usleep(400000);
+        unlink($filename);
     }
-    sleep(.5);
+    else if($runs % 10 == 0)
+    {
+        echo "event: globals\n";
+        echo "data: " . Data::getInstance(true)->globalsToJson(true) . "\n\n";
+        ob_end_flush();
+        flush();
+    }
+    if($runs > 100)
+    {
+        die();
+    }
+    $runs++;
+    usleep(200000);
 }

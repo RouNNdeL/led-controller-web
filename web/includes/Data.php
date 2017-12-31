@@ -136,16 +136,16 @@ class Data
         return Device::getTiming($timing);
     }
 
-    public function globalsToJson()
+    public function globalsToJson($raw = false)
     {
         $array = array();
 
-        $array["brightness"] = $this->brightness;
+        $array["brightness"] = $raw ? $this->getBrightness() : $this->brightness;
         $array["profile_count"] = sizeof($this->profiles);
         $array["current_profile"] = $this->active_profile;
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
-        $array["auto_increment"] = $this->auto_increment;
+        $array["auto_increment"] = $raw ? Device::getTiming($this->auto_increment) : $this->auto_increment;
         $array["fan_config"] = array(2, 0, 0);
 
         return json_encode(array("type"=>"globals_update", "data"=>$array));
@@ -167,7 +167,7 @@ class Data
         if (!is_dir($dirname)) {
             mkdir($dirname);
         }
-        file_put_contents($path_update, "");
+        file_put_contents($path_update, $this->globalsToJson(true));
         file_put_contents($path, serialize($this));
     }
 

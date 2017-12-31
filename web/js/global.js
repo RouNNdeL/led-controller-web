@@ -5,12 +5,17 @@ $(function()
 {
     const form = $("#global-form");
     const save_btn = $("#btn-save");
+    const slider = $("#brightness-slider").slider();
     let changes = false;
+
     let save = () =>
     {
         let json = objectifyForm(form.serializeArray());
         json.enabled = $("input[name=enabled]")[0].checked;
         json.fan_count = parseInt(json.fan_count);
+        json.current_profile = parseInt(json.current_profile);
+        json.brightness = parseInt(json.brightness);
+        json.auto_increment = parseInt(json.auto_increment);
         let data = JSON.stringify(json);
 
         $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
@@ -42,7 +47,10 @@ $(function()
         changes = true;
         save_btn.prop("disabled", false);
     });
-    quick_save.change(save);
+    quick_save.change(() => {
+        changes = true;
+        save();
+    });
 
     $(window).on("beforeunload", function(e)
     {
@@ -77,11 +85,24 @@ $(function()
     {
         const source = new EventSource("/api/events");
         source.addEventListener("globals", ({data}) => {
-            const globals = JSON.parse(data).data;
-            $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
-            $("ul.nav-pills > li[role=presentation]").eq(parseInt(globals.current_profile) + 1).addClass("highlight");
-            $("select[name=current_profile]").val(globals.current_profile);
-            $("input[name=enabled]")[0].checked = globals.leds_enabled;
+            try
+            {
+                if(!changes)
+                {
+                    const globals = JSON.parse(data).data;
+                    $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
+                    $("ul.nav-pills > li[role=presentation]").eq(parseInt(globals.current_profile) + 1).addClass("highlight");
+                    $("select[name=current_profile]").val(globals.current_profile);
+                    $("input[name=enabled]")[0].checked = globals.leds_enabled;
+                    slider.slider("setValue", globals.brightness);
+                    $("input[name=auto_increment]").val(globals.auto_increment);
+                    $("select[name=fan_count]").val(globals.fan_count);
+                }
+            }
+            catch(e)
+            {
+                console.error(e, data);
+            }
         })
     }
 });

@@ -96,7 +96,7 @@ TAG;
         <label>
             <?php echo Utils::getString("options_global_brightness") ?>
             <br>
-            <input
+            <input id="brightness-slider"
                     type="text"
                     name="brightness"
                     data-provide="slider"

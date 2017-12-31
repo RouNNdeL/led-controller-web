@@ -26,6 +26,7 @@ require_once(__DIR__."/../web/includes/Utils.php");
 require_once(__DIR__."/../network/tcp.php");
 
 $data = Data::getInstance();
+$notify = isset($json["notify"]) ? $json["notify"] : true;
 error_reporting(0);
 try
 {
@@ -45,7 +46,8 @@ try
         $auto_increment = $data->setAutoIncrement($json["auto_increment"]);
 
     Data::save();
-    $success_msg = Utils::getString(tcp_send($data->globalsToJson()) ?
+    $string = $notify ? $data->globalsToJson() : null;
+    $success_msg = Utils::getString(tcp_send($string) ?
         "options_save_success" : "options_save_success_offline");
 
     $resp = array();

@@ -12,6 +12,7 @@ require_once(__DIR__ . "/../../api_ai/update_profile_entities.php");
 class Data
 {
     const SAVE_PATH = "/_data/data.dat";
+    const UPDATE_PATH = "/_data/update.dat";
 
     /**
      * @var Data
@@ -30,12 +31,13 @@ class Data
 
     /**
      * Data constructor.
-     * @param $active_profile
-     * @param $enabled
-     * @param $brightness
-     * @param $fan_count
-     * @param $strip_configuration
+     * @param int $active_profile
+     * @param bool $enabled
+     * @param int $brightness
+     * @param int $fan_count
+     * @param int $auto_increment
      * @param array $profiles
+     * @internal param $strip_configuration
      */
     private function __construct(int $active_profile, bool $enabled, int $brightness, int $fan_count,
                                  int $auto_increment, array $profiles)
@@ -160,10 +162,12 @@ class Data
     private function _save()
     {
         $path = $_SERVER["DOCUMENT_ROOT"] . self::SAVE_PATH;
-        $filename = dirname($path);
-        if (!is_dir($filename)) {
-            mkdir(dirname($path));
+        $path_update = $_SERVER["DOCUMENT_ROOT"] . self::UPDATE_PATH;
+        $dirname = dirname($path);
+        if (!is_dir($dirname)) {
+            mkdir($dirname);
         }
+        file_put_contents($path_update, "");
         file_put_contents($path, serialize($this));
     }
 
@@ -198,9 +202,9 @@ class Data
         return $data;
     }
 
-    public static function getInstance()
+    public static function getInstance(bool $update = false)
     {
-        if (self::$instance == null) {
+        if (self::$instance == null || $update) {
             $data = self::fromFile();
             self::$instance = $data == false ? self::default() : $data;
         }

@@ -10,6 +10,7 @@ $(function()
     {
         let json = objectifyForm(form.serializeArray());
         json.enabled = $("input[name=enabled]")[0].checked;
+        json.fan_count = parseInt(json.fan_count);
         let data = JSON.stringify(json);
 
         $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
@@ -70,5 +71,17 @@ $(function()
         snackbar.text(text);
         snackbar.addClass("show");
         setTimeout(() => snackbar.removeClass("show"), duration);
+    }
+
+    if(typeof(EventSource) !== "undefined")
+    {
+        const source = new EventSource("/api/events");
+        source.addEventListener("globals", ({data}) => {
+            const globals = JSON.parse(data).data;
+            $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
+            $("ul.nav-pills > li[role=presentation]").eq(parseInt(globals.current_profile) + 1).addClass("highlight");
+            $("select[name=current_profile]").val(globals.current_profile);
+            $("input[name=enabled]")[0].checked = globals.leds_enabled;
+        })
     }
 });

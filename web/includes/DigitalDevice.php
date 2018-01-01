@@ -460,13 +460,13 @@ class DigitalDevice extends Device
         $effects[self::EFFECT_MARQUEE] = "effect_marquee";
         $effects[self::EFFECT_ROTATING] = "effect_rotating";
         $effects[self::EFFECT_PIECES] = "effect_pieces";
-        //$effects[self::EFFECT_SWEEP] = "effect_sweep";
+        /*$effects[self::EFFECT_SWEEP] = "effect_sweep";
         $effects[self::EFFECT_ANDROID_PB] = "effect_android_pb";
         $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";
         $effects[self::EFFECT_DOUBLE_FILL] = "effect_double_fill";
         $effects[self::EFFECT_HIGHS] = "effect_highs";
         $effects[self::EFFECT_SOURCES] = "effect_sources";
-        $effects[self::EFFECT_DEMO] = "effect_demo";
+        $effects[self::EFFECT_DEMO] = "effect_demo";*/
 
         return $effects;
     }

@@ -46,6 +46,8 @@
   "profile_effect_filling": "Filling",
   "profile_effect_filling_fade": "Filling Fade",
   "profile_effect_marquee": "Marquee",
+  "profile_effect_rotating": "Rotating",
+  "profile_effect_pieces": "Pieces",
   "profile_timing": "Timings",
   "profile_timing_off": "Off",
   "profile_timing_fadein": "Fade in",
@@ -70,5 +72,10 @@
   "profile_arguments_fill_fade_piece_count": "Piece count",
   "profile_arguments_fill_fade_direction1": "Dir bits 1",
   "profile_arguments_fill_fade_direction2": "Dir bits 2",
+  "profile_arguments_rotating_color_count": "Color count (per set)",
+  "profile_arguments_rotating_led_count": "LEDs per effect",
+  "profile_arguments_rotating_element_count": "Element count",
+  "profile_arguments_pieces_color_count": "Color count (per set)",
+  "profile_arguments_pieces_piece_count": "Piece count",
   "profile_delete_confirm": "Are you sure you want to delete this profile?"
 }

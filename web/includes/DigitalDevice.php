@@ -75,7 +75,7 @@ class DigitalDevice extends Device
             case self::EFFECT_MARQUEE:
                 return 0b001111;
             case self::EFFECT_ROTATING:
-                return 0b0110;
+                return 0b001111;
             case self::EFFECT_SWEEP:
                 return 0b111111;
             case self::EFFECT_ANDROID_PB:
@@ -89,7 +89,7 @@ class DigitalDevice extends Device
             case self::EFFECT_SOURCES:
                 return 0b010001;
             case self::EFFECT_PIECES:
-                return 0b011001;
+                return 0b001111;
             case self::EFFECT_DEMO:
                 return 0b000001;
             default:
@@ -194,6 +194,21 @@ class DigitalDevice extends Device
                 $array[3] = 2;
                 break;
             }
+            case self::EFFECT_ROTATING:
+            {
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                $array[1] = $this->args["rotating_color_count"];
+                $array[2] = $this->args["rotating_element_count"];
+                $array[3] = $this->args["rotating_led_count"];
+                break;
+            }
+            case self::EFFECT_PIECES:
+            {
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                $array[1] = $this->args["pieces_color_count"];
+                $array[2] = $this->args["pieces_piece_count"];
+                break;
+            }
             case self::EFFECT_RAINBOW:
             {
                 $array[0] = (1 << 3);
@@ -250,13 +265,12 @@ class DigitalDevice extends Device
 
     public static function _fading()
     {
-        return self::fading(array("FF0000", "00FF00", "0000FF"), 0.5, 1, 0, 1);
+        return self::fading(array("FF0000", "00FF00", "0000FF"), 0.5, 1, 0);
     }
 
-    public static function fading(array $colors, float $fade, float $on, float $offset, int $color_cycles)
+    public static function fading(array $colors, float $fade, float $on, float $offset)
     {
-        $args = array("color_cycles" => $color_cycles);
-        return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset, $args);
+        return new self($colors, self::EFFECT_FADING, 0, 0, $on, $fade, 0, $offset);
     }
 
     public static function _blinking()
@@ -272,11 +286,11 @@ class DigitalDevice extends Device
 
     public static function _fillingFade()
     {
-        return self::fillingFade(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1);
+        return self::fillingFade(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1);
     }
 
     public static function fillingFade(array $colors, float $on, float $fadeout, float $rotating, float $offset,
-                                       bool $smooth, int $piece_count, int $color_count, int $color_cycles,
+                                       bool $smooth, int $piece_count, int $color_count,
                                        int $dir1, int $dir2, int $return, int $fade_smooth, int $direction)
     {
         $args = array();
@@ -288,7 +302,6 @@ class DigitalDevice extends Device
         $args["fill_fade_piece_count"] = $piece_count;
         $args["fill_fade_direction1"] = $dir1;
         $args["fill_fade_direction2"] = $dir2;
-        $args["color_cycles"] = $color_cycles;
         return new self($colors, self::EFFECT_FILLING_FADE, 0, 0, $on, $fadeout, $rotating, $offset, $args);
     }
 
@@ -315,16 +328,15 @@ class DigitalDevice extends Device
 
     public static function _marquee()
     {
-        return self::marquee(array("FF0000", "00FF00", "0000FF"), 1, 5, 2, 0, 1, 1, 1);
+        return self::marquee(array("FF0000", "00FF00", "0000FF"), 1, 5, 2, 0, 1, 1);
     }
 
-    public static function marquee(array $colors, int $fade, int $on, int $rotating, int $offset, int $color_cycles,
+    public static function marquee(array $colors, int $fade, int $on, int $rotating, int $offset,
                                    bool $smooth, bool $direction)
     {
         $args = array();
         $args["direction"] = $direction;
         $args["smooth"] = $smooth;
-        $args["color_cycles"] = $color_cycles;
         return new self($colors, self::EFFECT_MARQUEE, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 
@@ -342,11 +354,11 @@ class DigitalDevice extends Device
 
     public static function _rainbowRotating()
     {
-        return self::rainbowRotating(array(), 2, 0, 1, 1, 1, 255, 1);
+        return self::rainbowRotating(array(), 2, 0, 1, 1, 255, 1);
     }
 
-    public static function rainbowRotating(array $colors, int $fade, int $offset, bool $smooth, bool $direction,
-                                           int $mode, int $brightness, int $sources)
+    public static function rainbowRotating(array $colors, int $fade, int $offset, bool $direction, int $mode,
+                                           int $brightness, int $sources)
     {
         $args = array();
         $args["direction"] = $direction;
@@ -354,6 +366,39 @@ class DigitalDevice extends Device
         $args["rainbow_brightness"] = $brightness;
         $args["rainbow_sources"] = $sources;
         return new self($colors, self::EFFECT_RAINBOW_ROTATING, 0, 0, 0, $fade, 0, $offset, $args);
+    }
+
+    public static function _rotating()
+    {
+        return self::rotating(array("FF0000", "0000FF"), 4, 1, 2,0, 1, 1, 1, 2, 3);
+    }
+
+    public static function rotating(array $colors, int $on, int $fade, int $rotating, int $offset, bool $smooth,
+                                    bool $direction, int $color_count, int $element_count, int $led_count)
+    {
+        $args = array();
+        $args["direction"] = $direction;
+        $args["smooth"] = $smooth;
+        $args["rotating_color_count"] = $color_count;
+        $args["rotating_element_count"] = $element_count;
+        $args["rotating_led_count"] = $led_count;
+        return new self($colors, self::EFFECT_ROTATING, 0, 0, $on, $fade, $rotating, $offset, $args);
+    }
+
+    public static function _pieces()
+    {
+        return self::pieces(array("FF0000", "0000FF"), 4, 1, 2,0, 1, 1, 2, 4);
+    }
+
+    public static function pieces(array $colors, int $on, int $fade, int $rotating, int $offset, bool $smooth,
+                                  bool $direction, int $color_count, int $piece_count)
+    {
+        $args = array();
+        $args["direction"] = $direction;
+        $args["smooth"] = $smooth;
+        $args["pieces_color_count"] = $color_count;
+        $args["pieces_piece_count"] = $piece_count;
+        return new self($colors, self::EFFECT_PIECES, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 
     public static function fromJson(array $json)
@@ -391,7 +436,9 @@ class DigitalDevice extends Device
             case self::EFFECT_MARQUEE:
                 return self::_marquee();
             case self::EFFECT_ROTATING:
-                return null;
+                return self::_rotating();
+            case self::EFFECT_PIECES:
+                return self::_pieces();
             default:
                 throw new InvalidArgumentException("Unknown effect: " . $effect);
         }
@@ -412,13 +459,13 @@ class DigitalDevice extends Device
         $effects[self::EFFECT_FILLING_FADE] = "effect_filling_fade";
         $effects[self::EFFECT_MARQUEE] = "effect_marquee";
         $effects[self::EFFECT_ROTATING] = "effect_rotating";
-        $effects[self::EFFECT_SWEEP] = "effect_sweep";
+        $effects[self::EFFECT_PIECES] = "effect_pieces";
+        //$effects[self::EFFECT_SWEEP] = "effect_sweep";
         $effects[self::EFFECT_ANDROID_PB] = "effect_android_pb";
         $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";
         $effects[self::EFFECT_DOUBLE_FILL] = "effect_double_fill";
         $effects[self::EFFECT_HIGHS] = "effect_highs";
         $effects[self::EFFECT_SOURCES] = "effect_sources";
-        $effects[self::EFFECT_PIECES] = "effect_pieces";
         $effects[self::EFFECT_DEMO] = "effect_demo";
 
         return $effects;

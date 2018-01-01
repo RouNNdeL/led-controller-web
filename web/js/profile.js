@@ -77,6 +77,11 @@ $(function()
     });
 });
 
+$(window).on("beforeunload", function(e)
+{
+    $.ajax("/api/explicit_save", {method: "POST",async: false});
+});
+
 function enableLeds()
 {
     if(window.location.hash === "#enable_leds")

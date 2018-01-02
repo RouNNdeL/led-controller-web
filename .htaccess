@@ -28,5 +28,6 @@ RewriteRule ^/?api/get_html/timing_args/?$ api/timing_args.php
 RewriteRule ^/?api/remove/profile/?$ api/remove_profile.php
 RewriteRule ^/?api/save/profile/?$ api/save_profile_name.php
 RewriteRule ^/?api/enable_leds/?$ api/enable_leds.php
+RewriteRule ^/?api/change_profile/?$ api/change_profile.php
 RewriteRule ^/?api/explicit_save/?$ api/explicit_save.php
 RewriteRule ^/?api/events/?$ api/update_stream.php

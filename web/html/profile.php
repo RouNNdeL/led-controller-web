@@ -46,6 +46,7 @@ $data = Data::getInstance();
 $profile = $data->getProfile($n_profile);
 ?>
 <input id="profile_n" type="hidden" value="<?php echo $n_profile ?>">
+<input id="current_profile" type="hidden" value="<?php echo $data->active_profile ?>">
 <div class="container-fluid">
     <div class="row profile-content">
         <?php
@@ -62,18 +63,27 @@ $profile = $data->getProfile($n_profile);
     </div>
 TAG;
         }
-        if(!$data->enabled)
-        {
-            $str_warning = Utils::getString("warning");
-            $str_led_disabled = Utils::getString("warning_led_disabled");
-            echo <<<TAG
-        <div class="col-md-12">
+        $visible = $data->enabled ? "style=\"display: none\"" : "";
+        $str_warning = Utils::getString("warning");
+        $str_led_disabled = Utils::getString("warning_led_disabled");
+        echo <<<TAG
+        <div id="profile-warning-led-disabled" class="col-md-12" $visible>
             <div class="alert alert-warning">
                 <strong>$str_warning</strong> $str_led_disabled
             </div>
         </div>
 TAG;
-        } ?>
+        $visible = $data->active_profile === $n_profile ? "style=\"display: none\"" : "";
+        $str_diff_profile = Utils::getString("warning_diff_profile_selected");
+        preg_replace("\$n", $data->active_profile+1, $str_diff_profile);
+        echo <<<TAG
+        <div id="profile-warning-diff-profile" class="col-md-12" $visible>
+            <div class="alert alert-warning">
+                <strong>$str_warning</strong> $str_diff_profile
+            </div>
+        </div>
+TAG;
+?>
         <div class="col-sm-4 col-md-3 col-lg-2">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -110,7 +120,7 @@ TAG;
                         <div class="panel-body">
                             <?php $device = $n_profile . "a0" ?>
                             <iframe id="device-settings-iframe" frameborder="0"
-                                    src="/device_settings/<?php echo $device ?>">
+                                    src="/device_settings/<?php echo $device ?>"></iframe>
                         </div>
                     </div>
                 </div>

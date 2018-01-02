@@ -86,7 +86,7 @@ class Data
 
     public function addProfile(Profile $profile)
     {
-        if (sizeof($this->profiles) >= 12)
+        if (sizeof($this->profiles) >= 8)
             return false;
         put($this->profiles[sizeof($this->profiles) - 1]->getName());
         return array_push($this->profiles, $profile);

@@ -24,7 +24,7 @@
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
-ul.nav-pills > li[role=presentation].highlight > a
+ul.nav-pills > li[role=presentation].highlight > a, ul.list-group > li.list-group-item.highlight
 {
     background-color: #46c590;
     color: #fff;

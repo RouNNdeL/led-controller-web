@@ -86,7 +86,7 @@ class Data
 
     public function addProfile(Profile $profile)
     {
-        if (sizeof($this->profiles) >= 8)
+        if(sizeof($this->profiles) >= 8)
             return false;
         put($this->profiles[sizeof($this->profiles) - 1]->getName());
         return array_push($this->profiles, $profile);
@@ -94,9 +94,10 @@ class Data
 
     public function removeProfile(int $index)
     {
-        if (sizeof($this->profiles) == 1)
+        if(sizeof($this->profiles) == 1)
             return false;
-        if (isset($this->profiles[$index])) {
+        if(isset($this->profiles[$index]))
+        {
             delete($this->profiles[$index]->getName());
             array_splice($this->profiles, $index, 1);
             return true;
@@ -147,8 +148,9 @@ class Data
         $array["fan_count"] = $this->fan_count;
         $array["auto_increment"] = $raw ? Device::getTiming($this->auto_increment) : $this->auto_increment;
         $array["fan_config"] = array(2, 0, 0);
+        $array["profile_order"] = array(0, 1, 2, 3, 4, 5, 6, 7);
 
-        return json_encode(array("type"=>"globals_update", "data"=>$array));
+        return json_encode(array("type" => "globals_update", "data" => $array));
     }
 
     public function globalsFromJson($json)
@@ -164,7 +166,8 @@ class Data
         $path = $_SERVER["DOCUMENT_ROOT"] . self::SAVE_PATH;
         $path_update = $_SERVER["DOCUMENT_ROOT"] . self::UPDATE_PATH;
         $dirname = dirname($path);
-        if (!is_dir($dirname)) {
+        if(!is_dir($dirname))
+        {
             mkdir($dirname);
         }
         file_put_contents($path_update, $this->globalsToJson(true));
@@ -204,7 +207,8 @@ class Data
 
     public static function getInstance(bool $update = false)
     {
-        if (self::$instance == null || $update) {
+        if(self::$instance == null || $update)
+        {
             $data = self::fromFile();
             self::$instance = $data == false ? self::default() : $data;
         }
@@ -229,9 +233,10 @@ class Data
             " data-device-url=\"$device_url\"><a>"
             . $gpu . "</a></li>";
 
-        if ($this->getFanCount() > 0)
+        if($this->getFanCount() > 0)
             $html .= "<li role=\"separator\" class=\"nav-divider\"></li>";
-        for ($i = 0; $i < $this->getFanCount(); $i++) {
+        for($i = 0; $i < $this->getFanCount(); $i++)
+        {
             $device_url = $n_profile . "d" . $i;
             $html .= "<li role=\"presentation\"" .
                 " data-device-url=\"$device_url\"><a>"

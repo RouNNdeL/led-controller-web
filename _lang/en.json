@@ -67,7 +67,7 @@
   "profile_arguments_rainbow_brightness": "Brightness",
   "profile_arguments_rainbow_mode": "Mode (0 or 1)",
   "profile_arguments_rainbow_sources": "Sources",
-  "profile_arguments_fade_smooth": "Return",
+  "profile_arguments_fade_smooth": "Smooth fade",
   "profile_arguments_fill_fade_return": "Return",
   "profile_arguments_fill_fade_color_count": "Color count (per set)",
   "profile_arguments_fill_fade_piece_count": "Piece count",

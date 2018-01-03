@@ -93,6 +93,34 @@ TAG;
                    placeholder="0" name="auto_increment">
         </label>
         <br>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <label>Active profiles</label>
+                <ul class="list-group" id="globals-profiles-active">
+                    <?php
+                    foreach($profiles as $i => $profile)
+                    {
+                        $class = $i === $data->active_profile ? " highlight" : "";
+                        $name = $profile->getName();
+                        echo "<li class=\"list-group-item$class\">$name</li>";
+                    }
+                    ?>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <label>Inactive profiles</label>
+                <ul class="list-group" id="globals-profiles-inactive">
+                    <?php
+                    foreach($profiles as $i => $profile)
+                    {
+                        $class = $i === $data->active_profile ? " highlight" : "";
+                        $name = $profile->getName();
+                        echo "<li class=\"list-group-item$class\">$name</li>";
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
         <label>
             <?php echo Utils::getString("options_global_brightness") ?>
             <br>

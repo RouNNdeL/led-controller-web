@@ -63,6 +63,31 @@ $(function()
         return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
     });
 
+    //$(".list-group-item").disableSelection();
+    $("#globals-profiles-active").sortable({
+        connectWith: "#globals-profiles-inactive",
+        receive: (event, ui) => {
+            if ($(this).children().length > 8) {
+                showSnackbar("You can only have 8 active profiles!");
+                $(ui.sender).sortable('cancel');
+            }
+        },
+        remove: (event, ui) => {
+            if ($(this).children().length < 1) {
+                showSnackbar("You need at least 1 active profile!");
+                $(this).sortable('cancel');
+            }
+        },
+        change: (event, ui) =>
+        {
+            changes = true;
+            save_btn.prop("disabled", false);
+        }
+    });
+    $("#globals-profiles-inactive").sortable({
+        connectWith: "#globals-profiles-active"
+    });
+
     function objectifyForm(formArray)
     {
         const returnArray = {};

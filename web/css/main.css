@@ -29,6 +29,14 @@ ul.nav-pills > li[role=presentation].highlight > a, ul.list-group > li.list-grou
     background-color: #46c590;
     color: #fff;
 }
+
+.not-selectable {
+    -ms-user-select: none; /* IE 10+ */
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */

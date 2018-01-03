@@ -63,22 +63,21 @@ $(function()
         return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
     });
 
-    //$(".list-group-item").disableSelection();
     $("#globals-profiles-active").sortable({
         connectWith: "#globals-profiles-inactive",
-        receive: (event, ui) => {
+        receive: function(event, ui) {
             if ($(this).children().length > 8) {
                 showSnackbar("You can only have 8 active profiles!");
                 $(ui.sender).sortable('cancel');
             }
         },
-        remove: (event, ui) => {
+        remove: function(event, ui) {
             if ($(this).children().length < 1) {
                 showSnackbar("You need at least 1 active profile!");
                 $(this).sortable('cancel');
             }
         },
-        change: (event, ui) =>
+        change: function(event, ui)
         {
             changes = true;
             save_btn.prop("disabled", false);

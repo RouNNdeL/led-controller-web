@@ -102,7 +102,7 @@ TAG;
                     {
                         $class = $i === $data->active_profile ? " highlight" : "";
                         $name = $profile->getName();
-                        echo "<li class=\"list-group-item$class\">$name</li>";
+                        echo "<li class=\"list-group-item not-selectable$class\">$name</li>";
                     }
                     ?>
                 </ul>
@@ -115,7 +115,7 @@ TAG;
                     {
                         $class = $i === $data->active_profile ? " highlight" : "";
                         $name = $profile->getName();
-                        echo "<li class=\"list-group-item$class\">$name</li>";
+                        echo "<li class=\"list-group-item not-selectable$class\">$name</li>";
                     }
                     ?>
                 </ul>

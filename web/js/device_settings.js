@@ -131,6 +131,17 @@ $(function()
             if(color_count === 2)
                 delete_btns.css("visibility", "hidden");
         });
+
+        const containers = $(".color-swatch-container");
+        containers.off("click");
+        containers.click(function(e)
+        {
+            if(e.originalEvent)
+            {
+                let radio = $(this).find(SELECTOR_RADIOS);
+                radio.click();
+            }
+        });
     }
 
     function refreshColorsLimit()
@@ -156,7 +167,7 @@ $(function()
             if(delete_btns.length === 1)
                 delete_btns.css("visibility", "hidden");
 
-            let radios = $(".color-container "+SELECTOR_RADIOS);
+            let radios = $(".color-container " + SELECTOR_RADIOS);
             if(!radios.is(":checked") && limit_colors > 0)
             {
                 let last = radios.last();

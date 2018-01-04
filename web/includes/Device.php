@@ -169,7 +169,8 @@ abstract class Device
                         <div>
                             <label>
                                 $profile_color_input
-                                <input class=\"form-control\" id=\"color-input\">
+                                <input class=\"form-control\" id=\"color-input\" autocomplete=\"off\" 
+                                autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\">
                             </label>
                         </div>
                   </div>";

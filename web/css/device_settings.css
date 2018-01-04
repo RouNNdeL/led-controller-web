@@ -33,6 +33,10 @@ div.color-box
     margin-left: 18px;
     margin-top: 18px;
 }
+#color-input{
+    font-family: monospace;
+    font-size: 1.2rem;
+}
 body
 {
     padding: 0 6px 6px 6px;

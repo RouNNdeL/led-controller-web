@@ -29,7 +29,7 @@ abstract class Device
                     <div class=\"color-box\" style=\"background-color: \$color\"></div>
                 </div>
             </div>
-            <button class=\"btn btn-danger color-delete-btn\"><span class=\"glyphicon glyphicon-trash\"></span></button>
+            <button class=\"btn btn-danger color-delete-btn\"><span class=\"oi oi-trash\"></span></button>
         </div>";
 
     const INPUT_TEMPLATE = "<div class=\"form-group inline inline-form\">

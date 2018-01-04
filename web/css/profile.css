@@ -1,7 +1,6 @@
 #device-settings
 {
     height: calc(100% - 12px);
-    padding-left: 0;
 }
 
 #device-settings > div.panel
@@ -25,8 +24,9 @@ html, body
     height: calc(100% - 40px);
 }
 
+/*
 #device-settings-iframe
 {
     height: 100%;
     width: 100%;
-}
+}*/

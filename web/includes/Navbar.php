@@ -20,31 +20,33 @@ class Navbar
         $this->tabs = array();
     }
 
-    public function addRaw($content)
-    {
-        array_push($this->tabs, $content);
-    }
-
     public function toHtml()
     {
         $html = "";
-        $html .= "<ul id=\"main-navbar\" class=\"nav nav-pills\">";
-        for ($i = 0; $i < sizeof($this->tabs); $i++)
+        $html .= "<nav id=\"main-navbar\" class=\"navbar navbar-expand-md navbar-light bg-faded\">
+<a class=\"navbar-brand\" href=\"#\">LED Controller</a>
+                    <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarNav\" aria-controls=\"navbarNav\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">
+                        <span class=\"navbar-toggler-icon\"></span>
+                    </button>
+                    <div class=\"collapse navbar-collapse\" id=\"navbarNav\">
+                    <ul class=\"nav nav-pills\">";
+        foreach($this->tabs as $i => $tab)
         {
-            $tab = $this->tabs[$i];
-            $html .= "<li role=\"presentation\"" .
-                ($i == $this->active ? " class=\"active\"" :
-                    ($i == $this->highlight ? " class=\"highlight\"" : "")) . ">$tab</li>";
+            $url = $tab["url"];
+            $text = $tab["text"];
+            $html .= "<li role=\"presentation\" class=\"nav-item\"><a class=\"nav-link ".
+                ($i == $this->active ? " active" :
+                    ($i == $this->highlight ? " highlight\"" : "")) ."\" href=\"$url\">$text</a></li>";
         }
-        $html .= "</ul>";
+        $html .= "</ul>
+                </div>
+                </nav>";
         return $html;
     }
 
     public function addLink(string $text, string $url)
     {
-        if (strlen($url) == 0)
-            $url = "#";
-        $this->addRaw("<a href=\"$url\">$text</a>");
+        array_push($this->tabs, array("text" => $text, "url" => $url));
     }
 
     /**

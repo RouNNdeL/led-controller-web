@@ -24,9 +24,9 @@
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
-ul.nav-pills > li[role=presentation].highlight > a, ul.list-group > li.list-group-item.highlight
+a.nav-link.highlight, li.list-group-item.highlight
 {
-    background-color: #46c590;
+    background-color: #20c997;
     color: #fff;
 }
 .full-height

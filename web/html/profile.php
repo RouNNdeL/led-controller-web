@@ -37,11 +37,11 @@ if(Data::getInstance()->getProfile($n_profile) === false)
     include(__DIR__ . "/../error/404.php");
     exit(404);
 }
-
+error_reporting(0);
 $navbar = new Navbar();
 $data = Data::getInstance();
 $navbar->initDefault();
-$navbar->setActive($data->getActiveIndex($n_profile)+1);
+$navbar->setActive($data->getActiveIndex($n_profile) + 1);
 echo $navbar->toHtml();
 $profile = $data->getProfile($n_profile);
 ?>
@@ -75,7 +75,7 @@ TAG;
 TAG;
         $visible = $data->current_profile === $n_profile ? "style=\"display: none\"" : "";
         $str_diff_profile = Utils::getString("warning_diff_profile_selected");
-        preg_replace("\$n", $data->current_profile+1, $str_diff_profile);
+        preg_replace("\$n", $data->current_profile + 1, $str_diff_profile);
         echo <<<TAG
         <div id="profile-warning-diff-profile" class="col-md-12" $visible>
             <div class="alert alert-warning">
@@ -83,48 +83,51 @@ TAG;
             </div>
         </div>
 TAG;
-?>
+        ?>
         <div class="col-sm-4 col-md-3 col-lg-2">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="form-group">
-                        <label><?php echo Utils::getString("profile_name") ?>
-                            <?php
-                            $name_placeholder = Utils::getInstance()->getString("default_profile_name");
-                            $name_placeholder = str_replace("\$n", $n_profile + 1, $name_placeholder);
-                            $name = $profile->getName();
-                            ?>
-                            <input type="text" class="form-control" id="profile-name" value="<?php echo $name ?>"
-                                   placeholder="<?php echo $name_placeholder ?>" name="profile_name">
-                        </label>
-                    </div>
-
-                    <h3 style="margin-top: 0"><?php echo Utils::getString("profile_devices") ?></h3>
-                    <?php echo $data->getDeviceNavbarHtml($n_profile) ?>
-                    <ul class="nav">
-                        <li role="separator" class="nav-divider"></li>
-                    </ul>
-                    <?php
-                    $profile_delete_explain = Utils::getString("profile_delete_explain");
-                    ?>
-                    <button id="btn-delete-profile" class="btn btn-danger btn-block
-                        <?php if($data->getProfileCount() === 1) echo " disabled\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"$profile_delete_explain\""; else echo "\"" ?>>
-                        <?php echo Utils::getString("profile_delete") ?>
-                        </button>
-                </div>
-            </div>
-        </div>
-        <div class=" col-sm-8 col-md-9 col-lg-10
-                    " id="device-settings">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <?php $device = $n_profile . "a0" ?>
-                            <iframe id="device-settings-iframe" frameborder="0"
-                                    src="/device_settings/<?php echo $device ?>"></iframe>
+            <div class="card">
+                <nav class="navbar navbar-light bg-faded">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label><?php echo Utils::getString("profile_name") ?>
+                                <?php
+                                $name_placeholder = Utils::getInstance()->getString("default_profile_name");
+                                $name_placeholder = str_replace("\$n", $n_profile + 1, $name_placeholder);
+                                $name = $profile->getName();
+                                ?>
+                                <input type="text" class="form-control" id="profile-name" value="<?php echo $name ?>"
+                                       placeholder="<?php echo $name_placeholder ?>" name="profile_name">
+                            </label>
                         </div>
+
+                        <h3 style="margin-top: 0"><?php echo Utils::getString("profile_devices") ?></h3>
+                        <ul id="device-navbar" class="nav nav-pills flex-column">
+                            <?php echo $data->getDeviceNavbarHtml($n_profile) ?>
+                            <div class="dropdown-divider"></div>
+                        </ul>
+                        <?php
+                        $profile_delete_explain = Utils::getString("profile_delete_explain");
+                        ?>
+                        <button id="btn-delete-profile" class="btn btn-danger btn-block
+                        <?php if($data->getProfileCount() === 1) echo " disabled\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"$profile_delete_explain"; ?>
+                        ">
+                            <?php echo Utils::getString("profile_delete") ?>
+                        </button>
                     </div>
+                </nav>
+            </div>
+        </div>
+        <div class="col-sm-8 col-md-9 col-lg-10 pl-sm-0 pt-3 pt-sm-0" id="device-settings">
+            <div class="card">
+                <div class="card-body ">
+                    <?php $device = $n_profile . "a0" ?>
+                    <!-- TODO: Replace iframe with proper inline HTML -->
+                    <iframe class="embed-responsive-item" id="device-settings-iframe"
+                            src="/device_settings/<?php echo $device ?>"></iframe>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 </body>
 </html>

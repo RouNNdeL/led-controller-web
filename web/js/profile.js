@@ -11,7 +11,7 @@ $(function()
     handleHash();
     $('[data-toggle="tooltip"]').tooltip();
 
-    const devices = $("#device-navbar").find("li[role=presentation]");
+    const devices = $("#device-navbar").find("li[role=presentation] a");
     const profile_text = $("#main-navbar").find("li.active a");
     const profile_name = $("#profile-name");
     profile_n = parseInt($("#profile_n").val());

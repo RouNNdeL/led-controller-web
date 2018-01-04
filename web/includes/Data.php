@@ -296,31 +296,30 @@ class Data
 
     public function getDeviceNavbarHtml($n_profile)
     {
-        $html = "<ul id=\"device-navbar\" class=\"nav nav nav-pills nav-stacked\">";
+        $html = "";
         $pc = Utils::getString("profile_pc");
         $gpu = Utils::getString("profile_gpu");
         $fan = Utils::getString("profile_digital");
 
         $device_url = $n_profile . "a0";
-        $html .= "<li role=\"presentation\" class=\"active\"" .
-            " data-device-url=\"$device_url\"><a>"
+        $html .= "<li role=\"presentation\" class=\"nav-item flex-fill\"" .
+            "><a data-device-url=\"$device_url\" class=\"nav-link active\">"
             . $pc . "</a></li>";
 
         $device_url = $n_profile . "a1";
-        $html .= "<li role=\"presentation\"" .
-            " data-device-url=\"$device_url\"><a>"
+        $html .= "<li class=\"nav-item\" role=\"presentation\"" .
+            "><a data-device-url=\"$device_url\" class=\"nav-link\">"
             . $gpu . "</a></li>";
 
         if($this->getFanCount() > 0)
-            $html .= "<li role=\"separator\" class=\"nav-divider\"></li>";
+            $html .= "<div class=\"dropdown-divider\"></div>";
         for($i = 0; $i < $this->getFanCount(); $i++)
         {
             $device_url = $n_profile . "d" . $i;
-            $html .= "<li role=\"presentation\"" .
-                " data-device-url=\"$device_url\"><a>"
+            $html .= "<li  class=\"nav-item\" role=\"presentation\"" .
+                "><a data-device-url=\"$device_url\" class=\"nav-link\">"
                 . str_replace("\$n", $i + 1, $fan) . "</a></li>";
         }
-        $html .= "</ul>";
 
         return $html;
     }

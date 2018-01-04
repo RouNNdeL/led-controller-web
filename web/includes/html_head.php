@@ -26,13 +26,14 @@ if(isset($additional_js))
 echo <<<TAG
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>$title</title>
     <script src="/web/js/jquery-3.2.1.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap-4/js/bootstrap.min.js"></script>
     <script src="/jquery_ui/jquery-ui.min.js"></script>
     <script src="/web/js/bootstrap-slider.min.js"></script>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap-4/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/iconic/font/css/open-iconic-bootstrap.min.css"/>
     <link rel="stylesheet" href="/jquery_ui/jquery-ui.min.css"/>
     <link rel="stylesheet" href="/web/css/main.css"/>
     <link rel="stylesheet" href="/web/css/bootstrap-slider.min.css"/>

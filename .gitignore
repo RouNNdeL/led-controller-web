@@ -1,8 +1,10 @@
 .idea/
 bootstrap/
+bootstrap-4/
 jquery*.js
 color-picker*.js
 color-picker*.css
 bootstrap-slider*
 secure.php
 jquery_ui/
+iconic/

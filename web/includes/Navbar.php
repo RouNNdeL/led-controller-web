@@ -57,14 +57,15 @@ class Navbar
 
     public function initDefault()
     {
-        $profiles = Data::getInstance()->getProfiles();
+        $data = Data::getInstance();
+        $profiles = $data->getProfiles();
         $this->addLink(Utils::getString("global_options"), "/main");
-        $this->highlight = Data::getInstance()->active_profile+1;
-        for($i = 0; $i < sizeof($profiles); $i++)
+        $this->highlight = $data->getHighlightIndex() + 1;
+        foreach($profiles as $i => $profile)
         {
-            $this->addLink($profiles[$i]->getName(), "/profile/".($i+1));
+            $this->addLink($profile->getName(), "/profile/".$i);
         }
-        if(sizeof($profiles) < 12)
+        if(sizeof($profiles) < Data::MAX_OVERALL_COUNT)
         {
             $this->addLink(Utils::getString("add_profile").
                 "&nbsp;&nbsp;<span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>",

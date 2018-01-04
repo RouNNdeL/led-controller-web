@@ -29,9 +29,9 @@ if(!isset($_GET["n_profile"]))
     include(__DIR__ . "/../error/500.php");
     exit(500);
 }
-$n_profile = $_GET["n_profile"] - 1;
+$n_profile = $_GET["n_profile"];
 
-if(Data::getInstance()->getProfileCount() <= $n_profile)
+if(Data::getInstance()->getProfile($n_profile) === false)
 {
     http_response_code(404);
     include(__DIR__ . "/../error/404.php");
@@ -39,14 +39,14 @@ if(Data::getInstance()->getProfileCount() <= $n_profile)
 }
 
 $navbar = new Navbar();
-$navbar->initDefault();
-$navbar->setActive($n_profile + 1);
-echo $navbar->toHtml();
 $data = Data::getInstance();
+$navbar->initDefault();
+$navbar->setActive($data->getActiveIndex($n_profile)+1);
+echo $navbar->toHtml();
 $profile = $data->getProfile($n_profile);
 ?>
 <input id="profile_n" type="hidden" value="<?php echo $n_profile ?>">
-<input id="current_profile" type="hidden" value="<?php echo $data->active_profile ?>">
+<input id="current_profile" type="hidden" value="<?php echo $data->current_profile ?>">
 <div class="container-fluid">
     <div class="row profile-content">
         <?php
@@ -73,9 +73,9 @@ TAG;
             </div>
         </div>
 TAG;
-        $visible = $data->active_profile === $n_profile ? "style=\"display: none\"" : "";
+        $visible = $data->current_profile === $n_profile ? "style=\"display: none\"" : "";
         $str_diff_profile = Utils::getString("warning_diff_profile_selected");
-        preg_replace("\$n", $data->active_profile+1, $str_diff_profile);
+        preg_replace("\$n", $data->current_profile+1, $str_diff_profile);
         echo <<<TAG
         <div id="profile-warning-diff-profile" class="col-md-12" $visible>
             <div class="alert alert-warning">

@@ -13,41 +13,60 @@ class Data
 {
     const SAVE_PATH = "/_data/data.dat";
     const UPDATE_PATH = "/_data/update.dat";
+    const MAX_ACTIVE_COUNT = 8;
+    const MAX_OVERALL_COUNT = 32;
 
     /**
      * @var Data
      */
     private static $instance;
 
-    public $active_profile;
+    public $current_profile;
     public $enabled;
 
     private $brightness;
     private $fan_count;
     private $auto_increment;
 
+    /** @var int[] */
+    private $active_indexes;
+    /** @var int[] */
+    private $inactive_indexes;
+    /** @var int[] */
+    private $avr_indexes;
+
     /** @var Profile[] */
     private $profiles;
 
     /**
      * Data constructor.
-     * @param int $active_profile
+     * @param int $current_profile
      * @param bool $enabled
      * @param int $brightness
      * @param int $fan_count
      * @param int $auto_increment
      * @param array $profiles
-     * @internal param $strip_configuration
      */
-    private function __construct(int $active_profile, bool $enabled, int $brightness, int $fan_count,
+    private function __construct(int $current_profile, bool $enabled, int $brightness, int $fan_count,
                                  int $auto_increment, array $profiles)
     {
-        $this->active_profile = $active_profile;
+        $this->current_profile = $current_profile;
         $this->enabled = $enabled;
         $this->brightness = $brightness;
         $this->fan_count = $fan_count;
         $this->auto_increment = $auto_increment;
         $this->profiles = $profiles;
+        if(sizeof($profiles) <= self::MAX_ACTIVE_COUNT)
+        {
+            $this->active_indexes = range(0, sizeof($profiles) - 1);
+            $this->inactive_indexes = array();
+        }
+        else
+        {
+            $this->active_indexes = range(0, self::MAX_ACTIVE_COUNT - 1);
+            $this->inactive_indexes = range(self::MAX_ACTIVE_COUNT, sizeof($profiles) - self::MAX_ACTIVE_COUNT - 1);
+        }
+        $this->avr_indexes = $this->active_indexes;
     }
 
     /**
@@ -86,10 +105,24 @@ class Data
 
     public function addProfile(Profile $profile)
     {
-        if(sizeof($this->profiles) >= 8)
+        if(sizeof($this->profiles) >= self::MAX_OVERALL_COUNT)
             return false;
-        put($this->profiles[sizeof($this->profiles) - 1]->getName());
-        return array_push($this->profiles, $profile);
+        array_push($this->profiles, $profile);
+        if(sizeof($this->active_indexes) < self::MAX_ACTIVE_COUNT)
+        {
+            array_push($this->active_indexes, max(array_keys($this->profiles)));
+            for($i = 0; $i < self::MAX_ACTIVE_COUNT; $i++)
+            {
+                if(!isset($this->avr_indexes[$i]))
+                {
+                    $this->avr_indexes[$i] = max(array_keys($this->profiles));
+                    break;
+                }
+            }
+            return true;
+        }
+        array_push($this->inactive_indexes, max(array_keys($this->profiles)));
+        return true;
     }
 
     public function removeProfile(int $index)
@@ -99,7 +132,16 @@ class Data
         if(isset($this->profiles[$index]))
         {
             delete($this->profiles[$index]->getName());
-            array_splice($this->profiles, $index, 1);
+            unset($this->profiles[$index]);
+            if(($key = array_search($index, $this->active_indexes)) !== false)
+            {
+                array_splice($this->active_indexes, $index, 1);
+                unset($this->avr_indexes[$key]);
+            }
+            if(($key = array_search($index, $this->inactive_indexes)) !== false)
+            {
+                array_splice($this->inactive_indexes, $index, 1);
+            }
             return true;
         }
         return false;
@@ -113,9 +155,45 @@ class Data
         return $this->profiles;
     }
 
+    /**
+     * @return Profile[]
+     */
+    public function getActiveProfilesInOrder()
+    {
+        $arr = array();
+        foreach($this->active_indexes as $index)
+        {
+            $arr[$index] = $this->profiles[$index];
+        }
+        return $arr;
+    }
+
+    /**
+     * @return Profile[]
+     */
+    public function getInactiveProfilesInOrder()
+    {
+        $arr = array();
+        foreach($this->inactive_indexes as $index)
+        {
+            $arr[$index] = $this->profiles[$index];
+        }
+        return $arr;
+    }
+
+    public function getActiveIndex($n)
+    {
+        return array_search($n,array_keys($this->profiles));
+    }
+
+    public function getHighlightIndex()
+    {
+        return array_search($this->avr_indexes[$this->current_profile],array_keys($this->profiles));
+    }
+
     public function getProfile($n)
     {
-        return $this->profiles[$n];
+        return isset($this->profiles[$n]) ? $this->profiles[$n] : false;
     }
 
     /**
@@ -143,7 +221,7 @@ class Data
 
         $array["brightness"] = $raw ? $this->getBrightness() : $this->brightness;
         $array["profile_count"] = sizeof($this->profiles);
-        $array["current_profile"] = $this->active_profile;
+        $array["current_profile"] = $this->current_profile;
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
         $array["auto_increment"] = $raw ? Device::getTiming($this->auto_increment) : $this->auto_increment;
@@ -157,7 +235,7 @@ class Data
     {
         $array = json_decode($json);
 
-        $this->active_profile = $array["current_profile"];
+        $this->current_profile = $array["current_profile"];
         $this->enabled = $array["leds_enabled"];
     }
 

@@ -12,17 +12,11 @@ require_once(__DIR__."/DigitalDevice.php");
 
 class Profile
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $name;
-    /**
-     * @var DigitalDevice[]
-     */
+    /** @var DigitalDevice[] */
     public $digital_devices = array();
-    /**
-     * @var AnalogDevice[]
-     */
+    /** @var AnalogDevice[] */
     public $analog_devices = array();
 
     function __construct($name)

@@ -34,7 +34,7 @@ try
         $data->enabled = $json["enabled"];
 
     if(isset($json["current_profile"]) && is_int($json["current_profile"]))
-        $data->active_profile = $json["current_profile"];
+        $data->current_profile = $json["current_profile"];
 
     if(isset($json["fan_count"]) && is_int($json["fan_count"]) && $json["fan_count"] >= 0 && $json["fan_count"] <= 3)
         $data->setFanCount($json["fan_count"]);

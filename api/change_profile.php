@@ -14,7 +14,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
     $n_profile = (int) file_get_contents("php://input");
     if($n_profile >=0 && $n_profile < $data->getProfileCount())
     {
-        $data->active_profile = $n_profile;
+        $data->current_profile = $n_profile;
         Data::save();
         tcp_send($data->globalsToJson());
         http_response_code(204);

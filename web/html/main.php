@@ -80,7 +80,8 @@ TAG;
                 foreach($data->getProfiles() as $i => $profile)
                 {
                     $name = $profile->getName();
-                    $selected = Data::getInstance()->active_profile == $i ? "selected" : "";
+                    $selected = Data::getInstance()->current_profile == $i ? "selected" : "";
+                    echo "<option value=\"$i\" $selected>$name</option>";
                     echo "<option value=\"$i\" $selected>$name</option>";
                 }
                 ?>
@@ -96,11 +97,11 @@ TAG;
         <div class="row">
             <div class="col-lg-3 col-md-6">
                 <label>Active profiles</label>
-                <ul class="list-group" id="globals-profiles-active">
+                <ul class="list-group full-height" id="globals-profiles-active">
                     <?php
-                    foreach($profiles as $i => $profile)
+                    foreach($data->getActiveProfilesInOrder() as $i => $profile)
                     {
-                        $class = $i === $data->active_profile ? " highlight" : "";
+                        $class = $i === $data->getHighlightIndex() ? " highlight" : "";
                         $name = $profile->getName();
                         echo "<li class=\"list-group-item not-selectable$class\">$name</li>";
                     }
@@ -109,13 +110,12 @@ TAG;
             </div>
             <div class="col-lg-3 col-md-6">
                 <label>Inactive profiles</label>
-                <ul class="list-group" id="globals-profiles-inactive">
+                <ul class="list-group full-height" id="globals-profiles-inactive">
                     <?php
-                    foreach($profiles as $i => $profile)
+                    foreach($data->getInactiveProfilesInOrder() as $profile)
                     {
-                        $class = $i === $data->active_profile ? " highlight" : "";
                         $name = $profile->getName();
-                        echo "<li class=\"list-group-item not-selectable$class\">$name</li>";
+                        echo "<li class=\"list-group-item not-selectable\">$name</li>";
                     }
                     ?>
                 </ul>
@@ -144,5 +144,8 @@ TAG;
             class="btn btn-danger"><?php echo Utils::getString("options_reset_defaults") ?></button>
 </div>
 <div id="snackbar"></div>
+<?php
+var_dump($data);
+?>
 </body>
 </html>

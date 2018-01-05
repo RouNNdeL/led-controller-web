@@ -23,7 +23,7 @@ class Navbar
     public function toHtml()
     {
         $html = "";
-        $html .= "<nav id=\"main-navbar\" class=\"navbar navbar-expand-md navbar-light bg-faded\">
+        $html .= "<nav id=\"main-navbar\" class=\"navbar navbar-toggleable-md navbar-light bg-faded\">
 <a class=\"navbar-brand\" href=\"#\">LED Controller</a>
                     <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarNav\" aria-controls=\"navbarNav\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">
                         <span class=\"navbar-toggler-icon\"></span>

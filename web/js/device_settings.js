@@ -138,8 +138,7 @@ $(function()
         {
             if(e.originalEvent)
             {
-                let radio = $(this).find(SELECTOR_RADIOS);
-                radio.click();
+                $(this).find(SELECTOR_RADIOS).click();
             }
         });
     }

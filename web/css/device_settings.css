@@ -37,10 +37,6 @@ div.color-box
     font-family: monospace;
     font-size: 1.2rem;
 }
-body
-{
-    padding: 0 6px 6px 6px;
-}
 .color-delete-btn
 {
     display: inline-block;

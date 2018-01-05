@@ -18,6 +18,7 @@ const COLOR_TEMPLATE =
     "</div>";
 
 const SELECTOR_RADIOS = "input[type=radio][name=color]";
+//TODO: Combine device_settings.js and profile.js, as now they are run on the same page
 let url_match = document.location.pathname.match(REGEX_URL);
 const device = {
     profile: parseInt(url_match[1]),

@@ -10,7 +10,7 @@ require_once(__DIR__."/../includes/Utils.php");
 
 $data = Data::getInstance();
 $name = Utils::getInstance()->getString("default_profile_name");
-$i = $data->getProfileCount();
+$i = $data->getMaxIndex()+1;
 $name = str_replace("\$n", $i+1, $name);
 $overflow = $data->addProfile(new Profile($name));
 if($overflow !== false)

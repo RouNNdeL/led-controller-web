@@ -110,18 +110,18 @@ class Data
         array_push($this->profiles, $profile);
         if(sizeof($this->active_indexes) < self::MAX_ACTIVE_COUNT)
         {
-            array_push($this->active_indexes, max(array_keys($this->profiles)));
+            array_push($this->active_indexes, $this->getMaxIndex());
             for($i = 0; $i < self::MAX_ACTIVE_COUNT; $i++)
             {
                 if(!isset($this->avr_indexes[$i]))
                 {
-                    $this->avr_indexes[$i] = max(array_keys($this->profiles));
+                    $this->avr_indexes[$i] = $this->getMaxIndex();
                     break;
                 }
             }
             return true;
         }
-        array_push($this->inactive_indexes, max(array_keys($this->profiles)));
+        array_push($this->inactive_indexes, $this->getMaxIndex());
         return true;
     }
 
@@ -135,12 +135,19 @@ class Data
             unset($this->profiles[$index]);
             if(($key = array_search($index, $this->active_indexes)) !== false)
             {
-                array_splice($this->active_indexes, $index, 1);
+                array_splice($this->active_indexes, $key, 1);
+            }
+            if(($key = array_search($index, $this->avr_indexes)) !== false)
+            {
                 unset($this->avr_indexes[$key]);
+                if($this->current_profile === $key)
+                {
+                    $this->current_profile =array_keys($this->avr_indexes)[0];
+                }
             }
             if(($key = array_search($index, $this->inactive_indexes)) !== false)
             {
-                array_splice($this->inactive_indexes, $index, 1);
+                array_splice($this->inactive_indexes, $key, 1);
             }
             return true;
         }
@@ -155,6 +162,10 @@ class Data
         return $this->profiles;
     }
 
+    public function getMaxIndex()
+    {
+        return max(array_keys($this->profiles));
+    }
     /**
      * @return Profile[]
      */
@@ -183,12 +194,22 @@ class Data
 
     public function getActiveIndex($n)
     {
-        return array_search($n,array_keys($this->profiles));
+        return array_search($n, array_keys($this->profiles));
     }
 
     public function getHighlightIndex()
     {
-        return array_search($this->avr_indexes[$this->current_profile],array_keys($this->profiles));
+        return array_search($this->avr_indexes[$this->current_profile], array_keys($this->profiles));
+    }
+
+    public function getHighlightProfileIndex()
+    {
+        return $this->avr_indexes[$this->current_profile];
+    }
+
+    public function getAvrIndex($n)
+    {
+        return array_search($n, $this->avr_indexes);
     }
 
     public function getProfile($n)

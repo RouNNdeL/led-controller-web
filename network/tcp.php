@@ -8,10 +8,11 @@
 
 function tcp_send($string)
 {
-    //error_reporting(0);
+    error_reporting(0);
 
     $interface = explode(":", file_get_contents(__DIR__ . "/interface.data"));
     $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 0.1);
+    error_reporting(E_ALL);
     if(!$fp)
     {
         return false;

@@ -27,10 +27,14 @@ $profiles = Data::getInstance()->getProfiles();
 
 $navbar = new Navbar();
 $navbar->initDefault();
-$navbar->setActive(0);
+//$navbar->setActive(0);
 echo $navbar->toHtml();
+$data = Data::getInstance();
 ?>
 
+<?php
+var_dump($data);
+?>
 <div class="container-fluid">
     <?php
     if(!tcp_send(null))
@@ -76,13 +80,12 @@ TAG;
             <?php echo Utils::getString("options_global_current") ?>
             <select class="form-control" name="current_profile">
                 <?php
-                $data = Data::getInstance();
-                foreach($data->getProfiles() as $i => $profile)
+                foreach($data->getActiveProfilesInOrder() as $i => $profile)
                 {
                     $name = $profile->getName();
-                    $selected = Data::getInstance()->current_profile == $i ? "selected" : "";
-                    echo "<option value=\"$i\" $selected>$name</option>";
-                    echo "<option value=\"$i\" $selected>$name</option>";
+                    $avr_index = $data->getAvrIndex($i);
+                    $selected = $data->getHighlightProfileIndex() === $i ? "selected" : "";
+                    echo "<option value=\"$avr_index\" $selected>$name</option>";
                 }
                 ?>
             </select>
@@ -101,9 +104,10 @@ TAG;
                     <?php
                     foreach($data->getActiveProfilesInOrder() as $i => $profile)
                     {
-                        $class = $i === $data->getHighlightIndex() ? " highlight" : "";
+                        $avr_index = $data->getAvrIndex($i);
+                        $class = $data->getHighlightProfileIndex() === $i ? " highlight" : "";
                         $name = $profile->getName();
-                        echo "<li class=\"list-group-item not-selectable$class\">$name</li>";
+                        echo "<li class=\"list-group-item not-selectable$class\" data-index=\"$i\">$name</li>";
                     }
                     ?>
                 </ul>
@@ -115,7 +119,7 @@ TAG;
                     foreach($data->getInactiveProfilesInOrder() as $profile)
                     {
                         $name = $profile->getName();
-                        echo "<li class=\"list-group-item not-selectable\">$name</li>";
+                        echo "<li class=\"list-group-item not-selectable\" data-index=\"$i\">$name</li>";
                     }
                     ?>
                 </ul>
@@ -144,8 +148,5 @@ TAG;
             class="btn btn-danger"><?php echo Utils::getString("options_reset_defaults") ?></button>
 </div>
 <div id="snackbar"></div>
-<?php
-var_dump($data);
-?>
 </body>
 </html>

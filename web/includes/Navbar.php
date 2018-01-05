@@ -16,25 +16,25 @@ class Navbar
 
     function __construct()
     {
-        $this->active = 0;
+        $this->active = -1;
         $this->tabs = array();
     }
 
     public function toHtml()
     {
         $html = "";
-        $html .= "<nav id=\"main-navbar\" class=\"navbar navbar-toggleable-md navbar-light bg-faded\">
-<a class=\"navbar-brand\" href=\"#\">LED Controller</a>
+        $html .= "<nav id=\"main-navbar\" class=\"navbar navbar-toggleable-sm navbar-light bg-faded\">
+<a class=\"navbar-brand\" href=\"/\">LED Controller</a>
                     <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarNav\" aria-controls=\"navbarNav\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">
                         <span class=\"navbar-toggler-icon\"></span>
                     </button>
                     <div class=\"collapse navbar-collapse\" id=\"navbarNav\">
-                    <ul class=\"nav nav-pills\">";
+                    <ul class=\"nav nav-pills flex-wrap\">";
         foreach($this->tabs as $i => $tab)
         {
             $url = $tab["url"];
             $text = $tab["text"];
-            $html .= "<li role=\"presentation\" class=\"nav-item\"><a class=\"nav-link ".
+            $html .= "<li role=\"presentation\" class=\"nav-item pr-md-1\"><a class=\"nav-link ".
                 ($i == $this->active ? " active" :
                     ($i == $this->highlight ? " highlight\"" : "")) ."\" href=\"$url\">$text</a></li>";
         }
@@ -61,8 +61,8 @@ class Navbar
     {
         $data = Data::getInstance();
         $profiles = $data->getProfiles();
-        $this->addLink(Utils::getString("global_options"), "/main");
-        $this->highlight = $data->getHighlightIndex() + 1;
+        //$this->addLink(Utils::getString("global_options"), "/main");
+        $this->highlight = $data->getHighlightIndex();
         foreach($profiles as $i => $profile)
         {
             $this->addLink($profile->getName(), "/profile/".$i);

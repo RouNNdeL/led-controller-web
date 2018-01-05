@@ -77,10 +77,7 @@ $(function()
             $.ajax("/api/remove/profile", {
                 method: "POST",
                 data: JSON.stringify({profile_n: profile_n})
-            }).done(function()
-            {
-                window.location.href = "/main";
-            });
+            }).done(d => window.location.href = "/");
         }
     });
 

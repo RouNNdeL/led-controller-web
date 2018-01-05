@@ -13,8 +13,8 @@ echo <<<TAG
 TAG;
 ?>
 <?php
-$additional_css = array("profile.css");
-$additional_js = array("profile.js");
+$additional_css = array("profile.css", "device_settings.css", "color-picker.css");
+$additional_js = array("profile.js", "color-picker.js", "device_settings.js");
 require_once(__DIR__ . "/../includes/html_head.php");
 ?>
 <body>
@@ -41,7 +41,7 @@ error_reporting(0);
 $navbar = new Navbar();
 $data = Data::getInstance();
 $navbar->initDefault();
-$navbar->setActive($data->getActiveIndex($n_profile) + 1);
+$navbar->setActive($data->getActiveIndex($n_profile));
 echo $navbar->toHtml();
 $profile = $data->getProfile($n_profile);
 ?>
@@ -84,46 +84,51 @@ TAG;
         </div>
 TAG;
         ?>
-        <div class="col-sm-4 col-md-3 col-lg-2">
+        <div class="col-sm-12 col-md-3 col-xl-2">
             <div class="card">
-                <nav class="navbar navbar-light bg-faded">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label><?php echo Utils::getString("profile_name") ?>
-                                <?php
-                                $name_placeholder = Utils::getInstance()->getString("default_profile_name");
-                                $name_placeholder = str_replace("\$n", $n_profile + 1, $name_placeholder);
-                                $name = $profile->getName();
-                                ?>
-                                <input type="text" class="form-control" id="profile-name" value="<?php echo $name ?>"
-                                       placeholder="<?php echo $name_placeholder ?>" name="profile_name">
-                            </label>
-                        </div>
-
-                        <h3 style="margin-top: 0"><?php echo Utils::getString("profile_devices") ?></h3>
+                <div class="card-header">
+                    <div class="form-group mb-0">
+                        <label for="profile-name"><?php echo Utils::getString("profile_name") ?></label>
+                            <?php
+                            $name_placeholder = Utils::getInstance()->getString("default_profile_name");
+                            $name_placeholder = str_replace("\$n", $n_profile + 1, $name_placeholder);
+                            $name = $profile->getName();
+                            ?>
+                            <input type="text" class="form-control" id="profile-name" value="<?php echo $name ?>"
+                                   placeholder="<?php echo $name_placeholder ?>" name="profile_name">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <nav class="navbar navbar-light">
+                        <h5><?php echo Utils::getString("profile_devices") ?></h5>
                         <ul id="device-navbar" class="nav nav-pills flex-column">
                             <?php echo $data->getDeviceNavbarHtml($n_profile) ?>
-                            <div class="dropdown-divider"></div>
                         </ul>
-                        <?php
-                        $profile_delete_explain = Utils::getString("profile_delete_explain");
-                        ?>
-                        <button id="btn-delete-profile" class="btn btn-danger btn-block
+                    </nav>
+                </div>
+                <div class="card-footer">
+                    <?php
+                    $profile_delete_explain = Utils::getString("profile_delete_explain");
+                    ?>
+                    <button id="btn-delete-profile" class="btn btn-danger btn-block
                         <?php if($data->getProfileCount() === 1) echo " disabled\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"$profile_delete_explain"; ?>
                         ">
-                            <?php echo Utils::getString("profile_delete") ?>
-                        </button>
-                    </div>
-                </nav>
+                        <?php echo Utils::getString("profile_delete") ?>
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="col-sm-8 col-md-9 col-lg-10 pl-sm-0 pt-3 pt-sm-0" id="device-settings">
+        <div class="col-sm-12 col-md-9 col-xl-10 pl-md-0 pt-3 pt-md-0" id="device-settings">
             <div class="card">
+                <div class="card-header">
+                    <h4>Settings for GPU</h4>
+                </div>
                 <div class="card-body ">
                     <?php $device = $n_profile . "a0" ?>
                     <!-- TODO: Replace iframe with proper inline HTML -->
-                    <iframe class="embed-responsive-item" id="device-settings-iframe"
-                            src="/device_settings/<?php echo $device ?>"></iframe>
+                    <?php
+                    echo $profile->digital_devices[0]->toHTML();
+                    ?>
                 </div>
             </div>
         </div>

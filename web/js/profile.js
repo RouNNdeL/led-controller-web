@@ -19,7 +19,7 @@ const COLOR_TEMPLATE =
 const SELECTOR_RADIOS = "input[type=radio][name=color]";
 
 let profile_n;
-let current_profile;
+let profile_index;
 let previous_hash = window.location.hash;
 
 $(function()
@@ -31,7 +31,7 @@ $(function()
     const profile_text = $("#main-navbar").find("li.nav-item a.nav-link.active");
     const profile_name = $("#profile-name");
     profile_n = parseInt($("#profile_n").val());
-    current_profile = parseInt($("#current_profile").val());
+    profile_index = parseInt($("#current_profile").val());
     const delete_profile = $("#btn-delete-profile").not(".disabled");
     const warning_leds = $("#profile-warning-led-disabled");
     const warning_profile = $("#profile-warning-diff-profile");
@@ -98,13 +98,13 @@ $(function()
                 $("a.nav-link.highlight").removeClass("highlight");
                 if(profile_n !== globals.current_profile)
                 {
-                    $("a.nav-link").eq(parseInt(globals.current_profile) + 1).addClass("highlight");
+                    $("a.nav-link").eq(parseInt(globals.highlight_index)).addClass("highlight");
                 }
 
-                warning_profile.css("display", profile_n === globals.current_profile ? "none" : "");
-                warning_profile.find("a#current_profile_url").attr("href", "/profile/"+current_profile);
-                warning_leds.css("display", globals.leds_enabled ? "none" : "");
-                current_profile = globals.current_profile;
+                warning_profile.toggleClass("hidden-xs-up", profile_n === globals.highlight_profile_index);
+                warning_profile.find("a#current_profile_url").attr("href", "/profile/"+globals.highlight_profile_index);
+                warning_leds.toggleClass("hidden-xs-up", globals.leds_enabled);
+                profile_index = globals.highlight_profile_index;
             }
             catch(e)
             {

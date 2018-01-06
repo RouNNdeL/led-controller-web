@@ -33,7 +33,7 @@ $data = Data::getInstance();
 ?>
 
 <?php
-var_dump($data);
+//var_dump($data);
 ?>
 <div class="container-fluid">
     <?php

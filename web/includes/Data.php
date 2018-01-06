@@ -243,6 +243,8 @@ class Data
         $array["brightness"] = $raw ? $this->getBrightness() : $this->brightness;
         $array["profile_count"] = sizeof($this->profiles);
         $array["current_profile"] = $this->current_profile;
+        $array["highlight_profile_index"] = $this->getHighlightProfileIndex();
+        $array["highlight_index"] = $this->getHighlightIndex();
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
         $array["auto_increment"] = $raw ? Device::getTiming($this->auto_increment) : $this->auto_increment;
@@ -256,7 +258,7 @@ class Data
     {
         $array = json_decode($json);
 
-        $this->current_profile = $array["current_profile"];
+        $this->current_profile = $array["profile_index"];
         $this->enabled = $array["leds_enabled"];
     }
 

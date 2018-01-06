@@ -114,8 +114,8 @@ $(function()
                 if(!changes)
                 {
                     const globals = JSON.parse(data).data;
-                    $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
-                    $("ul.nav-pills > li[role=presentation]").eq(parseInt(globals.current_profile) + 1).addClass("highlight");
+                    $("a.nav-link.highlight").removeClass("highlight");
+                    $("a.nav-link").eq(parseInt(globals.highlight_index)).addClass("highlight");
                     $("select[name=current_profile]").val(globals.current_profile);
                     $("input[name=enabled]")[0].checked = globals.leds_enabled;
                     slider.slider("setValue", globals.brightness);

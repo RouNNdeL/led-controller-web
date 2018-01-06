@@ -315,30 +315,28 @@ class Data
         return self::$instance;
     }
 
-    public function getDeviceNavbarHtml($n_profile)
+    public function getDeviceNavbarHtml()
     {
         $html = "";
         $pc = Utils::getString("profile_pc");
         $gpu = Utils::getString("profile_gpu");
         $fan = Utils::getString("profile_digital");
 
-        $device_url = $n_profile . "a0";
         $html .= "<li role=\"presentation\" class=\"nav-item flex-fill\"" .
-            "><a data-device-url=\"$device_url\" class=\"nav-link active\">"
+            "><a id=\"device-link-pc\" href=\"#pc\" class=\"nav-link device-link active\">"
             . $pc . "</a></li>";
 
-        $device_url = $n_profile . "a1";
         $html .= "<li class=\"nav-item\" role=\"presentation\"" .
-            "><a data-device-url=\"$device_url\" class=\"nav-link\">"
+            "><a id=\"device-link-gpu\" href=\"#gpu\" class=\"nav-link device-link\">"
             . $gpu . "</a></li>";
 
         if($this->getFanCount() > 0)
             $html .= "<div class=\"dropdown-divider\"></div>";
         for($i = 0; $i < $this->getFanCount(); $i++)
         {
-            $device_url = $n_profile . "d" . $i;
+            $device_url = "fan-" . ($i+1);
             $html .= "<li  class=\"nav-item\" role=\"presentation\"" .
-                "><a data-device-url=\"$device_url\" class=\"nav-link\">"
+                "><a id=\"device-link-$device_url\" href=\"#$device_url\" class=\"nav-link device-link\">"
                 . str_replace("\$n", $i + 1, $fan) . "</a></li>";
         }
 

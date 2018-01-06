@@ -122,9 +122,9 @@ abstract class Device
     /**
      * @return string
      */
-    public function toHTML()
+    public function toHTML($device)
     {
-        $html = "";
+        $html = "<form id=\"device-form-$device\">";
         $profile_colors = Utils::getString("profile_colors");
         $profile_effect = Utils::getString("profile_effect");
         $profile_color_input = Utils::getString("profile_color_input");
@@ -134,7 +134,7 @@ abstract class Device
         $colors_html = "";
         $effects_html = "";
 
-        for($i = 0; $i < sizeof($this->getColors()); $i++)
+        for($i = 0; $i < min(sizeof($this->getColors()), $this->colorLimit()); $i++)
         {
             $template = self::COLOR_TEMPLATE;
             $template = str_replace("\$active", $i == 0 ? "checked" : "", $template);
@@ -153,7 +153,7 @@ abstract class Device
         $html .= "<div class=\"inline\">
         <label>
             $profile_effect
-            <select class=\"form-control\" name=\"effect\" id=\"effect-select\">
+            <select class=\"form-control\" name=\"effect\" id=\"effect-select-$device\">
                 $effects_html
             </select>
         </label>
@@ -164,12 +164,12 @@ abstract class Device
         </div>
 
     </div>";
-        $html .= "<div id=\"picker-container\" class=\"inline\">
-                        <div id=\"color-picker\"></div>
+        $html .= "<div class=\"inline picker-container\">
+                        <div id=\"color-picker-$device\"></div>
                         <div>
                             <label>
                                 $profile_color_input
-                                <input class=\"form-control\" id=\"color-input\" autocomplete=\"off\" 
+                                <input class=\"form-control color-input\" id=\"color-input-$device\" autocomplete=\"off\" 
                                 autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\">
                             </label>
                         </div>
@@ -267,6 +267,7 @@ abstract class Device
         if(sizeof($this->args) > 0)
             $html .= "<div><h3>$profile_arguments</h3>$arguments_html</div>";
 
+        $html .= "</form>";
         return $html;
     }
 

@@ -286,7 +286,7 @@ class DigitalDevice extends Device
 
     public static function _fillingFade()
     {
-        return self::fillingFade(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1);
+        return self::fillingFade(array("FF0000", "00FF00", "0000FF"), 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1);
     }
 
     public static function fillingFade(array $colors, float $on, float $fadeout, float $rotating, float $offset,

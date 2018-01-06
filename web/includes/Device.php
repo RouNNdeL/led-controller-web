@@ -20,25 +20,22 @@ abstract class Device
 
     const /** @noinspection CssInvalidPropertyValue */
         COLOR_TEMPLATE =
-        "<div class=\"color-container\">
-            <div class=\"color-swatch-container\">
-                <div class=\"input-group color-swatch\">
-                    <span class=\"input-group-addon\">
-                        <input type=\"radio\" aria-label=\"\$label\" name=\"color\"\$active>
-                    </span>
-                    <div class=\"color-box\" style=\"background-color: \$color\"></div>
+        "<div class=\"color-container row mb-1\">
+            <div class=\"col-auto ml-3\">
+                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\"><span class=\"oi oi-trash\"></span></button>
+            </div>
+            <div class=\"col pl-1\">
+                <div class=\"input-group colorpicker-component\">
+                    <input type=\"text\" class=\"form-control color-input\" value=\"\$color\" autocomplete=\"off\" 
+                    aria-autocomplete=\"none\" spellcheck=\"false\"/>
+                    <span class=\"input-group-addon\"><i></i></span>
                 </div>
             </div>
-            <button class=\"btn btn-danger color-delete-btn\"><span class=\"oi oi-trash\"></span></button>
         </div>";
 
-    const INPUT_TEMPLATE = "<div class=\"form-group inline inline-form\">
-                                <label>
-                                    \$label
-                                    <input class=\"form-control\" type=\"text\" name=\"\$name\" 
-                                           placeholder=\"\$placeholder\" value=\"\$value\">
-                                </label>
-                            </div>";
+    const INPUT_TEMPLATE = "<div class=\"col-sm-6 col-md-6 col-lg-4 col-xl-3 form-group px-1 mb-1\"><label class=\"mb-0\">\$label</label>
+                            <input class=\"form-control\" type=\"text\" name=\"\$name\" 
+                                    placeholder=\"\$placeholder\" value=\"\$value\" ></div>";
 
     const HIDDEN_TEMPLATE = "<input type=\"hidden\" name=\"\$name\" value=\"\$value\">";
 
@@ -139,7 +136,7 @@ abstract class Device
             $template = self::COLOR_TEMPLATE;
             $template = str_replace("\$active", $i == 0 ? "checked" : "", $template);
             $template = str_replace("\$label", "color-$i", $template);
-            $template = str_replace("\$color", "#" . $this->getColors()[$i], $template);
+            $template = str_replace("\$color", "#" . strtolower($this->getColors()[$i]), $template);
             $colors_html .= $template;
         }
 
@@ -149,34 +146,24 @@ abstract class Device
             $effects_html .= "<option value=\"$id\"" . ($id == $this->effect ? " selected" : "") . ">$string</option>";
         }
 
-        $btn_style = sizeof($this->colors) >= $color_limit ? " style=\"display: none\"" : "";
-        $html .= "<div class=\"inline\">
+        $btn_class = sizeof($this->colors) >= $color_limit ? " hidden-xs-up" : "";
+        $html .= "<div id=\"main-container\" class=\"row m-2\">
+        <div class=\"col-6 col-lg-4 col-xl-3\">
         <label>
             $profile_effect
             <select class=\"form-control\" name=\"effect\" id=\"effect-select-$device\">
                 $effects_html
             </select>
         </label>
-        <h3>$profile_colors</h3>
+        <h3 id=\"header-colors\">$profile_colors</h3>
         <div id=\"swatches-container\" data-color-limit=\"$color_limit\">
             $colors_html
-            <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch\" type=\"button\"$btn_style>$profile_add_color</button>
+            <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch$btn_class\" type=\"button\">$profile_add_color</button>
         </div>
 
     </div>";
-        $html .= "<div class=\"inline picker-container\">
-                        <div id=\"color-picker-$device\"></div>
-                        <div>
-                            <label>
-                                $profile_color_input
-                                <input class=\"form-control color-input\" id=\"color-input-$device\" autocomplete=\"off\" 
-                                autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\">
-                            </label>
-                        </div>
-                  </div>";
-        $html .= "<div id=\"timing-arg-container\">";
         $html .= $this->timingArgHtml();
-        $html .= "</div>";
+        $html .= "</form></div>";
 
         return $html;
     }
@@ -202,16 +189,14 @@ abstract class Device
                     case "direction":
                         $str_cw = Utils::getString("profile_direction_cw");
                         $str_ccw = Utils::getString("profile_direction_ccw");
-                        $str = Utils::getString("profile_arguments_".$name);
+                        $str = Utils::getString("profile_arguments_" . $name);
                         $selected0 = $argument ? " selected" : "";
                         $selected1 = $argument ? "" : " selected";
-                        $arguments_html .= "<label class=\"inline-form\">
-                                            $str
+                        $arguments_html .= "<div class=\"col-auto px-1\"><label class=\"mb-0\">$str</label>
                                             <select class=\"form-control\" name=\"arg_$name\">
                                                 <option value=\"" . DigitalDevice::DIRECTION_CW . "\"$selected0>$str_cw</option>
                                                 <option value=\"" . DigitalDevice::DIRECTION_CCW . "\"$selected1>$str_ccw</option>
-                                            </select>
-                                        </label>";
+                                            </select></div>";
                         break;
                     case "smooth":
                     case "fade_smooth":
@@ -221,18 +206,17 @@ abstract class Device
                         $str = Utils::getString("profile_arguments_" . $name);
                         $selected0 = $argument ? " selected" : "";
                         $selected1 = $argument ? "" : " selected";
-                        $arguments_html .= "<label class=\"inline-form\">
-                                            $str
+                        $arguments_html .= "<div class=\"col-auto px-1\"><label class=\"mb-0\">$str</label>
                                             <select class=\"form-control\" name=\"arg_$name\">
                                                 <option value=\"" . 1 . "\"$selected0>$str_yes</option>
                                                 <option value=\"" . 0 . "\"$selected1>$str_no</option>
-                                            </select>
-                                        </label>";
+                                            </select></div>";
                         break;
                     default:
                         $template = self::INPUT_TEMPLATE;
                         $template = str_replace("\$label", Utils::getString("profile_arguments_$name"), $template);
                         $template = str_replace("\$name", "arg_" . $name, $template);
+                        //$template = preg_replace("/\\\$id/", "input-arg_" . $name, $template);
                         $template = str_replace("\$placeholder", "", $template);
                         $template = str_replace("\$value", $argument, $template);
                         $arguments_html .= $template;
@@ -260,14 +244,17 @@ abstract class Device
             }
         }
 
-        $html .= "<div>";
         if($timings != 0)
-            $html .= "<h3>$profile_timing</h3>";
-        $html .= "$timing_html</div>";
+        {
+            $html .= "<div id=\"timing-container\" class=\"col-6 col-lg-4\"><h3>$profile_timing</h3><div class=\"row mx-0\">$timing_html</div></div>";
+        }
+        else
+        {
+            $html .= "$timing_html";
+        }
         if(sizeof($this->args) > 0)
-            $html .= "<div><h3>$profile_arguments</h3>$arguments_html</div>";
+            $html .= "<div id=\"args-container\" class=\"col-12 col-lg-4 col-xl-5\"><h3>$profile_arguments</h3><div class=\"row mx-0\">$arguments_html</div></div>";
 
-        $html .= "</form>";
         return $html;
     }
 

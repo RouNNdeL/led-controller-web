@@ -3,18 +3,7 @@
  */
 const REGEX_COLOR = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 const REGEX_DEVICE = /(pc|gpu|fan-(\d))/;
-const COLOR_TEMPLATE =
-    "<div class=\"color-container\">" +
-    "<div class=\"color-swatch-container\" style=\"margin-right: 4px;\">" +
-    "<div class=\"input-group color-swatch\">" +
-    "<span class=\"input-group-addon\">" +
-    "<input type=\"radio\" aria-label=\"$label\" name=\"color\">" +
-    "</span>" +
-    "<div class=\"color-box\" style=\"background-color: $color\"></div>" +
-    "</div>" +
-    "</div>" +
-    "<button class=\"btn btn-danger color-delete-btn\"><span class=\"oi oi-trash\"></span></button>" +
-    "</div>";
+const COLOR_TEMPLATE = "<div class=\"color-container row mb-1\">\n            <div class=\"col-auto ml-3\">\n                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\"><span class=\"oi oi-trash\"></span></button>\n            </div>\n            <div class=\"col pl-1\">\n                <div class=\"input-group colorpicker-component\" title=\"Using input value\">\n                    <input type=\"text\" class=\"form-control color-input\" value=\"$color\" autocomplete=\"off\" \n                    aria-autocomplete=\"none\" spellcheck=\"false\"/>\n                    <span class=\"input-group-addon\"><i></i></span>\n                </div>\n            </div>\n        </div>";
 
 const SELECTOR_RADIOS = "input[type=radio][name=color]";
 
@@ -37,12 +26,14 @@ $(function()
     const warning_profile = $("#profile-warning-diff-profile");
     let string_confirm_delete;
 
+    refreshColorPickers();
+
     $.ajax("/api/get_string.php?name=profile_delete_confirm").done(response =>
     {
         string_confirm_delete = response.string;
     });
 
-    $(window).on('hashchange', function()
+    $(window).on("hashchange", function()
     {
         handleHash();
     });
@@ -102,7 +93,7 @@ $(function()
                 }
 
                 warning_profile.toggleClass("hidden-xs-up", profile_n === globals.highlight_profile_index);
-                warning_profile.find("a#current_profile_url").attr("href", "/profile/"+globals.highlight_profile_index);
+                warning_profile.find("a#current_profile_url").attr("href", "/profile/" + globals.highlight_profile_index);
                 warning_leds.toggleClass("hidden-xs-up", globals.leds_enabled);
                 profile_index = globals.highlight_profile_index;
             }
@@ -115,7 +106,7 @@ $(function()
 
     $(".device-settings-container").each(function(i)
     {
-        devices.push(registerDevice($(this)));
+        devices.push(new DeviceSetting($(this)));
     });
 
     $(window).keydown(function(event)
@@ -133,6 +124,7 @@ $(function()
             profile_n: profile_n,
             devices: []
         };
+        console.log(devices);
         for(let i = 0; i < devices.length; i++)
         {
             forms["devices"][i] = devices[i].formToJson();
@@ -141,7 +133,10 @@ $(function()
             method: "POST",
             data: JSON.stringify(forms),
             contentType: "application/json"
-        }).done(response => {showSnackbar(response.message)}).fail(err => console.error);
+        }).done(response =>
+        {
+            showSnackbar(response.message)
+        }).fail(err => console.error);
     });
 });
 
@@ -174,13 +169,13 @@ function handleHash()
     else if((match = window.location.hash.match(REGEX_DEVICE)) !== null)
     {
         $(".device-settings-container").addClass("hidden-xs-up");
-        $("#device-"+match[1]).removeClass("hidden-xs-up");
+        $("#device-" + match[1]).removeClass("hidden-xs-up");
 
         $(".device-header").addClass("hidden-xs-up");
-        $("#header-"+match[1]).removeClass("hidden-xs-up");
+        $("#header-" + match[1]).removeClass("hidden-xs-up");
 
         $(".device-link").removeClass("active");
-        $("#device-link-"+match[1]).addClass("active");
+        $("#device-link-" + match[1]).addClass("active");
     }
     previous_hash = window.location.hash;
 }
@@ -191,230 +186,129 @@ function replaceHash(hash)
         + window.location.search + hash);
 }
 
-function registerDevice(parent)
+class DeviceSetting
 {
-    let limit_colors = 16;
-    let id = parent.attr("id");
-    const device_match = id.match(REGEX_DEVICE);
-    if(device_match === null)
-        throw new Error("Invalid parent id:", id);
-    let device;
-    if(device_match[1] === "pc")
-        device = {type: "a", num: 0};
-    else if(device_match[1] === "gpu")
-        device = {type: "a", num: 1};
-    else
-        device = {type: "d", num: parseInt(device_match[2])};
-
-    let previous_color_value = "#FFFFFF";
-    //TODO: Fix or change color picker
-    const container = parent.find("#color-picker-"+device_match[1])[0];
-    const picker = new CP(container, false);
-    limit_colors = parseInt(parent.find("#swatches-container").data("color-limit"));
-
-    picker.fit = function()
+    constructor(parent)
     {
-        this.picker.style.left = this.picker.style.top = ""; // do nothing ...
-    };
-    picker.picker.classList.add('static');
-    picker.enter(container);
-    picker.set(parent.find(".color-box").eq(0).css("background-color"));
-
-    const color_input = parent.find("#color-input-"+device_match[1]);
-    picker.on("change", function(color)
-    {
-        color_input.val("#" + color);
-        color_input.change();
-        previous_color_value = "#" + color;
-    });
-
-    color_input.change(event =>
-    {
-        let val = $(event.target).val();
-        if(val[0] !== "#")
-        {
-            $(event.target).val("#" + val);
-            val = "#" + val;
-        }
-
-        if(REGEX_COLOR.exec(val) !== null)
-        {
-            parent.find("input:checked[type=radio][name=color]")
-                .parent().siblings(".color-box").css("background-color", val);
-
-            if(event.originalEvent)
-            {
-                picker.set(val);
-            }
-            previous_color_value = val;
-        }
+        this.parent = parent;
+        let limit_colors = this.limit_colors = 16;
+        this.id = parent.attr("id");
+        this.device_match = this.id.match(REGEX_DEVICE);
+        if(this.device_match === null)
+            throw new Error("Invalid parent id:", this.id);
+        if(this.device_match[1] === "pc")
+            this.device = {type: "a", num: 0};
+        else if(this.device_match[1] === "gpu")
+            this.device = {type: "a", num: 1};
         else
-        {
-            $(event.target).val(previous_color_value);
-        }
-    });
+            this.device = {type: "d", num: parseInt(this.device_match[2])};
 
-    color_input.on("input", event =>
-    {
-        let val = $(event.target).val();
-        if(val[0] !== "#")
-        {
-            $(event.target).val("#" + val);
-            val = "#" + val;
-        }
-        if(REGEX_COLOR.exec(val) !== null)
-        {
-            parent.find("input:checked[type=radio][name=color]")
-                .parent().siblings(".color-box").css("background-color", val);
+        this.limit_colors = parseInt(parent.find("#swatches-container").data("color-limit"));
 
-            if(event.originalEvent)
+        const it = this;
+        parent.find("#add-color-btn").click(function()
+        {
+            const swatches = parent.find(".color-container");
+            const num = swatches.length;
+            if(num < limit_colors)
             {
-                picker.set(val);
+                parent.find(".color-delete-btn").prop("disabled", false);
+                const swatch = getColorSwatch(num);
+                $(swatch).insertBefore($(this));
+                refreshColorPickers();
+                if(num === limit_colors - 1)
+                    $(this).addClass("hidden-xs-up")
             }
-            previous_color_value = val;
-        }
-    });
-
-    function refreshListeners()
-    {
-        const radios = parent.find(SELECTOR_RADIOS);
-        radios.off("change");
-        radios.change(function()
-        {
-            let color = $(this).parent().siblings(".color-box").css("background-color");
-            picker.set(color);
-            color_input.val(rgb2hex(color));
+            it.refreshListeners();
         });
 
-        const delete_btns = parent.find(".color-delete-btn");
-        delete_btns.off("click");
-        delete_btns.click(function()
+        parent.find("#effect-select-" + this.device_match[1]).change(event =>
         {
-            const color_count = parent.find(".color-container").length;
-            if(color_count > 1)
+            const data = JSON.stringify({
+                type: this.device.type,
+                effect: parseInt($(event.target).val())
+            });
+            $.ajax("/api/get_html/timing_args", {
+                method: "POST",
+                data: data,
+                contentType: "application/json"
+            }).done(response =>
             {
-                if($(this).parent().find(SELECTOR_RADIOS)[0].checked)
+                if(response.status !== "success")
                 {
-                    const radios = parent.find(SELECTOR_RADIOS);
-                    const index = radios.index($(this).find(SELECTOR_RADIOS));
-
-                    let select_index;
-                    if(index === 0)
-                        select_index = 1;
-                    else
-                        select_index = index - 1;
-                    radios.eq(select_index).click();
+                    console.error("Error getting args, timings: ", response);
                 }
-                $(this).parent().remove();
-            }
-            if(color_count === 2)
-                delete_btns.css("visibility", "hidden");
+                else
+                {
+                    const main = parent.find("#main-container");
+                    const containers = parent.find("#timing-container, #args-container, input[type=hidden]");
+                    containers.remove();
+                    main.append($.parseHTML(response.html));
+                    this.limit_colors = limit_colors = response.limit_colors;
+                    this.refreshColorsLimit();
+                }
+            }).fail(err =>
+            {
+                console.error(err);
+            })
         });
 
-        const containers = parent.find(".color-swatch-container");
-        containers.off("click");
-        containers.click(function(e)
-        {
-            if(e.originalEvent)
-            {
-                $(this).find(SELECTOR_RADIOS).click();
-            }
-        });
+        this.refreshColorsLimit();
+        this.refreshListeners();
     }
 
-    function refreshColorsLimit()
+    refreshColorsLimit()
     {
-        let swatches = parent.find(".color-container");
-        if(limit_colors > 0 && swatches.length === 0)
+        let swatches = this.parent.find(".color-container");
+        if(this.limit_colors > 0 && swatches.length === 0)
         {
             const swatch = getColorSwatch(0);
-            $(swatch).insertBefore(parent.find("#add-color-btn"));
-            $(swatch).find(SELECTOR_RADIOS)[0].checked = true;
-            refreshListeners();
+            $(swatch).insertBefore(this.parent.find("#add-color-btn"));
+            this.parent.find(".color-delete-btn").prop("disabled", true);
         }
-        swatches = parent.find(".color-container");
-        if(swatches.length < limit_colors)
+        swatches = this.parent.find(".color-container");
+        if(swatches.length < this.limit_colors)
         {
-            parent.find("#add-color-btn").css("display", "");
+            this.parent.find("#add-color-btn").removeClass("hidden-xs-up");
         }
         else
         {
-            parent.find("#add-color-btn").css("display", "none");
-            limit_colors === 0 ? swatches.remove() : parent.find(".color-container:gt(" + (limit_colors - 1) + ")").remove();
-            const delete_btns = parent.find(".color-delete-btn");
+            this.parent.find("#add-color-btn").addClass("hidden-xs-up");
+            this.limit_colors === 0 ? swatches.remove() : this.parent.find(".color-container:gt(" + (this.limit_colors - 1) + ")").remove();
+            const delete_btns = this.parent.find(".color-delete-btn");
             if(delete_btns.length === 1)
-                delete_btns.css("visibility", "hidden");
-
-            let radios = parent.find(".color-container " + SELECTOR_RADIOS);
-            if(!radios.is(":checked") && limit_colors > 0)
-            {
-                let last = radios.last();
-                last[0].checked = true;
-                let color = last.parent().siblings(".color-box").css("background-color");
-                picker.set(color);
-                color_input.val(rgb2hex(color));
-            }
+                delete_btns.prop("disabled", true);
         }
+        this.parent.find("#header-colors").toggleClass("hidden-xs-up", this.limit_colors === 0);
+        this.refreshListeners();
+        refreshColorPickers();
     }
 
-    refreshListeners();
-
-    refreshColorsLimit();
-
-    parent.find("#add-color-btn").click(function()
+    refreshListeners()
     {
-        const swatches = parent.find(".color-container");
-        const num = swatches.length;
-        if(num === 1)
-            parent.find(".color-delete-btn").css("visibility", "");
-        if(num < limit_colors)
+        const it = this;
+        let del_buttons = this.parent.find(".color-delete-btn");
+        del_buttons.off("click");
+        del_buttons.click(function(e)
         {
-            const swatch = getColorSwatch(num);
-            $(swatch).insertBefore($(this));
-            refreshListeners();
-            if(num === limit_colors - 1)
-                $(this).css("display", "none");
-        }
-    });
-
-    parent.find("#effect-select-"+device_match[1]).change(event =>
-    {
-        const data = JSON.stringify({
-            type: device.type,
-            effect: parseInt($(event.target).val())
-        });
-        $.ajax("/api/get_html/timing_args", {
-            method: "POST",
-            data: data,
-            contentType: "application/json"
-        }).done(response =>
-        {
-            if(response.status !== "success")
+            const swatch_count = it.parent.find(".color-container").length;
+            if(swatch_count > 1)
+                $(this).parent().parent().remove();
+            if(swatch_count <= 2)
             {
-                console.error("Error getting args, timings: ", response);
+                del_buttons.prop("disabled", true);
             }
-            else
-            {
-                const container = parent.find("#timing-arg-container");
-                container.empty();
-                container.append($.parseHTML(response.html));
-                limit_colors = response.limit_colors;
-                refreshColorsLimit();
-            }
-        }).fail(err =>
-        {
-            console.error(err);
         })
-    });
+    }
 
-    function formToJson()
+    formToJson()
     {
-        const array = parent.find("#device-form-"+device_match[1]).serializeArray();
+        const array = this.parent.find("#device-form-" + this.device_match[1]).serializeArray();
         const json = {};
         json.times = [];
         json.args = {};
         json.colors = [];
-        json.device = device;
+        json.device = this.device;
 
         for(let i = 0; i < array.length; i++)
         {
@@ -455,27 +349,24 @@ function registerDevice(parent)
             }
         }
 
-        json.colors = getColors();
+        json.colors = this.getColors();
+        json.effect = parseInt(json.effect);
 
         return json;
     }
 
-    function getColors()
+    getColors()
     {
         const colors = [];
-        const swatches = parent.find(".color-swatch-container div.color-box");
+        const swatches = this.parent.find(".color-input");
 
         for(let i = 0; i < swatches.length; i++)
         {
-            colors.push(rgb2hex(swatches.eq(i).css("background-color"), false));
+            colors.push(swatches.eq(i).val().substring(1));
         }
 
         return colors;
     }
-
-    this.formToJson = formToJson;
-
-    return this;
 }
 
 //Source: http://wowmotty.blogspot.com/2009/06/convert-jquery-rgb-output-to-hex-color.html
@@ -496,4 +387,26 @@ function hex(x)
 function getColorSwatch(n)
 {
     return $.parseHTML(COLOR_TEMPLATE.replace("$label", "color-" + n).replace("$color", "#FFFFFF"));
+}
+
+function refreshColorPickers()
+{
+    $(".colorpicker-component").colorpicker({
+        useAlpha: false,
+        extensions: [
+            {
+                name: "swatches",
+                colors: {
+                    "white": "#ffffff",
+                    "red": "#ff0000",
+                    "green": "#00ff00",
+                    "blue": "#0000ff",
+                    "magenta": "#ff00ff",
+                    "yellow": "#ffff00",
+                    "cyan": "#00ffff",
+                },
+                namesAsValues: false
+            }
+        ],
+    });
 }

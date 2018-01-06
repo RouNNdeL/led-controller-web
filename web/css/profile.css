@@ -33,11 +33,6 @@ div.color-box
     border-left-width: 0;
     /*display: inline-block;*/
 }
-.color-swatch
-{
-    width: 126px;
-    height: 40px;
-}
 .color-picker.static {
     display:inline-block !important;
     position:static !important;
@@ -65,13 +60,12 @@ div.color-box
 }
 .color-delete-btn
 {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
+    width: 37px;
+    height: 37px;
 }
 .color-delete-btn > .oi
 {
-    right: 3px;
+    right: 5px;
 }
 .color-swatch-container
 {
@@ -81,9 +75,7 @@ div.color-box
 {
     margin-top: 0;
 }
-/*
-#device-settings-iframe
+div.colorpicker-component > span > i
 {
-    height: 100%;
-    width: 100%;
-}*/
+    background-color: rgb(255, 255, 255);
+}

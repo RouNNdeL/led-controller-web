@@ -31,26 +31,35 @@ require_once(__DIR__ . "/../network/tcp.php");
 
 $data = Data::getInstance();
 $response = array();
-$response["status"] = "success";
 $profile = $data->getProfile($json["profile_n"]);
 
-foreach($json["devices"] as $item)
+if($profile === false)
 {
-    if($item["device"]["type"] === "a")
-    {
-        $device = AnalogDevice::fromJson($item);
-        $profile->analog_devices[$item["device"]["num"]] = $device;
-    }
-    else
-    {
-        $device = DigitalDevice::fromJson($item);
-        $profile->digital_devices[$item["device"]["num"]] = $device;
-    }
+    $response["status"] = "error";
+    $response["message"] = "Invalid profile index";
+    http_response_code(400);
 }
+else
+{
+    $response["status"] = "success";
 
-Data::save();
-$response["message"] = tcp_send(($profile->toSend($json["profile_n"]))) ?
-    Utils::getString("options_save_success") :
-    Utils::getString("options_save_success_offline");
+    foreach($json["devices"] as $item)
+    {
+        if($item["device"]["type"] === "a")
+        {
+            $device = AnalogDevice::fromJson($item);
+            $profile->analog_devices[$item["device"]["num"]] = $device;
+        }
+        else
+        {
+            $device = DigitalDevice::fromJson($item);
+            $profile->digital_devices[$item["device"]["num"]] = $device;
+        }
+    }
+    Data::save();
+    $response["message"] = tcp_send(($profile->toSend($json["profile_n"]))) ?
+        Utils::getString("options_save_success") :
+        Utils::getString("options_save_success_offline");
+}
 
 echo json_encode($response);

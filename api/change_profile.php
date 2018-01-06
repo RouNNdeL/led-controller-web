@@ -12,9 +12,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
     require_once(__DIR__ . "/../network/tcp.php");
     $data = Data::getInstance();
     $n_profile = (int) file_get_contents("php://input");
-    if($n_profile >=0 && $n_profile < $data->getProfileCount())
+    if($data->getProfile($n_profile) !== false)
     {
-        $data->current_profile = $n_profile;
+        $data->setCurrentProfile($n_profile);
         Data::save();
         tcp_send($data->globalsToJson());
         http_response_code(204);

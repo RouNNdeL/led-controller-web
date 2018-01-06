@@ -27,13 +27,8 @@ $profiles = Data::getInstance()->getProfiles();
 
 $navbar = new Navbar();
 $navbar->initDefault();
-//$navbar->setActive(0);
 echo $navbar->toHtml();
 $data = Data::getInstance();
-?>
-
-<?php
-//var_dump($data);
 ?>
 <div class="container-fluid">
     <?php
@@ -42,7 +37,7 @@ $data = Data::getInstance();
         $warning = Utils::getString("warning");
         $message = Utils::getString("warning_device_offline");;
         echo <<< TAG
-    <div class="col-md-12" style="margin-top: 12px">
+    <div class="mt-3">
         <div class="alert alert-danger">
             <strong>$warning</strong> $message
         </div>

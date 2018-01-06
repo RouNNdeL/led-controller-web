@@ -21,7 +21,7 @@ class Data
      */
     private static $instance;
 
-    public $current_profile;
+    private $current_profile;
     public $enabled;
 
     private $brightness;
@@ -34,6 +34,8 @@ class Data
     private $inactive_indexes;
     /** @var int[] */
     private $avr_indexes;
+    /** @var int[] */
+    private $avr_order;
 
     /** @var Profile[] */
     private $profiles;
@@ -67,6 +69,7 @@ class Data
             $this->inactive_indexes = range(self::MAX_ACTIVE_COUNT, sizeof($profiles) - self::MAX_ACTIVE_COUNT - 1);
         }
         $this->avr_indexes = $this->active_indexes;
+        $this->avr_order = $this->getAvrOrder();
     }
 
     /**
@@ -119,10 +122,21 @@ class Data
                     break;
                 }
             }
+            $this->avr_order = $this->getAvrOrder();
             return true;
         }
         array_push($this->inactive_indexes, $this->getMaxIndex());
         return true;
+    }
+
+    public function setCurrentProfile($n, $raw = false)
+    {
+        $this->current_profile = $raw ? $n : array_search(array_search($n, $this->avr_indexes), $this->avr_order);
+    }
+
+    public function getCurrentProfile()
+    {
+        return $this->current_profile;
     }
 
     public function removeProfile(int $index)
@@ -140,15 +154,16 @@ class Data
             if(($key = array_search($index, $this->avr_indexes)) !== false)
             {
                 unset($this->avr_indexes[$key]);
-                if($this->current_profile === $key)
+                if($this->current_profile === array_search($key, $this->avr_order))
                 {
-                    $this->current_profile =array_keys($this->avr_indexes)[0];
+                    $this->current_profile -= 1;
                 }
             }
             if(($key = array_search($index, $this->inactive_indexes)) !== false)
             {
                 array_splice($this->inactive_indexes, $key, 1);
             }
+            $this->avr_order = $this->getAvrOrder();
             return true;
         }
         return false;
@@ -166,6 +181,7 @@ class Data
     {
         return max(array_keys($this->profiles));
     }
+
     /**
      * @return Profile[]
      */
@@ -199,12 +215,13 @@ class Data
 
     public function getHighlightIndex()
     {
-        return array_search($this->avr_indexes[$this->current_profile], array_keys($this->profiles));
+        //var_dump($this);
+        return array_search($this->avr_indexes[$this->avr_order[$this->current_profile]], array_keys($this->profiles));
     }
 
     public function getHighlightProfileIndex()
     {
-        return $this->avr_indexes[$this->current_profile];
+        return $this->avr_indexes[$this->avr_order[$this->current_profile]];
     }
 
     public function getAvrIndex($n)
@@ -249,9 +266,19 @@ class Data
         $array["fan_count"] = $this->fan_count;
         $array["auto_increment"] = $raw ? Device::getTiming($this->auto_increment) : $this->auto_increment;
         $array["fan_config"] = array(2, 0, 0);
-        $array["profile_order"] = array(0, 1, 2, 3, 4, 5, 6, 7);
+        $array["profile_order"] = $this->getAvrOrder();
 
         return json_encode(array("type" => "globals_update", "data" => $array));
+    }
+
+    public function getAvrOrder()
+    {
+        $arr = array();
+        foreach($this->active_indexes as $i => $active_index)
+        {
+            $arr[$i] = array_search($active_index, $this->avr_indexes);
+        }
+        return $arr;
     }
 
     public function globalsFromJson($json)
@@ -336,7 +363,7 @@ class Data
             $html .= "<div class=\"dropdown-divider\"></div>";
         for($i = 0; $i < $this->getFanCount(); $i++)
         {
-            $device_url = "fan-" . ($i+1);
+            $device_url = "fan-" . ($i + 1);
             $html .= "<li  class=\"nav-item\" role=\"presentation\"" .
                 "><a id=\"device-link-$device_url\" href=\"#$device_url\" class=\"nav-link device-link\">"
                 . str_replace("\$n", $i + 1, $fan) . "</a></li>";

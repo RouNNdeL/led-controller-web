@@ -13,7 +13,7 @@ $(function()
         let json = objectifyForm(form.serializeArray());
         json.enabled = $("input[name=enabled]")[0].checked;
         json.fan_count = parseInt(json.fan_count);
-        json.current_profile = parseInt(json.current_profile);
+        json.profile_index = parseInt(json.current_profile);
         json.brightness = parseInt(json.brightness);
         json.auto_increment = parseInt(json.auto_increment);
         let data = JSON.stringify(json);
@@ -116,7 +116,7 @@ $(function()
                     const globals = JSON.parse(data).data;
                     $("a.nav-link.highlight").removeClass("highlight");
                     $("a.nav-link").eq(parseInt(globals.highlight_index)).addClass("highlight");
-                    $("select[name=current_profile]").val(globals.current_profile);
+                    $("select[name=current_profile]").val(globals.highlight_profile_index);
                     $("input[name=enabled]")[0].checked = globals.leds_enabled;
                     slider.slider("setValue", globals.brightness);
                     $("input[name=auto_increment]").val(globals.auto_increment);

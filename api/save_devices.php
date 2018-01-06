@@ -57,7 +57,7 @@ else
         }
     }
     Data::save();
-    $response["message"] = tcp_send(($profile->toSend($json["profile_n"]))) ?
+    $response["message"] = tcp_send(($profile->toSend($data->getAvrIndex($json["profile_n"])))) ?
         Utils::getString("options_save_success") :
         Utils::getString("options_save_success_offline");
 }

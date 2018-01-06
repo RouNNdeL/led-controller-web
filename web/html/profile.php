@@ -45,7 +45,7 @@ echo $navbar->toHtml();
 $profile = $data->getProfile($n_profile);
 ?>
 <input id="profile_n" type="hidden" value="<?php echo $n_profile ?>">
-<input id="current_profile" type="hidden" value="<?php echo $data->current_profile ?>">
+<input id="current_profile" type="hidden" value="<?php echo $data->getCurrentProfile() ?>">
 <div class="container-fluid">
     <div class="row profile-content">
         <?php
@@ -75,7 +75,7 @@ TAG;
 TAG;
         $visible = ($data->getHighlightProfileIndex() === $n_profile) ? "hidden-xs-up" : "";
         $str_diff_profile = Utils::getString("warning_diff_profile_selected");
-        $str_diff_profile = str_replace("\$n", $data->current_profile + 1, $str_diff_profile);
+        $str_diff_profile = str_replace("\$n", $data->getHighlightProfileIndex(), $str_diff_profile);
         echo <<<TAG
         <div id="profile-warning-diff-profile" class="col-md-12 $visible">
             <div class="alert alert-warning">

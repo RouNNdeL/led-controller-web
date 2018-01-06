@@ -201,7 +201,7 @@ class DeviceSetting
         else if(this.device_match[1] === "gpu")
             this.device = {type: "a", num: 1};
         else
-            this.device = {type: "d", num: parseInt(this.device_match[2])};
+            this.device = {type: "d", num: parseInt(this.device_match[2])-1};
 
         this.limit_colors = parseInt(parent.find("#swatches-container").data("color-limit"));
 

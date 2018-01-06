@@ -78,9 +78,8 @@ TAG;
                 foreach($data->getActiveProfilesInOrder() as $i => $profile)
                 {
                     $name = $profile->getName();
-                    $avr_index = $data->getAvrIndex($i);
                     $selected = $data->getHighlightProfileIndex() === $i ? "selected" : "";
-                    echo "<option value=\"$avr_index\" $selected>$name</option>";
+                    echo "<option value=\"$i\" $selected>$name</option>";
                 }
                 ?>
             </select>
@@ -93,52 +92,63 @@ TAG;
         </label>
         <br>
         <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <label>Active profiles</label>
-                <ul class="list-group full-height" id="globals-profiles-active">
-                    <?php
-                    foreach($data->getActiveProfilesInOrder() as $i => $profile)
-                    {
-                        $avr_index = $data->getAvrIndex($i);
-                        $class = $data->getHighlightProfileIndex() === $i ? " highlight" : "";
-                        $name = $profile->getName();
-                        echo "<li class=\"list-group-item not-selectable$class\" data-index=\"$i\">$name</li>";
-                    }
-                    ?>
-                </ul>
+            <div class="col-lg-3 col-sm-6 mb-3 mb-sm-0">
+                <div class="card full-height">
+                    <div class="card-header">
+                        <label>Active profiles</label>
+                    </div>
+                    <div class="card-body full-height">
+                        <ul class="list-group full-height" id="globals-profiles-active">
+                            <?php
+                            foreach($data->getActiveProfilesInOrder() as $i => $profile)
+                            {
+                                $class = $data->getHighlightProfileIndex() === $i ? " highlight" : "";
+                                $name = $profile->getName();
+                                echo "<li class=\"list-group-item not-selectable$class\" data-index=\"$i\">$name</li>";
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <label>Inactive profiles</label>
-                <ul class="list-group full-height" id="globals-profiles-inactive">
-                    <?php
-                    foreach($data->getInactiveProfilesInOrder() as $profile)
-                    {
-                        $name = $profile->getName();
-                        echo "<li class=\"list-group-item not-selectable\" data-index=\"$i\">$name</li>";
-                    }
-                    ?>
-                </ul>
+            <div class="col-lg-3 col-sm-6 pl-sm-0">
+                <div class="card full-height">
+                    <div class="card-header">
+                        <label>Inactive profiles</label>
+                    </div>
+                    <div class="card-body full-height">
+                        <ul class="list-group full-height" id="globals-profiles-inactive">
+                            <?php
+                            foreach($data->getInactiveProfilesInOrder() as $i => $profile)
+                            {
+                                $name = $profile->getName();
+                                echo "<li class=\"list-group-item not-selectable\" data-index=\"$i\">$name</li>";
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <label>
             <?php echo Utils::getString("options_global_brightness") ?>
             <br>
             <input id="brightness-slider"
-                    type="text"
-                    name="brightness"
-                    data-provide="slider"
-                    data-slider-ticks="[0,100]"
-                    data-slider-ticks-labels=''
-                    data-slider-min="0"
-                    data-slider-max="100"
-                    data-slider-step="1"
-                    data-slider-value="<?php echo Data::getInstance()->getBrightness() ?>"
-                    data-slider-tooltip="show"
+                   type="text"
+                   name="brightness"
+                   data-provide="slider"
+                   data-slider-ticks="[0,100]"
+                   data-slider-ticks-labels=''
+                   data-slider-min="0"
+                   data-slider-max="100"
+                   data-slider-step="1"
+                   data-slider-value="<?php echo Data::getInstance()->getBrightness() ?>"
+                   data-slider-tooltip="show"
             >
         </label>
     </form>
     <br>
-    <button id="btn-save" class="btn btn-primary" disabled><?php echo Utils::getString("options_save")  ?></button>
+    <button id="btn-save" class="btn btn-primary" disabled><?php echo Utils::getString("options_save") ?></button>
     <button id="btn-restore-defaults"
             class="btn btn-danger"><?php echo Utils::getString("options_reset_defaults") ?></button>
 </div>

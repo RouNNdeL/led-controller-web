@@ -148,13 +148,13 @@ abstract class Device
 
         $btn_class = sizeof($this->colors) >= $color_limit ? " hidden-xs-up" : "";
         $html .= "<div id=\"main-container\" class=\"row m-2\">
-        <div class=\"col-6 col-lg-4 col-xl-3\">
-        <label>
-            $profile_effect
+        <div class=\"col-12 col-sm-6 col-lg-4 col-xl-3 mb-3 mb-md-0\">
+        <div class=\"form-group\">
+            <h3>$profile_effect</h3>
             <select class=\"form-control\" name=\"effect\" id=\"effect-select-$device\">
                 $effects_html
             </select>
-        </label>
+        </div>
         <h3 id=\"header-colors\">$profile_colors</h3>
         <div id=\"swatches-container\" data-color-limit=\"$color_limit\">
             $colors_html
@@ -246,7 +246,7 @@ abstract class Device
 
         if($timings != 0)
         {
-            $html .= "<div id=\"timing-container\" class=\"col-6 col-lg-4\"><h3>$profile_timing</h3><div class=\"row mx-0\">$timing_html</div></div>";
+            $html .= "<div id=\"timing-container\" class=\"col-12 col-sm-6 col-lg-4\"><h3>$profile_timing</h3><div class=\"row mx-0\">$timing_html</div></div>";
         }
         else
         {

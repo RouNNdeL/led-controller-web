@@ -29,7 +29,7 @@ if(!isset($_GET["n_profile"]))
     include(__DIR__ . "/../error/500.php");
     exit(500);
 }
-$n_profile = (int) $_GET["n_profile"];
+$n_profile = (int)$_GET["n_profile"];
 
 if(Data::getInstance()->getProfile($n_profile) === false)
 {
@@ -119,28 +119,21 @@ TAG;
             </div>
         </div>
         <div class="col-sm-12 col-md-9 col-xl-10 pl-md-0 pt-3 pt-md-0" id="device-settings">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">
-                    <div class="row">
-                        <div class="col">
-                            <h4 id="header-pc"
-                                class="device-header"><?php echo Utils::getString("profile_settings_pc") ?></h4>
-                            <h4 id="header-gpu"
-                                class="device-header hidden-xs-up"><?php echo Utils::getString("profile_settings_gpu") ?></h4>
-                            <?php
-                            for($i = 0; $i < $data->getFanCount(); $i++)
-                            {
-                                $str = Utils::getString("profile_settings_digital");
-                                $id = $i + 1;
-                                $str = str_replace("\$n", $id, $str);
-                                echo "<h4 id=\"header-fan-$id\" class=\"device-header hidden-xs-up\">$str</h4>";
-                            }
-                            ?>
-                        </div>
-                        <div class="col-auto mx-2">
-                            <button id="device-settings-submit" class="btn btn-primary"><?php echo Utils::getString("profile_apply"); ?></button>
-                        </div>
-                    </div>
+                    <h4 id="header-pc"
+                        class="device-header"><?php echo Utils::getString("profile_settings_pc") ?></h4>
+                    <h4 id="header-gpu"
+                        class="device-header hidden-xs-up"><?php echo Utils::getString("profile_settings_gpu") ?></h4>
+                    <?php
+                    for($i = 0; $i < $data->getFanCount(); $i++)
+                    {
+                        $str = Utils::getString("profile_settings_digital");
+                        $id = $i + 1;
+                        $str = str_replace("\$n", $id, $str);
+                        echo "<h4 id=\"header-fan-$id\" class=\"device-header hidden-xs-up\">$str</h4>";
+                    }
+                    ?>
                 </div>
                 <div class="card-body">
                     <div id="device-pc" class="device-settings-container">
@@ -161,6 +154,10 @@ TAG;
 HTML;
                     }
                     ?>
+                </div>
+                <div class="card-footer">
+                    <button id="device-settings-submit"
+                            class="btn btn-primary"><?php echo Utils::getString("profile_apply"); ?></button>
                 </div>
             </div>
         </div>

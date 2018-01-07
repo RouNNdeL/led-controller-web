@@ -147,18 +147,18 @@ abstract class Device
         }
 
         $btn_class = sizeof($this->colors) >= $color_limit ? " hidden-xs-up" : "";
-        $html .= "<div id=\"main-container\" class=\"row m-2\">
+        $html .= "<div class=\"main-container row m-2\">
         <div class=\"col-12 col-sm-6 col-lg-4 col-xl-3 mb-3 mb-md-0\">
         <div class=\"form-group\">
             <h3>$profile_effect</h3>
-            <select class=\"form-control\" name=\"effect\" id=\"effect-select-$device\">
+            <select class=\"form-control effect-select\" name=\"effect\" id=\"effect-select-$device\">
                 $effects_html
             </select>
         </div>
-        <h3 id=\"header-colors\">$profile_colors</h3>
-        <div id=\"swatches-container\" data-color-limit=\"$color_limit\">
+        <h3 class=\"header-colors\">$profile_colors</h3>
+        <div class=\"swatches-container\" data-color-limit=\"$color_limit\">
             $colors_html
-            <button id=\"add-color-btn\" class=\"btn btn-primary color-swatch$btn_class\" type=\"button\">$profile_add_color</button>
+            <button class=\"add-color-btn btn btn-primary color-swatch$btn_class\" type=\"button\">$profile_add_color</button>
         </div>
 
     </div>";
@@ -246,14 +246,16 @@ abstract class Device
 
         if($timings != 0)
         {
-            $html .= "<div id=\"timing-container\" class=\"col-12 col-sm-6 col-lg-4\"><h3>$profile_timing</h3><div class=\"row mx-0\">$timing_html</div></div>";
+            $html .= "<div class=\"timing-container col-12 col-sm-6 col-lg-4\"><h3>$profile_timing</h3>
+                        <div class=\"row mx-0\">$timing_html</div></div>";
         }
         else
         {
             $html .= "$timing_html";
         }
         if(sizeof($this->args) > 0)
-            $html .= "<div id=\"args-container\" class=\"col-12 col-lg-4 col-xl-5\"><h3>$profile_arguments</h3><div class=\"row mx-0\">$arguments_html</div></div>";
+            $html .= "<div class=\"args-container col-12 col-lg-4 col-xl-5\"><h3>$profile_arguments</h3>
+                        <div class=\"row mx-0\">$arguments_html</div></div>";
 
         return $html;
     }

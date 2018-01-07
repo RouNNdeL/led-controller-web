@@ -11,6 +11,7 @@ const SELECTOR_RADIOS = "input[type=radio][name=color]";
 
 let profile_n;
 let profile_index;
+let changes = false;
 let previous_hash = window.location.hash;
 
 $(function()
@@ -30,6 +31,7 @@ $(function()
     let string_confirm_delete;
 
     refreshColorPickers();
+    registerFormListeners();
 
     $.ajax("/api/get_string.php?name=profile_delete_confirm").done(response =>
     {
@@ -141,7 +143,6 @@ $(function()
             profile_n: profile_n,
             devices: []
         };
-        console.log(devices);
         for(let i = 0; i < devices.length; i++)
         {
             forms["devices"][i] = devices[i].formToJson();
@@ -150,16 +151,15 @@ $(function()
             method: "POST",
             data: JSON.stringify(forms),
             contentType: "application/json"
-        }).done(response =>
+        }).done(function(response)
         {
+            changes = false;
             showSnackbar(response.message)
-        }).fail(err => console.error);
+        }).fail(function(err)
+        {
+            console.error(err);
+        });
     });
-
-    $("#timing-container").find("input").change(function(e)
-    {
-        $(this).val(getTiming(convertToTiming($(this).val())));
-    })
 });
 
 $(window).on("beforeunload", function(e)
@@ -225,10 +225,10 @@ class DeviceSetting
         else
             this.device = {type: "d", num: parseInt(this.device_match[2]) - 1};
 
-        this.limit_colors = parseInt(parent.find("#swatches-container").data("color-limit"));
+        this.limit_colors = parseInt(parent.find(".swatches-container").data("color-limit"));
 
         const it = this;
-        parent.find("#add-color-btn").click(function()
+        parent.find(".add-color-btn").click(function()
         {
             const swatches = parent.find(".color-container");
             const num = swatches.length;
@@ -246,6 +246,8 @@ class DeviceSetting
 
         parent.find("#effect-select-" + this.device_match[1]).change(event =>
         {
+            changes = true;
+            $("#device-settings-submit").prop("disabled", false);
             const data = JSON.stringify({
                 type: this.device.type,
                 effect: parseInt($(event.target).val())
@@ -262,12 +264,13 @@ class DeviceSetting
                 }
                 else
                 {
-                    const main = parent.find("#main-container");
-                    const containers = parent.find("#timing-container, #args-container, input[type=hidden]");
+                    const main = parent.find(".main-container");
+                    const containers = parent.find(".timing-container, .args-container, input[type=hidden]");
                     containers.remove();
                     main.append($.parseHTML(response.html));
                     this.limit_colors = limit_colors = response.limit_colors;
                     this.refreshColorsLimit();
+                    registerFormListeners();
                 }
             }).fail(err =>
             {
@@ -285,23 +288,23 @@ class DeviceSetting
         if(this.limit_colors > 0 && swatches.length === 0)
         {
             const swatch = getColorSwatch(0);
-            $(swatch).insertBefore(this.parent.find("#add-color-btn"));
+            $(swatch).insertBefore(this.parent.find(".add-color-btn"));
             this.parent.find(".color-delete-btn").prop("disabled", true);
         }
         swatches = this.parent.find(".color-container");
         if(swatches.length < this.limit_colors)
         {
-            this.parent.find("#add-color-btn").removeClass("hidden-xs-up");
+            this.parent.find(".add-color-btn").removeClass("hidden-xs-up");
         }
         else
         {
-            this.parent.find("#add-color-btn").addClass("hidden-xs-up");
+            this.parent.find(".add-color-btn").addClass("hidden-xs-up");
             this.limit_colors === 0 ? swatches.remove() : this.parent.find(".color-container:gt(" + (this.limit_colors - 1) + ")").remove();
             const delete_btns = this.parent.find(".color-delete-btn");
             if(delete_btns.length === 1)
                 delete_btns.prop("disabled", true);
         }
-        this.parent.find("#header-colors").toggleClass("hidden-xs-up", this.limit_colors === 0);
+        this.parent.find(".header-colors").toggleClass("hidden-xs-up", this.limit_colors === 0);
         this.refreshListeners();
         refreshColorPickers();
     }
@@ -320,7 +323,7 @@ class DeviceSetting
             {
                 del_buttons.prop("disabled", true);
             }
-        })
+        });
     }
 
     formToJson()
@@ -430,6 +433,35 @@ function refreshColorPickers()
                 namesAsValues: false
             }
         ],
+    });
+
+    $(window).on("beforeunload", function(e)
+    {
+        if(!changes)
+            return undefined;
+        const confirmationMessage = 'It looks like you have been editing something. '
+            + 'If you leave before saving, your changes will be lost.';
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    });
+}
+
+function registerFormListeners()
+{
+    const timings = $(".timing-container").find("input");
+    const inputs = $("input,select").not(timings).not("select.effect-select");
+    inputs.off("change");
+    inputs.change(function(e)
+    {
+        changes = true;
+        $("#device-settings-submit").prop("disabled", false);
+    });
+    timings.change(function(e)
+    {
+        changes = true;
+        $("#device-settings-submit").prop("disabled", false);
+        $(this).val(getTiming(convertToTiming($(this).val())));
     });
 }
 

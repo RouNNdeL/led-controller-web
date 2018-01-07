@@ -218,8 +218,7 @@ class DigitalDevice extends Device
             }
             case self::EFFECT_RAINBOW_ROTATING:
             {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
-                    ($this->args["rainbow_mode"] << 2);
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["rainbow_mode"] << 2);
                 $array[1] = $this->args["rainbow_brightness"];
                 $array[2] = $this->args["rainbow_sources"];
             }

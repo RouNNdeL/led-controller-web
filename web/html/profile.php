@@ -167,7 +167,7 @@ HTML;
                     ?>
                 </div>
                 <div class="card-footer">
-                    <button id="device-settings-submit"
+                    <button id="device-settings-submit" disabled
                             class="btn btn-primary"><?php echo Utils::getString("profile_apply"); ?></button>
                 </div>
             </div>

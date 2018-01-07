@@ -34,9 +34,10 @@ class Navbar
         {
             $url = $tab["url"];
             $text = $tab["text"];
-            $html .= "<li role=\"presentation\" class=\"nav-item pr-md-1\"><a class=\"nav-link ".
+            $class = $tab["class"];
+            $html .= "<li role=\"presentation\" class=\"nav-item pr-md-1\"><a class=\"$class nav-link " .
                 ($i == $this->active ? " active" :
-                    ($i == $this->highlight ? " highlight\"" : "")) ."\" href=\"$url\">$text</a></li>";
+                    ($i == $this->highlight ? " highlight\"" : "")) . "\" href=\"$url\">$text</a></li>";
         }
         $html .= "</ul>
                 </div>
@@ -44,9 +45,9 @@ class Navbar
         return $html;
     }
 
-    public function addLink(string $text, string $url)
+    public function addLink(string $text, string $url, $class = "")
     {
-        array_push($this->tabs, array("text" => $text, "url" => $url));
+        array_push($this->tabs, array("text" => $text, "url" => $url, "class" => $class));
     }
 
     /**
@@ -65,13 +66,13 @@ class Navbar
         $this->highlight = $data->getHighlightIndex();
         foreach($profiles as $i => $profile)
         {
-            $this->addLink($profile->getName(), "/profile/".$i);
+            $this->addLink($profile->getName(), "/profile/" . $i);
         }
         if(sizeof($profiles) < Data::MAX_OVERALL_COUNT)
         {
-            $this->addLink(Utils::getString("add_profile").
-                "&nbsp;&nbsp;<span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>",
-                "/profile/new");
+            $this->addLink("<span class=\"oi oi-plus\" style=\"top: 2px\"></span>&nbsp;" .
+                Utils::getString("add_profile"),
+                "/profile/new", "bold");
         }
     }
 }

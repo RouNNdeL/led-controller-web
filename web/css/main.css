@@ -1,37 +1,43 @@
-.inline-form
-{
+.inline-form {
     padding-right: 12px;
 }
 
-.profile-content
-{
+.profile-content {
     padding-top: 12px;
     height: 100%;
 }
+
 .center-vertically {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
 }
+
 .center-horizontally {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
 }
+
 .center-both {
     position: relative;
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
-a.nav-link.highlight, li.list-group-item.highlight
-{
+
+a.nav-link.highlight, li.list-group-item.highlight {
     background-color: #20c997;
     color: #fff;
 }
-.full-height
+
+a.nav-link.bold
 {
-    height:100%;
+    font-weight: bold;
+}
+
+.full-height {
+    height: 100%;
 }
 
 .slider-selection {
@@ -45,6 +51,7 @@ a.nav-link.highlight, li.list-group-item.highlight
     -webkit-user-select: none;
     user-select: none;
 }
+
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */
@@ -74,21 +81,45 @@ a.nav-link.highlight, li.list-group-item.highlight
 
 /* Animations to fade the snackbar in and out */
 @-webkit-keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
 }
 
 @keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
 }
 
 @-webkit-keyframes fadeout {
-    from {bottom: 30px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
 }
 
 @keyframes fadeout {
-    from {bottom: 30px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
 }

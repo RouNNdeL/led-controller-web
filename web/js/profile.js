@@ -1,6 +1,8 @@
 /**
  * Created by Krzysiek on 10/08/2017.
  */
+"use strict";
+
 const REGEX_COLOR = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 const REGEX_DEVICE = /(pc|gpu|fan-(\d))/;
 const COLOR_TEMPLATE = "<div class=\"color-container row mb-1\">\n            <div class=\"col-auto ml-3\">\n                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\"><span class=\"oi oi-trash\"></span></button>\n            </div>\n            <div class=\"col pl-1\">\n                <div class=\"input-group colorpicker-component\" title=\"Using input value\">\n                    <input type=\"text\" class=\"form-control color-input\" value=\"$color\" autocomplete=\"off\" \n                    aria-autocomplete=\"none\" spellcheck=\"false\"/>\n                    <span class=\"input-group-addon\"><i></i></span>\n                </div>\n            </div>\n        </div>";
@@ -153,6 +155,11 @@ $(function()
             showSnackbar(response.message)
         }).fail(err => console.error);
     });
+
+    $("#timing-container").find("input").change(function(e)
+    {
+        $(this).val(getTiming(convertToTiming($(this).val())));
+    })
 });
 
 $(window).on("beforeunload", function(e)
@@ -424,4 +431,57 @@ function refreshColorPickers()
             }
         ],
     });
+}
+
+function getTiming(x)
+{
+    if(x < 0 || x > 255)
+    {
+        return 0;
+    }
+    if(x <= 80)
+    {
+        return x / 16;
+    }
+    if(x <= 120)
+    {
+        return x / 8 - 5;
+    }
+    if(x <= 160)
+    {
+        return x / 2 - 50;
+    }
+    if(x <= 190)
+    {
+        return x - 130;
+    }
+    if(x <= 235)
+    {
+        return 2 * x - 320;
+    }
+    if(x <= 245)
+    {
+        return 15 * x - 3375;
+    }
+    return 60 * x - 14400;
+}
+
+function convertToTiming(float)
+{
+    const timings = getTimings();
+    for(let i = 0; i < timings.length; i++)
+    {
+        if(float < timings[i]) return i - 1;
+    }
+    return 0;
+}
+
+function getTimings()
+{
+    const arr = [];
+    for(let i = 0; i < 256; i++)
+    {
+        arr[i] = getTiming(i);
+    }
+    return arr;
 }

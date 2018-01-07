@@ -1,6 +1,8 @@
 /**
  * Created by Krzysiek on 11/08/2017.
  */
+"use strict";
+
 $(function()
 {
     const form = $("#global-form");

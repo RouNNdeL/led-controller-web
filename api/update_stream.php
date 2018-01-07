@@ -13,7 +13,7 @@ require_once(__DIR__ . "/../web/includes/Data.php");
 error_reporting(0);
 
 $globals_filename = $_SERVER["DOCUMENT_ROOT"] . Data::UPDATE_PATH;
-$tcp_filename = $_SERVER["DOCUMENT_ROOT"] . "/network/interface.dat";
+$tcp_filename = $_SERVER["DOCUMENT_ROOT"] . "/network/status";
 
 $runs = 0;
 

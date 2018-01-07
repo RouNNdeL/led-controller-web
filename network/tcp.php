@@ -10,22 +10,18 @@ function tcp_send($string)
 {
     error_reporting(0);
     $filename = __DIR__ . "/interface.dat";
-    if(!file_exists($filename))
-    {
-        return false;
-    }
+    $filename_status = __DIR__ . "/status";
     $interface = explode(":", file_get_contents($filename));
     $fp = fsockopen($interface[0], $interface[1], $errno, $errstr, 0.1);
     error_reporting(E_ALL);
     if(!$fp)
     {
-        /* TODO: Create another file that will will create and remove, as this is unsafe
-         * (the interface might timeout ofater 100ms) */
-        unlink($filename);
+        if(file_exists($filename_status)) unlink($filename_status);
         return false;
     }
     else
     {
+        file_put_contents($filename_status, "");
         if($string !== null) fwrite($fp, $string);
         fclose($fp);
         return true;

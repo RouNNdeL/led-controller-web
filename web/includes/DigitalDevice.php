@@ -66,6 +66,7 @@ class DigitalDevice extends Device
             case self::EFFECT_FADING:
                 return 0b001101;
             case self::EFFECT_RAINBOW_ROTATING:
+                return 0b00011;
             case self::EFFECT_RAINBOW:
                 return 0b000101;
             case self::EFFECT_FILLING:
@@ -357,7 +358,7 @@ class DigitalDevice extends Device
         return self::rainbowRotating(array(), 2, 0, 1, 1, 255, 1);
     }
 
-    public static function rainbowRotating(array $colors, int $fade, int $offset, bool $direction, int $mode,
+    public static function rainbowRotating(array $colors, int $rotation, int $offset, bool $direction, int $mode,
                                            int $brightness, int $sources)
     {
         $args = array();
@@ -365,7 +366,7 @@ class DigitalDevice extends Device
         $args["rainbow_mode"] = $mode;
         $args["rainbow_brightness"] = $brightness;
         $args["rainbow_sources"] = $sources;
-        return new self($colors, self::EFFECT_RAINBOW_ROTATING, 0, 0, 0, $fade, 0, $offset, $args);
+        return new self($colors, self::EFFECT_RAINBOW_ROTATING, 0, 0, 0, 0, $rotation, $offset, $args);
     }
 
     public static function _rotating()

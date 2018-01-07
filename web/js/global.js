@@ -19,7 +19,7 @@ $(function()
         json.profile_index = parseInt(json.current_profile);
         delete json.current_profile;
         json.brightness = parseInt(json.brightness);
-        json.auto_increment = parseInt(json.auto_increment);
+        json.auto_increment = parseFloat(json.auto_increment);
         json.order = getProfileOrder();
         let data = JSON.stringify(json);
 

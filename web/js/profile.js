@@ -388,7 +388,7 @@ function hex(x)
 
 function getColorSwatch(n)
 {
-    return $.parseHTML(COLOR_TEMPLATE.replace("$label", "color-" + n).replace("$color", "#FFFFFF"));
+    return $.parseHTML(COLOR_TEMPLATE.replace("$label", "color-" + n).replace("$color", "#ff0000"));
 }
 
 function refreshColorPickers()

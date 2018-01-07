@@ -22,7 +22,11 @@ if(!isset($json["profile_n"]))
 $profile_n = $json["profile_n"];
 require_once(__DIR__."/../web/includes/Data.php");
 require_once(__DIR__."/../network/tcp.php");
-Data::getInstance()->removeProfile($profile_n);
+$data = Data::getInstance();
+$data->removeProfile($profile_n);
 Data::save();
-tcp_send(Data::getInstance()->globalsToJson());
+if($data->getAvrIndex($profile_n) !== false)
+{
+    tcp_send(Data::getInstance()->globalsToJson());
+}
 echo json_encode(array("status" => "success"));

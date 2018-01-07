@@ -57,9 +57,10 @@ else
         }
     }
     Data::save();
-    $response["message"] = tcp_send($profile->toSend($data->getAvrIndex($json["profile_n"]))) ?
+    $avr_index = $data->getAvrIndex($json["profile_n"]);
+    $response["message"] = $avr_index !== false ? tcp_send($profile->toSend($avr_index)) ?
         Utils::getString("options_save_success") :
-        Utils::getString("options_save_success_offline");
+        Utils::getString("options_save_success_offline") : Utils::getString("options_save_success");
 }
 
 echo json_encode($response);

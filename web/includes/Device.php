@@ -155,10 +155,15 @@ abstract class Device
                 $effects_html
             </select>
         </div>
-        <h3 class=\"header-colors\">$profile_colors</h3>
+        <div class=\"row\">
+            <div class=\"col pr-0\"><h3 class=\"header-colors\">$profile_colors</h3></div>
+            <div class=\"col-auto pr-3\">
+                <button class=\"add-color-btn btn btn-primary btn-sm color-swatch$btn_class\" 
+                        type=\"button\">$profile_add_color</button>
+            </div>
+        </div>
         <div class=\"swatches-container\" data-color-limit=\"$color_limit\">
             $colors_html
-            <button class=\"add-color-btn btn btn-primary color-swatch$btn_class\" type=\"button\">$profile_add_color</button>
         </div>
 
     </div>";

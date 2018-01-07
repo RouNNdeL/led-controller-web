@@ -236,7 +236,7 @@ class DeviceSetting
             {
                 parent.find(".color-delete-btn").prop("disabled", false);
                 const swatch = getColorSwatch(num);
-                $(swatch).insertBefore($(this));
+                $(swatch).insertAfter(swatches.last());
                 refreshColorPickers();
                 if(num === limit_colors - 1)
                     $(this).addClass("hidden-xs-up")
@@ -288,7 +288,7 @@ class DeviceSetting
         if(this.limit_colors > 0 && swatches.length === 0)
         {
             const swatch = getColorSwatch(0);
-            $(swatch).insertBefore(this.parent.find(".add-color-btn"));
+            $(swatch).insertAfter(swatches.last());
             this.parent.find(".color-delete-btn").prop("disabled", true);
         }
         swatches = this.parent.find(".color-container");

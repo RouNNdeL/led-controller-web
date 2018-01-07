@@ -42,7 +42,8 @@ $(function()
 
     save_btn.click(save);
 
-    let quick_save = form.find("select[name='fan_count'],select[name='current_profile'],input[name='enabled']");
+    let quick_save = form.find("select[name='fan_count'],select[name='current_profile']," +
+        "input[name='enabled'],input[name='auto_increment']");
 
     form.find("input,select").not(quick_save).change(() =>
     {
@@ -116,8 +117,13 @@ $(function()
                     $("select[name=current_profile]").val(globals.highlight_profile_index);
                     $("input[name=enabled]")[0].checked = globals.leds_enabled;
                     slider.slider("setValue", globals.brightness);
-                    $("input[name=auto_increment]").val(globals.auto_increment);
                     $("select[name=fan_count]").val(globals.fan_count);
+
+                    let auto_increment = $("input[name=auto_increment]");
+                    if(!auto_increment.is(":focus"))
+                    {
+                        auto_increment.val(globals.auto_increment);
+                    }
                 }
             }
             catch(e)

@@ -101,7 +101,9 @@ $(function()
             {
                 console.error(e, data);
             }
-        })
+        });
+        source.addEventListener("tcp_status",
+            ({data}) => $("#profile-warning-tcp").toggleClass("hidden-xs-up", data === "1"));
     }
 
     $(".device-settings-container").each(function(i)

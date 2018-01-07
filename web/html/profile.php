@@ -50,18 +50,17 @@ $profile = $data->getProfile($n_profile);
     <div class="row profile-content">
         <?php
         require_once(__DIR__ . "/../../network/tcp.php");
-        if(!tcp_send(null))
-        {
-            $warning = Utils::getString("warning");
-            $message = Utils::getString("warning_device_offline");;
-            echo <<< TAG
-    <div class="col-md-12">
-        <div class="alert alert-danger">
-            <strong>$warning</strong> $message
+
+        $visible = tcp_send(null) ? "hidden-xs-up" : "";
+        $warning = Utils::getString("warning");
+        $message = Utils::getString("warning_device_offline");;
+        echo <<< TAG
+        <div id="profile-warning-tcp" class="col-md-12 $visible">
+            <div class="alert alert-danger">
+                <strong>$warning</strong> $message
+            </div>
         </div>
-    </div>
 TAG;
-        }
 
         $visible = $data->enabled ? "hidden-xs-up" : "";
         $str_warning = Utils::getString("warning");

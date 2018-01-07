@@ -18,9 +18,6 @@ $(function()
         json.auto_increment = parseInt(json.auto_increment);
         let data = JSON.stringify(json);
 
-        $("ul.nav-pills > li[role=presentation].highlight").removeClass("highlight");
-        $("ul.nav-pills > li[role=presentation]").eq(parseInt(json.current_profile) + 1).addClass("highlight");
-
         $.ajax("/api/save/global", {
             method: "POST",
             data: data,
@@ -83,27 +80,10 @@ $(function()
             save_btn.prop("disabled", false);
         }
     });
+
     $("#globals-profiles-inactive").sortable({
         connectWith: "#globals-profiles-active"
     });
-
-    function objectifyForm(formArray)
-    {
-        const returnArray = {};
-        for(let i = 0; i < formArray.length; i++)
-        {
-            returnArray[formArray[i]['name']] = formArray[i]['value'];
-        }
-        return returnArray;
-    }
-
-    function showSnackbar(text, duration = 2500)
-    {
-        const snackbar = $("#snackbar");
-        snackbar.text(text);
-        snackbar.addClass("show");
-        setTimeout(() => snackbar.removeClass("show"), duration);
-    }
 
     if(typeof(EventSource) !== "undefined")
     {
@@ -116,6 +96,10 @@ $(function()
                     const globals = JSON.parse(data).data;
                     $("a.nav-link.highlight").removeClass("highlight");
                     $("a.nav-link").eq(parseInt(globals.highlight_index)).addClass("highlight");
+
+                    $("li.list-group-item.highlight").removeClass("highlight");
+                    $("li.list-group-item[data-index="+globals.highlight_profile_index+"]").addClass("highlight");
+
                     $("select[name=current_profile]").val(globals.highlight_profile_index);
                     $("input[name=enabled]")[0].checked = globals.leds_enabled;
                     slider.slider("setValue", globals.brightness);
@@ -127,6 +111,27 @@ $(function()
             {
                 console.error(e, data);
             }
-        })
+        });
+        // noinspection EqualityComparisonWithCoercionJS
+        source.addEventListener("tcp_status",
+            ({data}) => $("#global-warning-tcp").toggleClass("hidden-xs-up", data === "1"));
     }
 });
+
+function showSnackbar(text, duration = 2500)
+{
+    const snackbar = $("#snackbar");
+    snackbar.text(text);
+    snackbar.addClass("show");
+    setTimeout(() => snackbar.removeClass("show"), duration);
+}
+
+function objectifyForm(formArray)
+{
+    const returnArray = {};
+    for(let i = 0; i < formArray.length; i++)
+    {
+        returnArray[formArray[i]['name']] = formArray[i]['value'];
+    }
+    return returnArray;
+}

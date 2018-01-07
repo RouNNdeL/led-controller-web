@@ -30,20 +30,18 @@ $navbar->initDefault();
 echo $navbar->toHtml();
 $data = Data::getInstance();
 ?>
-<div class="container-fluid">
+<div class="container-fluid my-3">
     <?php
-    if(!tcp_send(null))
-    {
-        $warning = Utils::getString("warning");
-        $message = Utils::getString("warning_device_offline");;
-        echo <<< TAG
-    <div class="mt-3">
-        <div class="alert alert-danger">
-            <strong>$warning</strong> $message
+    $visible = tcp_send(null) ? "hidden-xs-up" : "";
+    $warning = Utils::getString("warning");
+    $message = Utils::getString("warning_device_offline");;
+    echo <<< TAG
+        <div id="global-warning-tcp" class="col-md-12 px-0 $visible">
+            <div class="alert alert-danger">
+                <strong>$warning</strong> $message
+            </div>
         </div>
-    </div>
 TAG;
-    }
     ?>
     <form id="global-form">
         <div class="checkbox">

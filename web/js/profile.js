@@ -24,6 +24,7 @@ $(function()
     const delete_profile = $("#btn-delete-profile").not(".disabled");
     const warning_leds = $("#profile-warning-led-disabled");
     const warning_profile = $("#profile-warning-diff-profile");
+    const warning_inactive = $("#profile-warning-profile-inactive");
     let string_confirm_delete;
 
     refreshColorPickers();
@@ -92,8 +93,20 @@ $(function()
                     $("a.nav-link").eq(parseInt(globals.highlight_index)).addClass("highlight");
                 }
 
-                warning_profile.toggleClass("hidden-xs-up", profile_n === globals.highlight_profile_index);
-                warning_profile.find("a#current_profile_url").attr("href", "/profile/" + globals.highlight_profile_index);
+                if(globals.active_indexes.indexOf(profile_n) >= 0)
+                {
+                    warning_inactive.addClass("hidden-xs-up");
+                    warning_profile.toggleClass("hidden-xs-up", profile_n === globals.highlight_profile_index);
+                    warning_profile.find("a.current_profile_url")
+                        .attr("href", "/profile/" + globals.highlight_profile_index);
+                }
+                else
+                {
+                    warning_profile.addClass("hidden-xs-up");
+                    warning_inactive.removeClass("hidden-xs-up");
+                    warning_inactive.find("a.current_profile_url")
+                        .attr("href", "/profile/" + globals.highlight_profile_index);
+                }
                 warning_leds.toggleClass("hidden-xs-up", globals.leds_enabled);
                 profile_index = globals.highlight_profile_index;
             }
@@ -203,7 +216,7 @@ class DeviceSetting
         else if(this.device_match[1] === "gpu")
             this.device = {type: "a", num: 1};
         else
-            this.device = {type: "d", num: parseInt(this.device_match[2])-1};
+            this.device = {type: "d", num: parseInt(this.device_match[2]) - 1};
 
         this.limit_colors = parseInt(parent.find("#swatches-container").data("color-limit"));
 

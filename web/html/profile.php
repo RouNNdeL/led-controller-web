@@ -72,13 +72,25 @@ TAG;
             </div>
         </div>
 TAG;
-        $visible = ($data->getActiveProfileIndex() === $n_profile) ? "hidden-xs-up" : "";
+        $visible = ($data->getActiveProfileIndex() === $n_profile || $data->getAvrIndex($n_profile) === false)
+            ? "hidden-xs-up" : "";
         $str_diff_profile = Utils::getString("warning_diff_profile_selected");
         $str_diff_profile = str_replace("\$n", $data->getActiveProfileIndex(), $str_diff_profile);
         echo <<<TAG
         <div id="profile-warning-diff-profile" class="col-md-12 $visible">
             <div class="alert alert-warning">
                 <strong>$str_warning</strong> $str_diff_profile
+            </div>
+        </div>
+TAG;
+
+        $visible =  $data->getAvrIndex($n_profile) !== false ? "hidden-xs-up" : "";
+        $str_profile_inactive = Utils::getString("warning_profile_inactive");
+        $str_profile_inactive = str_replace("\$n", $data->getActiveProfileIndex(), $str_profile_inactive);
+        echo <<<TAG
+        <div id="profile-warning-profile-inactive" class="col-md-12 $visible">
+            <div class="alert alert-warning">
+                <strong>$str_warning</strong> $str_profile_inactive
             </div>
         </div>
 TAG;

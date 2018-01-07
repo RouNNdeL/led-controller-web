@@ -302,6 +302,7 @@ class Data
         $array["current_profile"] = $this->current_profile;
         $array["highlight_profile_index"] = $this->getActiveProfileIndex();
         $array["highlight_index"] = $this->getHighlightIndex();
+        $array["active_indexes"] = $this->active_indexes;
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
         $array["auto_increment"] = $raw ? Device::getTiming($this->auto_increment) : $this->auto_increment;

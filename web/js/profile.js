@@ -87,7 +87,7 @@ $(function()
             {
                 const globals = JSON.parse(data).data;
                 $("a.nav-link.highlight").removeClass("highlight");
-                if(profile_n !== globals.current_profile)
+                if(profile_n !== globals.highlight_profile_index)
                 {
                     $("a.nav-link").eq(parseInt(globals.highlight_index)).addClass("highlight");
                 }

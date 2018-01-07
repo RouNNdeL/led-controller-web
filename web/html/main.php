@@ -76,7 +76,7 @@ TAG;
                 foreach($data->getActiveProfilesInOrder() as $i => $profile)
                 {
                     $name = $profile->getName();
-                    $selected = $data->getHighlightProfileIndex() === $i ? "selected" : "";
+                    $selected = $data->getActiveProfileIndex() === $i ? "selected" : "";
                     echo "<option value=\"$i\" $selected>$name</option>";
                 }
                 ?>
@@ -89,18 +89,18 @@ TAG;
                    placeholder="0" name="auto_increment">
         </label>
         <br>
-        <div class="row">
+        <div class="row my-2">
             <div class="col-lg-3 col-sm-6 mb-3 mb-sm-0">
                 <div class="card full-height">
                     <div class="card-header">
-                        <label>Active profiles</label>
+                        <label class="mb-0"><?php echo Utils::getString("options_active_order") ?></label>
                     </div>
                     <div class="card-body full-height">
                         <ul class="list-group full-height" id="globals-profiles-active">
                             <?php
                             foreach($data->getActiveProfilesInOrder() as $i => $profile)
                             {
-                                $class = $data->getHighlightProfileIndex() === $i ? " highlight" : "";
+                                $class = $data->getActiveProfileIndex() === $i ? " highlight" : "";
                                 $name = $profile->getName();
                                 echo "<li class=\"list-group-item not-selectable$class\" data-index=\"$i\">$name</li>";
                             }
@@ -112,10 +112,10 @@ TAG;
             <div class="col-lg-3 col-sm-6 pl-sm-0">
                 <div class="card full-height">
                     <div class="card-header">
-                        <label>Inactive profiles</label>
+                        <label class="mb-0"><?php echo Utils::getString("options_inactive_order") ?></label>
                     </div>
                     <div class="card-body full-height">
-                        <ul class="list-group full-height" id="globals-profiles-inactive">
+                        <ul class="list-group full-height" id="globals-profiles-inactive" style="min-height: 50px">
                             <?php
                             foreach($data->getInactiveProfilesInOrder() as $i => $profile)
                             {
@@ -131,18 +131,18 @@ TAG;
         <label>
             <?php echo Utils::getString("options_global_brightness") ?>
             <br>
-            <input id="brightness-slider"
-                   type="text"
-                   name="brightness"
-                   data-provide="slider"
-                   data-slider-ticks="[0,100]"
-                   data-slider-ticks-labels=''
-                   data-slider-min="0"
-                   data-slider-max="100"
-                   data-slider-step="1"
-                   data-slider-value="<?php echo Data::getInstance()->getBrightness() ?>"
-                   data-slider-tooltip="show"
-            >
+            <div class="px-2">
+                <input id="brightness-slider"
+                       type="text"
+                       name="brightness"
+                       data-provide="slider"
+                       data-slider-min="0"
+                       data-slider-max="100"
+                       data-slider-step="1"
+                       data-slider-value="<?php echo Data::getInstance()->getBrightness() ?>"
+                       data-slider-tooltip="show"
+                >
+            </div>
         </label>
     </form>
     <br>

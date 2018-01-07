@@ -34,6 +34,10 @@ a.nav-link.highlight, li.list-group-item.highlight
     height:100%;
 }
 
+.slider-selection {
+    background: #BABABA !important;
+}
+
 .not-selectable {
     -ms-user-select: none; /* IE 10+ */
     -moz-user-select: -moz-none;

@@ -9,7 +9,7 @@
 function tcp_send($string)
 {
     error_reporting(0);
-    $filename = __DIR__ . "/interface.data";
+    $filename = __DIR__ . "/interface.dat";
     if(!file_exists($filename))
     {
         return false;
@@ -19,6 +19,8 @@ function tcp_send($string)
     error_reporting(E_ALL);
     if(!$fp)
     {
+        /* TODO: Create another file that will will create and remove, as this is unsafe
+         * (the interface might timeout ofater 100ms) */
         unlink($filename);
         return false;
     }

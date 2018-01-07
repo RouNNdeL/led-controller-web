@@ -48,6 +48,15 @@ try
     if(isset($json["auto_increment"]))
         $auto_increment = $data->setAutoIncrement($json["auto_increment"]);
 
+    if(isset($json["order"]))
+    {
+        $new_profiles = $data->setOrder($json["order"]["active"], $json["order"]["inactive"]);
+        foreach($new_profiles as $i => $p)
+        {
+            tcp_send($data->getProfile($p)->toSend($i));
+        }
+    }
+
     Data::save();
     $string = $notify ? $data->globalsToJson() : null;
     $success_msg = Utils::getString(tcp_send($string) ?

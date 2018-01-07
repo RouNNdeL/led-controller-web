@@ -5,7 +5,10 @@ $(function()
 {
     const form = $("#global-form");
     const save_btn = $("#btn-save");
-    const slider = $("#brightness-slider").slider();
+    const slider = $("#brightness-slider").slider({
+        tooltip: "always",
+        tooltip_position: "bottom"
+    });
     let changes = false;
 
     let save = () =>
@@ -14,8 +17,10 @@ $(function()
         json.enabled = $("input[name=enabled]")[0].checked;
         json.fan_count = parseInt(json.fan_count);
         json.profile_index = parseInt(json.current_profile);
+        delete json.current_profile;
         json.brightness = parseInt(json.brightness);
         json.auto_increment = parseInt(json.auto_increment);
+        json.order = getProfileOrder();
         let data = JSON.stringify(json);
 
         $.ajax("/api/save/global", {
@@ -44,7 +49,8 @@ $(function()
         changes = true;
         save_btn.prop("disabled", false);
     });
-    quick_save.change(() => {
+    quick_save.change(() =>
+    {
         changes = true;
         save();
     });
@@ -62,17 +68,23 @@ $(function()
 
     $("#globals-profiles-active").sortable({
         connectWith: "#globals-profiles-inactive",
-        receive: function(event, ui) {
-            if ($(this).children().length > 8) {
+        receive: function(event, ui)
+        {
+            if($(this).children().length > 8)
+            {
                 showSnackbar("You can only have 8 active profiles!");
                 $(ui.sender).sortable('cancel');
             }
+            updateProfileSelect();
         },
-        remove: function(event, ui) {
-            if ($(this).children().length < 1) {
+        remove: function(event, ui)
+        {
+            if($(this).children().length < 1)
+            {
                 showSnackbar("You need at least 1 active profile!");
                 $(this).sortable('cancel');
             }
+            updateProfileSelect();
         },
         change: function(event, ui)
         {
@@ -88,7 +100,8 @@ $(function()
     if(typeof(EventSource) !== "undefined")
     {
         const source = new EventSource("/api/events");
-        source.addEventListener("globals", ({data}) => {
+        source.addEventListener("globals", ({data}) =>
+        {
             try
             {
                 if(!changes)
@@ -98,7 +111,7 @@ $(function()
                     $("a.nav-link").eq(parseInt(globals.highlight_index)).addClass("highlight");
 
                     $("li.list-group-item.highlight").removeClass("highlight");
-                    $("li.list-group-item[data-index="+globals.highlight_profile_index+"]").addClass("highlight");
+                    $("li.list-group-item[data-index=" + globals.highlight_profile_index + "]").addClass("highlight");
 
                     $("select[name=current_profile]").val(globals.highlight_profile_index);
                     $("input[name=enabled]")[0].checked = globals.leds_enabled;
@@ -115,6 +128,39 @@ $(function()
         // noinspection EqualityComparisonWithCoercionJS
         source.addEventListener("tcp_status",
             ({data}) => $("#global-warning-tcp").toggleClass("hidden-xs-up", data === "1"));
+    }
+
+    function getProfileOrder()
+    {
+         const json = {
+            active: [],
+            inactive: []
+        };
+        const active = $("#globals-profiles-active").find("li");
+        const inactive = $("#globals-profiles-inactive").find("li");
+        for(let i = 0; i < active.length; i++)
+        {
+            json.active.push(active.eq(i).data("index"));
+        }
+        for(let i = 0; i < inactive.length; i++)
+        {
+            json.inactive.push(inactive.eq(i).data("index"));
+        }
+        return json;
+    }
+
+    function updateProfileSelect()
+    {
+        const active = $("#globals-profiles-active").find("li");
+        let select = $("select[name=current_profile]");
+        select.empty();
+        for(let i = 0; i < active.length; i++)
+        {
+            select.append($("<option>", {
+                value: active.eq(i).data("index"),
+                text: active.eq(i).text(),
+            }));
+        }
     }
 });
 

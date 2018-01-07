@@ -19,6 +19,8 @@
   "options_global_auto_increment": "Auto cycle profiles",
   "options_color_config": "$port color config",
   "options_reset_defaults": "Reset to defaults",
+  "options_active_order": "Active profiles",
+  "options_inactive_order": "Inactive profiles",
   "options_save": "Save changes",
   "options_save_success": "Successfully saved changes!",
   "options_save_success_offline": "The device is offline, changes will be applied when it goes online",

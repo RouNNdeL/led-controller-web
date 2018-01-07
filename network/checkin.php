@@ -11,7 +11,7 @@ require_once __DIR__."/../secure.php";
 if(isset($_GET["token"]) && $_GET["token"] === $interface_token)
 {
     $addr = $_SERVER["REMOTE_ADDR"];
-    file_put_contents("interface.data", $addr . ":" . $_GET["port"]);
+    file_put_contents("interface.dat", $addr . ":" . $_GET["port"]);
     echo "success";
 }
 else

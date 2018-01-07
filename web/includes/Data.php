@@ -134,6 +134,47 @@ class Data
         $this->current_profile = $raw ? $n : array_search(array_search($n, $this->avr_indexes), $this->avr_order);
     }
 
+    public function setOrder($active, $inactive)
+    {
+        $new_profiles = array();
+        foreach($this->active_indexes as $item)
+        {
+            if(array_search($item, $active) === false)
+            {
+                if($this->getActiveProfileIndex() === $item)
+                {
+                    $this->setCurrentProfile($active[0]);
+                }
+                unset($this->avr_indexes[array_search($item, $this->avr_indexes)]);
+            }
+        }
+        foreach($active as $item)
+        {
+            if(array_search($item, $this->active_indexes) === false)
+            {
+                for($i = 0; $i < self::MAX_ACTIVE_COUNT; $i++)
+                {
+                    if(!isset($this->avr_indexes[$i]))
+                    {
+                        $this->avr_indexes[$i] = $item;
+                        $avr_i = $i;
+                        break;
+                    }
+                }
+                if(!isset($avr_i))
+                    throw new UnexpectedValueException("Cannot insert profile, avr_indexes full");
+                $new_profiles[$avr_i] = $item;
+            }
+        }
+        $previous_active = $this->getActiveProfileIndex();
+        $this->active_indexes = $active;
+        $this->inactive_indexes = $inactive;
+        $this->avr_order = $this->getAvrOrder();
+        $this->setCurrentProfile($previous_active);
+
+        return $new_profiles;
+    }
+
     public function getCurrentProfile()
     {
         return $this->current_profile;
@@ -215,11 +256,10 @@ class Data
 
     public function getHighlightIndex()
     {
-        //var_dump($this);
         return array_search($this->avr_indexes[$this->avr_order[$this->current_profile]], array_keys($this->profiles));
     }
 
-    public function getHighlightProfileIndex()
+    public function getActiveProfileIndex()
     {
         return $this->avr_indexes[$this->avr_order[$this->current_profile]];
     }
@@ -258,9 +298,9 @@ class Data
         $array = array();
 
         $array["brightness"] = $raw ? $this->getBrightness() : $this->brightness;
-        $array["profile_count"] = sizeof($this->profiles);
+        $array["profile_count"] = sizeof($this->active_indexes);
         $array["current_profile"] = $this->current_profile;
-        $array["highlight_profile_index"] = $this->getHighlightProfileIndex();
+        $array["highlight_profile_index"] = $this->getActiveProfileIndex();
         $array["highlight_index"] = $this->getHighlightIndex();
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;

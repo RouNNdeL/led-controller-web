@@ -72,9 +72,9 @@ TAG;
             </div>
         </div>
 TAG;
-        $visible = ($data->getHighlightProfileIndex() === $n_profile) ? "hidden-xs-up" : "";
+        $visible = ($data->getActiveProfileIndex() === $n_profile) ? "hidden-xs-up" : "";
         $str_diff_profile = Utils::getString("warning_diff_profile_selected");
-        $str_diff_profile = str_replace("\$n", $data->getHighlightProfileIndex(), $str_diff_profile);
+        $str_diff_profile = str_replace("\$n", $data->getActiveProfileIndex(), $str_diff_profile);
         echo <<<TAG
         <div id="profile-warning-diff-profile" class="col-md-12 $visible">
             <div class="alert alert-warning">

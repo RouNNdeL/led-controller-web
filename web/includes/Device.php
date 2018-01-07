@@ -216,8 +216,7 @@ abstract class Device
                         $template = self::INPUT_TEMPLATE;
                         $template = str_replace("\$label", Utils::getString("profile_arguments_$name"), $template);
                         $template = str_replace("\$name", "arg_" . $name, $template);
-                        //$template = preg_replace("/\\\$id/", "input-arg_" . $name, $template);
-                        $template = str_replace("\$placeholder", "", $template);
+                        $template = str_replace("\$placeholder", $argument, $template);
                         $template = str_replace("\$value", $argument, $template);
                         $arguments_html .= $template;
                 }
@@ -228,11 +227,12 @@ abstract class Device
         {
             if(($timings & (1 << (5 - $i))) > 0)
             {
+                $t = self::getTiming($this->timings[$i]);
                 $template = self::INPUT_TEMPLATE;
                 $template = str_replace("\$label", Utils::getString("profile_timing_$timing_strings[$i]"), $template);
                 $template = str_replace("\$name", "time_" . $timing_strings[$i], $template);
-                $template = str_replace("\$placeholder", "1", $template);
-                $template = str_replace("\$value", self::getTiming($this->timings[$i]), $template);
+                $template = str_replace("\$placeholder", $t, $template);
+                $template = str_replace("\$value", $t, $template);
                 $timing_html .= $template;
             }
             else

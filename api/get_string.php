@@ -10,13 +10,13 @@ if($_SERVER['REQUEST_METHOD'] !== 'GET')
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid request\"}";
     http_response_code(400);
-    exit(400);
+    exit(0);
 }
 if(!isset($_GET["name"]))
 {
     http_response_code(400);
     echo "{\"status\":\"error\",\"message\":\"Missing arguments\"}";
-    exit(400);
+    exit(0);
 }
 require_once(__DIR__."/../web/includes/Utils.php");
 $string =  Utils::getString($_GET["name"]);

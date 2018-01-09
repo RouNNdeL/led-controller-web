@@ -11,14 +11,14 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST')
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid request\"}";
     http_response_code(400);
-    exit(400);
+    exit(0);
 }
 $json = json_decode(file_get_contents("php://input"), true);
 if($json == false)
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid JSON\"}";
     http_response_code(400);
-    exit(400);
+    exit(0);
 }
 
 require_once(__DIR__."/../web/includes/Data.php");
@@ -51,9 +51,14 @@ try
     if(isset($json["order"]))
     {
         $new_profiles = $data->setOrder($json["order"]["active"], $json["order"]["inactive"]);
+        $tcp_online = true;
         foreach($new_profiles as $i => $p)
         {
-            tcp_send($data->getProfile($p)->toSend($i));
+            $tcp_online = tcp_send($data->getProfile($p)->toSend($i)) && $tcp_online;
+        }
+        if($tcp_online)
+        {
+            $data->updateOldVars();
         }
     }
 

@@ -18,13 +18,13 @@ if(!isset($headers["Authorization"]))
 {
     l("unauthorized\n");
     http_response_code(401);
-    exit(401);
+    exit(0);
 }
 else if($headers["Authorization"] !== $dialogflow_auth)
 {
     l("unauthorized: ".$headers["Authorization"]."\n");
     http_response_code(401);
-    exit(401);
+    exit(0);
 }
 error_reporting(0);
 $body = file_get_contents("php://input");

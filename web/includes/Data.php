@@ -35,6 +35,10 @@ class Data
     /** @var int[] */
     private $avr_indexes;
     /** @var int[] */
+    private $old_avr_indexes;
+    /** @var int[] */
+    private $modified_profiles;
+    /** @var int[] */
     private $avr_order;
 
     /** @var Profile[] */
@@ -293,11 +297,11 @@ class Data
         return Device::getTiming($timing);
     }
 
-    public function globalsToJson($raw = false)
+    public function globalsToJson($web = false)
     {
         $array = array();
 
-        $array["brightness"] = $raw ? $this->getBrightness() : $this->brightness;
+        $array["brightness"] = $web ? $this->getBrightness() : $this->brightness;
         $array["profile_count"] = sizeof($this->active_indexes);
         $array["current_profile"] = $this->current_profile;
         $array["highlight_profile_index"] = $this->getActiveProfileIndex();
@@ -305,11 +309,46 @@ class Data
         $array["active_indexes"] = $this->active_indexes;
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
-        $array["auto_increment"] = $raw ? Device::getTiming($this->auto_increment) : $this->auto_increment;
+        $array["auto_increment"] = $web ? Device::getTiming($this->auto_increment) : $this->auto_increment;
         $array["fan_config"] = array(2, 0, 0);
         $array["profile_order"] = $this->getAvrOrder();
 
         return json_encode(array("type" => "globals_update", "data" => $array));
+    }
+
+    public function updateOldVars()
+    {
+        $this->old_avr_indexes = $this->avr_indexes;
+        $this->modified_profiles = array();
+    }
+
+    public function getNewProfiles()
+    {
+        var_dump($this->modified_profiles);
+        $new_profiles = array();
+
+        foreach($this->avr_indexes as $i => $item)
+        {
+            if(array_search($item, $this->old_avr_indexes) === false)
+            {
+                $new_profiles[$i] = $item;
+            }
+        }
+        foreach($this->modified_profiles as $modified_profile)
+        {
+            if(($key = array_search($modified_profile, $this->avr_indexes)) !== false)
+            {
+                $new_profiles[$key] = $modified_profile;
+            }
+        }
+
+        return $new_profiles;
+    }
+
+    public function addModified($index)
+    {
+        array_push($this->modified_profiles, $index);
+        $this->modified_profiles = array_unique($this->modified_profiles);
     }
 
     public function getAvrOrder()

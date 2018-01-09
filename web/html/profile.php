@@ -27,7 +27,7 @@ if(!isset($_GET["n_profile"]))
 {
     http_response_code(500);
     include(__DIR__ . "/../error/500.php");
-    exit(500);
+    exit(0);
 }
 $n_profile = (int)$_GET["n_profile"];
 
@@ -35,7 +35,7 @@ if(Data::getInstance()->getProfile($n_profile) === false)
 {
     http_response_code(404);
     include(__DIR__ . "/../error/404.php");
-    exit(404);
+    exit(0);
 }
 $navbar = new Navbar();
 $data = Data::getInstance();

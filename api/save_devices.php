@@ -11,14 +11,14 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST')
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid request\"}";
     http_response_code(400);
-    exit(400);
+    exit(0);
 }
 $json = json_decode(file_get_contents("php://input"), true);
 if($json == false || !isset($json["devices"]) || !isset($json["profile_n"]))
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid JSON\"}";
     http_response_code(400);
-    exit(400);
+    exit(0);
 }
 
 require_once(__DIR__ . "/../web/includes/Utils.php");
@@ -33,6 +33,7 @@ $data = Data::getInstance();
 $response = array();
 $profile = $data->getProfile($json["profile_n"]);
 
+
 if($profile === false)
 {
     $response["status"] = "error";
@@ -42,6 +43,8 @@ if($profile === false)
 else
 {
     $response["status"] = "success";
+
+    $data->addModified($json["profile_n"]);
 
     foreach($json["devices"] as $item)
     {
@@ -56,9 +59,14 @@ else
             $profile->digital_devices[$item["device"]["num"]] = $device;
         }
     }
-    Data::save();
     $avr_index = $data->getAvrIndex($json["profile_n"]);
-    $response["message"] = $avr_index !== false ? tcp_send($profile->toSend($avr_index)) ?
+    $tcp_online = tcp_send($profile->toSend($avr_index));
+    if($tcp_online)
+    {
+        $data->updateOldVars();
+    }
+    Data::save();
+    $response["message"] = $avr_index !== false ? $tcp_online ?
         Utils::getString("options_save_success") :
         Utils::getString("options_save_success_offline") : Utils::getString("options_save_success");
 }

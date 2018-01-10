@@ -28,6 +28,9 @@ if(isset($_GET["token"]) && $_GET["token"] === $interface_token)
     {
         $data->updateOldVars();
     }
+    $json = array();
+    $json["type"] = "save_explicit";
+    tcp_send(json_encode($json));
     echo $response;
 }
 else

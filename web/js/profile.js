@@ -154,7 +154,7 @@ $(function()
         }).done(function(response)
         {
             changes = false;
-            showSnackbar(response.message)
+            if(response.message !== null) showSnackbar(response.message)
         }).fail(function(err)
         {
             console.error(err);
@@ -247,7 +247,6 @@ class DeviceSetting
         parent.find("#effect-select-" + this.device_match[1]).change(event =>
         {
             changes = true;
-            $("#device-settings-submit").prop("disabled", false);
             const data = JSON.stringify({
                 type: this.device.type,
                 effect: parseInt($(event.target).val())
@@ -455,12 +454,10 @@ function registerFormListeners()
     inputs.change(function(e)
     {
         changes = true;
-        $("#device-settings-submit").prop("disabled", false);
     });
     timings.change(function(e)
     {
         changes = true;
-        $("#device-settings-submit").prop("disabled", false);
         $(this).val(getTiming(convertToTiming($(this).val())));
     });
 }

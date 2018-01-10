@@ -13,16 +13,18 @@ $(function()
     });
     let changes = false;
 
-    let save = () =>
+    let save = (quick = false) =>
     {
         let json = objectifyForm(form.serializeArray());
         json.enabled = $("input[name=enabled]")[0].checked;
         json.fan_count = parseInt(json.fan_count);
         json.profile_index = parseInt(json.current_profile);
         delete json.current_profile;
-        json.brightness = parseInt(json.brightness);
+        if(!quick){
+            json.brightness = parseInt(json.brightness);
+            json.order = getProfileOrder();
+        }
         json.auto_increment = parseFloat(json.auto_increment);
-        json.order = getProfileOrder();
         let data = JSON.stringify(json);
 
         $.ajax("/api/save/global", {
@@ -31,10 +33,13 @@ $(function()
             contentType: "application/json"
         }).done(function(response)
         {
-            showSnackbar(response.message, 2500);
-            save_btn.prop("disabled", true);
-            $("#auto-increment").val(response.auto_increment_val);
-            changes = false;
+            if(response.message !== null) showSnackbar(response.message, 2500);
+            if(!quick)
+            {
+                save_btn.prop("disabled", true);
+                $("#auto-increment").val(response.auto_increment_val);
+                changes = false;
+            }
         }).fail(function(e)
         {
             showSnackbar(e.responseJSON.message);
@@ -54,8 +59,7 @@ $(function()
     });
     quick_save.change(() =>
     {
-        changes = true;
-        save();
+        save(true);
     });
 
     $(window).on("beforeunload", function(e)

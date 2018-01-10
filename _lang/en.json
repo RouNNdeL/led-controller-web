@@ -22,6 +22,7 @@
   "options_save": "Save changes",
   "options_save_success": "Successfully saved changes!",
   "options_save_success_offline": "The device is offline, changes will be applied when it goes online",
+  "options_save_no_changes": "No changes detected!",
   "profile_delete": "Delete profile",
   "profile_delete_explain": "You cannot delete the last profile",
   "profile_settings_pc": "Settings for PC",

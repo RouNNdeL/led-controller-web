@@ -44,31 +44,52 @@ else
 {
     $response["status"] = "success";
 
-    $data->addModified($json["profile_n"]);
+    $changes = false;
 
     foreach($json["devices"] as $item)
     {
         if($item["device"]["type"] === "a")
         {
             $device = AnalogDevice::fromJson($item);
-            $profile->analog_devices[$item["device"]["num"]] = $device;
+            /** @noinspection PhpNonStrictObjectEqualityInspection */
+            $change = $profile->analog_devices[$item["device"]["num"]] != $device;
+            if($change)
+            {
+                $profile->analog_devices[$item["device"]["num"]] = $device;
+                $changes = true;
+            }
         }
         else
         {
             $device = DigitalDevice::fromJson($item);
-            $profile->digital_devices[$item["device"]["num"]] = $device;
+            /** @noinspection PhpNonStrictObjectEqualityInspection */
+            $change = $profile->digital_devices[$item["device"]["num"]] != $device;
+            if($change)
+            {
+                $profile->digital_devices[$item["device"]["num"]] = $device;
+                $changes = true;
+            }
         }
     }
     $avr_index = $data->getAvrIndex($json["profile_n"]);
-    $tcp_online = tcp_send($profile->toSend($avr_index));
-    if($tcp_online)
+    $data->addModified($json["profile_n"]);
+
+    if($changes)
     {
-        $data->updateOldVars();
+        $tcp_online = tcp_send($profile->toSend($avr_index));
+        if($tcp_online)
+        {
+            $data->updateOldVars();
+        }
+        Data::save();
+        $response["message"] = $avr_index !== false ? $tcp_online ?
+            Utils::getString("options_save_success") :
+            Utils::getString("options_save_success_offline") : Utils::getString("options_save_success");
     }
-    Data::save();
-    $response["message"] = $avr_index !== false ? $tcp_online ?
-        Utils::getString("options_save_success") :
-        Utils::getString("options_save_success_offline") : Utils::getString("options_save_success");
+    else
+    {
+        $response["message"] = Utils::getString("options_save_no_changes");
+    }
 }
 
 echo json_encode($response);

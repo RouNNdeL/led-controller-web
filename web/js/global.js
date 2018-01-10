@@ -13,16 +13,21 @@ $(function()
     });
     let changes = false;
 
-    let save = (quick = false) =>
+    function save(full)
     {
         let json = objectifyForm(form.serializeArray());
         json.enabled = $("input[name=enabled]")[0].checked;
         json.fan_count = parseInt(json.fan_count);
         json.profile_index = parseInt(json.current_profile);
         delete json.current_profile;
-        if(!quick){
+        if(full === true)
+        {
             json.brightness = parseInt(json.brightness);
             json.order = getProfileOrder();
+        }
+        else
+        {
+            delete json.brightness;
         }
         json.auto_increment = parseFloat(json.auto_increment);
         let data = JSON.stringify(json);
@@ -34,7 +39,7 @@ $(function()
         }).done(function(response)
         {
             if(response.message !== null) showSnackbar(response.message, 2500);
-            if(!quick)
+            if(full === true)
             {
                 save_btn.prop("disabled", true);
                 $("#auto-increment").val(response.auto_increment_val);
@@ -45,9 +50,9 @@ $(function()
             showSnackbar(e.responseJSON.message);
             console.error(e);
         });
-    };
+    }
 
-    save_btn.click(save);
+    save_btn.click(e => save(true));
 
     let quick_save = form.find("select[name='fan_count'],select[name='current_profile']," +
         "input[name='enabled'],input[name='auto_increment']");
@@ -59,7 +64,7 @@ $(function()
     });
     quick_save.change(() =>
     {
-        save(true);
+        save(false);
     });
 
     $(window).on("beforeunload", function(e)
@@ -144,7 +149,7 @@ $(function()
 
     function getProfileOrder()
     {
-         const json = {
+        const json = {
             active: [],
             inactive: []
         };

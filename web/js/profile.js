@@ -236,7 +236,7 @@ class DeviceSetting
             {
                 parent.find(".color-delete-btn").prop("disabled", false);
                 const swatch = getColorSwatch(num);
-                $(swatch).insertAfter(swatches.last());
+                parent.find(".swatches-container").append($(swatch));
                 refreshColorPickers();
                 if(num === limit_colors - 1)
                     $(this).addClass("hidden-xs-up")
@@ -287,7 +287,7 @@ class DeviceSetting
         if(this.limit_colors > 0 && swatches.length === 0)
         {
             const swatch = getColorSwatch(0);
-            $(swatch).insertAfter(swatches.last());
+            this.parent.find(".swatches-container").append($(swatch));
             this.parent.find(".color-delete-btn").prop("disabled", true);
         }
         swatches = this.parent.find(".color-container");
@@ -449,7 +449,7 @@ function refreshColorPickers()
 function registerFormListeners()
 {
     const timings = $(".timing-container").find("input");
-    const inputs = $("input,select").not(timings).not("select.effect-select");
+    const inputs = $("input,select").not(timings).not("select.effect-select, #profile-name");
     inputs.off("change");
     inputs.change(function(e)
     {
@@ -458,59 +458,12 @@ function registerFormListeners()
     timings.change(function(e)
     {
         changes = true;
-        $(this).val(getTiming(convertToTiming($(this).val())));
+        let input = $(this).val().replace(/,/g, ".");
+        if(input.match(/(min|m)/))
+        {
+            let number = parseFloat(input);
+            input = isNaN(number) ? 0 : number * 60;
+        }
+        $(this).val(getTiming(convertToTiming(input)));
     });
-}
-
-function getTiming(x)
-{
-    if(x < 0 || x > 255)
-    {
-        return 0;
-    }
-    if(x <= 80)
-    {
-        return x / 16;
-    }
-    if(x <= 120)
-    {
-        return x / 8 - 5;
-    }
-    if(x <= 160)
-    {
-        return x / 2 - 50;
-    }
-    if(x <= 190)
-    {
-        return x - 130;
-    }
-    if(x <= 235)
-    {
-        return 2 * x - 320;
-    }
-    if(x <= 245)
-    {
-        return 15 * x - 3375;
-    }
-    return 60 * x - 14400;
-}
-
-function convertToTiming(float)
-{
-    const timings = getTimings();
-    for(let i = 0; i < timings.length; i++)
-    {
-        if(float < timings[i]) return i - 1;
-    }
-    return 0;
-}
-
-function getTimings()
-{
-    const arr = [];
-    for(let i = 0; i < 256; i++)
-    {
-        arr[i] = getTiming(i);
-    }
-    return arr;
 }

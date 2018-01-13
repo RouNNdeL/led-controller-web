@@ -55,9 +55,9 @@ $(function()
     save_btn.click(e => save(true));
 
     let quick_save = form.find("select[name='fan_count'],select[name='current_profile']," +
-        "input[name='enabled'],input[name='auto_increment']");
+        "input[name='enabled']");
 
-    form.find("input,select").not(quick_save).change(() =>
+    form.find("input,select").not(quick_save).not("#auto-increment").change(() =>
     {
         changes = true;
         save_btn.prop("disabled", false);
@@ -107,6 +107,18 @@ $(function()
 
     $("#globals-profiles-inactive").sortable({
         connectWith: "#globals-profiles-active"
+    });
+
+    $("#auto-increment").change(function(e)
+    {
+        let input = $(this).val().replace(/,/g, ".");
+        if(input.match(/(min|m)/))
+        {
+            let number = parseFloat(input);
+            input = isNaN(number) ? 0 : number * 60;
+        }
+        $(this).val(getTiming(convertToTiming(input)));
+        save(false);
     });
 
     if(typeof(EventSource) !== "undefined")

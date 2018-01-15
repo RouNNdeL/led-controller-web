@@ -38,7 +38,7 @@ function convertToTiming(float)
     const timings = getTimings();
     for(let i = 0; i < timings.length; i++)
     {
-        if(float < timings[i]) return i - 1;
+        if(float <= timings[i]) return i;
     }
     return 0;
 }

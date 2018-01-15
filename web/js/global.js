@@ -117,7 +117,7 @@ $(function()
             let number = parseFloat(input);
             input = isNaN(number) ? 0 : number * 60;
         }
-        $(this).val(getTiming(convertToTiming(input)));
+        $(this).val(getTiming(convertToTiming(input/4))*4);
         save(false);
     });
 

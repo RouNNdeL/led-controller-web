@@ -283,7 +283,7 @@ class Data
      */
     public function getAutoIncrement()
     {
-        return Device::getTiming($this->auto_increment);
+        return Device::getTiming($this->auto_increment)*4;
     }
 
     /**
@@ -292,9 +292,9 @@ class Data
      */
     public function setAutoIncrement($value)
     {
-        $timing = Device::convertToTiming($value);
+        $timing = Device::convertToTiming($value/4);
         $this->auto_increment = $timing;
-        return Device::getTiming($timing);
+        return Device::getTiming($timing)*4;
     }
 
     public function globalsToJson($web = false)
@@ -309,7 +309,7 @@ class Data
         $array["active_indexes"] = $this->active_indexes;
         $array["leds_enabled"] = $this->enabled;
         $array["fan_count"] = $this->fan_count;
-        $array["auto_increment"] = $web ? Device::getTiming($this->auto_increment) : $this->auto_increment;
+        $array["auto_increment"] = $web ? Device::getTiming($this->auto_increment) * 4 : $this->auto_increment;
         $array["fan_config"] = array(2, 0, 0);
         $array["profile_order"] = $this->getAvrOrder();
 

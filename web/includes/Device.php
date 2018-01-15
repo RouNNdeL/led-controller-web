@@ -329,7 +329,7 @@ abstract class Device
     {
         foreach(self::getTimings() as $i => $timing)
         {
-            if($float < $timing) return $i - 1;
+            if($float <= $timing) return $i;
         }
         return 0;
     }

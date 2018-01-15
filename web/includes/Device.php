@@ -327,11 +327,13 @@ abstract class Device
 
     public static function convertToTiming($float)
     {
+        if($float < 0)
+            return 0;
         foreach(self::getTimings() as $i => $timing)
         {
-            if($float <= $timing) return $i;
+            if($float < $timing) return $i-1;
         }
-        return 0;
+        return 255;
     }
 
     public static function getTimings()

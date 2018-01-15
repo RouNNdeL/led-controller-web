@@ -36,11 +36,13 @@ function getTiming(x)
 function convertToTiming(float)
 {
     const timings = getTimings();
+    if(float < 0)
+        return 0;
     for(let i = 0; i < timings.length; i++)
     {
-        if(float <= timings[i]) return i;
+        if(float < timings[i]) return i-1;
     }
-    return 0;
+    return 255;
 }
 
 function getTimings()

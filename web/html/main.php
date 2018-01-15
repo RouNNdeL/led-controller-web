@@ -85,8 +85,8 @@ TAG;
         <br>
         <label>
             <?php echo Utils::getString("options_global_auto_increment") ?>
-            <input type="text" class="form-control" id="auto-increment" value="<?php echo $data->getAutoIncrement() ?>"
-                   placeholder="0" name="auto_increment">
+            <input type="text" class="form-control" id="auto-increment" value="<?php echo $data->getAutoIncrement()."s" ?>"
+                   placeholder="0" name="auto_increment" autocomplete="off" aria-autocomplete="none" spellcheck="false">
         </label>
         <br>
         <div class="row my-2">

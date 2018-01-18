@@ -74,6 +74,7 @@ class Data
         }
         $this->avr_indexes = $this->active_indexes;
         $this->avr_order = $this->getAvrOrder();
+        $this->modified_profiles = array();
     }
 
     /**

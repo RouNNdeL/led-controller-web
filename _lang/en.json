@@ -13,6 +13,7 @@
   "warning_diff_profile_selected": "A different profile is being displayed currently, <a href=\"#change_profile\" class=\"alert-link\">display this one</a> or <a href=\"/profile/$n\" class=\"alert-link current_profile_url\">edit the active profile</a>",
   "warning_profile_inactive": "The current profile is currently inactive, drag it to active list in <a href=\"/\" class=\"alert-link\">global settings</a> or <a href=\"/profile/$n\" class=\"alert-link current_profile_url\">edit the active profile</a>",
   "options_enabled": "Enable LEDs",
+  "options_csgo_enabled": "Enable CSGO Integration",
   "options_digital_count": "Number of LED fans",
   "options_global_brightness": "Global brightness",
   "options_global_current": "Current profile",

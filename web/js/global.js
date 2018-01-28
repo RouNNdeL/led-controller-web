@@ -17,6 +17,7 @@ $(function()
     {
         let json = objectifyForm(form.serializeArray());
         json.enabled = $("input[name=enabled]")[0].checked;
+        json.csgo_enabled = $("input[name=csgo_enabled]")[0].checked;
         json.fan_count = parseInt(json.fan_count);
         json.profile_index = parseInt(json.current_profile);
         delete json.current_profile;
@@ -55,7 +56,7 @@ $(function()
     save_btn.click(e => save(true));
 
     let quick_save = form.find("select[name='fan_count'],select[name='current_profile']," +
-        "input[name='enabled']");
+        "input[name='enabled'],input[name='csgo_enabled']");
 
     form.find("input,select").not(quick_save).not("#auto-increment").change(() =>
     {
@@ -140,6 +141,7 @@ $(function()
 
                     $("select[name=current_profile]").val(globals.highlight_profile_index);
                     $("input[name=enabled]")[0].checked = globals.leds_enabled;
+                    $("input[name=csgo_enabled]")[0].checked = globals.csgo_enabled;
                     slider.slider("setValue", globals.brightness);
                     $("select[name=fan_count]").val(globals.fan_count);
 

@@ -33,6 +33,9 @@ try
     if(isset($json["enabled"]) && is_bool($json["enabled"]))
         $data->enabled = $json["enabled"];
 
+    if(isset($json["csgo_enabled"]) && is_bool($json["csgo_enabled"]))
+        $data->csgo_enabled = $json["csgo_enabled"];
+
     if(isset($json["current_profile"]) && is_int($json["current_profile"]))
         $data->setCurrentProfile($json["current_profile"], true);
 

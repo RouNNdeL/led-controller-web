@@ -46,8 +46,16 @@ TAG;
     <form id="global-form">
         <div class="checkbox">
             <label>
-                <input name="enabled"
-                       type="checkbox" <?php if(Data::getInstance()->enabled) echo " checked" ?>> <?php echo Utils::getInstance()->getString("options_enabled") ?>
+                <input name="enabled" type="checkbox"
+                    <?php if(Data::getInstance()->enabled) echo " checked" ?>>
+                <?php echo Utils::getInstance()->getString("options_enabled") ?>
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input name="csgo_enabled" type="checkbox"
+                    <?php if(Data::getInstance()->csgo_enabled) echo " checked" ?>>
+                <?php echo Utils::getInstance()->getString("options_csgo_enabled") ?>
             </label>
         </div>
         <label>
@@ -85,7 +93,8 @@ TAG;
         <br>
         <label>
             <?php echo Utils::getString("options_global_auto_increment") ?>
-            <input type="text" class="form-control" id="auto-increment" value="<?php echo $data->getAutoIncrement()."s" ?>"
+            <input type="text" class="form-control" id="auto-increment"
+                   value="<?php echo $data->getAutoIncrement() . "s" ?>"
                    placeholder="0" name="auto_increment" autocomplete="off" aria-autocomplete="none" spellcheck="false">
         </label>
         <br>

@@ -23,6 +23,7 @@ class Data
 
     private $current_profile;
     public $enabled;
+    public $csgo_enabled;
 
     private $brightness;
     private $fan_count;
@@ -309,6 +310,7 @@ class Data
         $array["highlight_index"] = $this->getHighlightIndex();
         $array["active_indexes"] = $this->active_indexes;
         $array["leds_enabled"] = $this->enabled;
+        $array["csgo_enabled"] = $this->csgo_enabled;
         $array["fan_count"] = $this->fan_count;
         $array["auto_increment"] = $web ? Device::getTiming($this->auto_increment) * 4 : $this->auto_increment;
         $array["fan_config"] = array(2, 0, 0);
@@ -368,6 +370,7 @@ class Data
 
         $this->current_profile = $array["profile_index"];
         $this->enabled = $array["leds_enabled"];
+        $this->csgo_enabled = $array["csgo_enabled"];
     }
 
     private function _save()

@@ -331,7 +331,7 @@ abstract class Device
             return 0;
         foreach(self::getTimings() as $i => $timing)
         {
-            if($float < $timing) return $i-1;
+            if($float < $timing) return $i - 1;
         }
         return 255;
     }
@@ -345,6 +345,67 @@ abstract class Device
         }
         return $a;
     }
+
+    public static function getIncrementTiming(int $x)
+    {
+        if($x < 0 || $x > 255)
+        {
+            throw new InvalidArgumentException("x has to be an integer in range 0-255");
+        }
+
+        if($x <= 60)
+        {
+            return $x / 2;
+        }
+        if($x <= 90)
+        {
+            return $x - 30;
+        }
+        if($x <= 126)
+        {
+            return 5 * $x / 2 - 165;
+        }
+        if($x <= 156)
+        {
+            return 5 * $x - 480;
+        }
+        if($x <= 196)
+        {
+            return 15 * $x - 2040;
+        }
+        if($x <= 211)
+        {
+            return 60 * $x - 10860;
+        }
+        if($x <= 253)
+        {
+            return 300 * $x - 61500;
+        }
+        if($x == 254) return 18000;
+        return 21600;
+    }
+
+    public static function convertIncrementToTiming($float)
+    {
+        if($float < 0)
+            return 0;
+        foreach(self::getIncrementTimings() as $i => $timing)
+        {
+            if($float < $timing) return $i - 1;
+        }
+        return 255;
+    }
+
+    public static function getIncrementTimings()
+    {
+        $a = array();
+        for($i = 0; $i < 256; $i++)
+        {
+            $a[$i] = self::getIncrementTiming($i);
+        }
+        return $a;
+    }
+
 
     public abstract function avrEffect();
 }

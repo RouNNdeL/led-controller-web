@@ -118,8 +118,12 @@ $(function()
             let number = parseFloat(input);
             input = isNaN(number) ? 0 : number * 60;
         }
-        //TODO: Add a separate timing function for auto increment (multiplying removes some useful values ex. 300)
-        $(this).val(getTiming(convertToTiming(input/4))*4+"s");
+        else if(input.match(/(hour|h)/))
+        {
+            let number = parseFloat(input);
+            input = isNaN(number) ? 0 : number * 60 * 60;
+        }
+        $(this).val(getIncrementTiming(convertIncrementToTiming(input))+"s");
         save(false);
     });
 

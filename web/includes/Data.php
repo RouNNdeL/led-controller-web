@@ -54,11 +54,12 @@ class Data
      * @param int $auto_increment
      * @param array $profiles
      */
-    private function __construct(int $current_profile, bool $enabled, int $brightness, int $fan_count,
+    private function __construct(int $current_profile, bool $enabled, bool $csgo_enabled, int $brightness, int $fan_count,
                                  int $auto_increment, array $profiles)
     {
         $this->current_profile = $current_profile;
         $this->enabled = $enabled;
+        $this->csgo_enabled = $csgo_enabled;
         $this->brightness = $brightness;
         $this->fan_count = $fan_count;
         $this->auto_increment = $auto_increment;
@@ -412,7 +413,7 @@ class Data
         $profile1 = new Profile($name);
         array_push($profiles, $profile1);
 
-        $data = new Data(0, true, 255, 0, 0, $profiles);
+        $data = new Data(0, true, true, 255, 0, 0, $profiles);
         $data->_save();
         return $data;
     }

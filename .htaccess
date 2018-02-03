@@ -25,7 +25,7 @@ RewriteRule ^/?api/save/global/?$ api/save_global.php
 RewriteRule ^/?api/get_html/timing_args/?$ api/timing_args.php
 RewriteRule ^/?api/remove/profile/?$ api/remove_profile.php
 RewriteRule ^/?api/save/profile/?$ api/save_devices.php
-RewriteRule ^/?api/save/profile/name/?$ api/save_profile_name.php
+RewriteRule ^/?api/save/profile/params/?$ api/save_profile_params.php
 RewriteRule ^/?api/enable_leds/?$ api/enable_leds.php
 RewriteRule ^/?api/change_profile/?$ api/change_profile.php
 RewriteRule ^/?api/explicit_save/?$ api/explicit_save.php

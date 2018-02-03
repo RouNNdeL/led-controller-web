@@ -434,6 +434,7 @@ class Data
         $html = "";
         $pc = Utils::getString("profile_pc");
         $gpu = Utils::getString("profile_gpu");
+        $strip = Utils::getString("profile_strip");
         $fan = Utils::getString("profile_digital");
 
         $html .= "<li role=\"presentation\" class=\"nav-item flex-fill\"" .
@@ -443,6 +444,10 @@ class Data
         $html .= "<li class=\"nav-item\" role=\"presentation\"" .
             "><a id=\"device-link-gpu\" href=\"#gpu\" class=\"nav-link device-link\">"
             . $gpu . "</a></li>";
+
+        $html .= "<li class=\"nav-item\" role=\"presentation\"" .
+            "><a id=\"device-link-strip\" href=\"#strip\" class=\"nav-link device-link\">"
+            . $strip . "</a></li>";
 
         if($this->getFanCount() > 0)
             $html .= "<div class=\"dropdown-divider\"></div>";

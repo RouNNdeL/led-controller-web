@@ -3,11 +3,9 @@
  */
 "use strict";
 
-const REGEX_COLOR = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-const REGEX_DEVICE = /(pc|gpu|fan-(\d))/;
+const REGEX_DEVICE = /(pc|gpu|strip|fan-(\d))/;
 const COLOR_TEMPLATE = "<div class=\"color-container row mb-1\">\n            <div class=\"col-auto ml-3\">\n                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\"><span class=\"oi oi-trash\"></span></button>\n            </div>\n            <div class=\"col pl-1\">\n                <div class=\"input-group colorpicker-component\" title=\"Using input value\">\n                    <input type=\"text\" class=\"form-control color-input\" value=\"$color\" autocomplete=\"off\" \n                    aria-autocomplete=\"none\" spellcheck=\"false\"/>\n                    <span class=\"input-group-addon\"><i></i></span>\n                </div>\n            </div>\n        </div>";
 
-const SELECTOR_RADIOS = "input[type=radio][name=color]";
 
 let profile_n;
 let profile_index;
@@ -22,6 +20,7 @@ $(function()
     const devices = [];
     const profile_text = $("#main-navbar").find("li.nav-item a.nav-link.active");
     const profile_name = $("#profile-name");
+    const profile_params = $("#profile-name,select[name=strip_mode],input[name=strip_front_pc]");
     profile_n = parseInt($("#profile_n").val());
     profile_index = parseInt($("#current_profile").val());
     const delete_profile = $("#btn-delete-profile").not(".disabled");
@@ -57,20 +56,7 @@ $(function()
             profile_text.text(val);
     });
 
-    profile_name.change(function()
-    {
-        $.ajax("/api/save/profile/name", {
-                method: "POST",
-                data: JSON.stringify({
-                    "profile_n": profile_n,
-                    "name": $(this).val()
-                })
-            }
-        ).fail(function(e)
-        {
-            console.error(e);
-        });
-    });
+    profile_params.change(saveProfileParams);
 
     delete_profile.click(function()
     {
@@ -222,6 +208,8 @@ class DeviceSetting
             this.device = {type: "a", num: 0};
         else if(this.device_match[1] === "gpu")
             this.device = {type: "a", num: 1};
+        else if(this.device_match[1] === "strip")
+            this.device = {type: "d", num: 3};
         else
             this.device = {type: "d", num: parseInt(this.device_match[2]) - 1};
 
@@ -449,7 +437,7 @@ function refreshColorPickers()
 function registerFormListeners()
 {
     const timings = $(".timing-container").find("input");
-    const inputs = $("input,select").not(timings).not("select.effect-select, #profile-name");
+    const inputs = $("input,select").not(timings).not("select.effect-select, #profile-name,select[name=strip_mode],input[name=strip_front_pc]");
     inputs.off("change");
     inputs.change(function(e)
     {
@@ -465,5 +453,29 @@ function registerFormListeners()
             input = isNaN(number) ? 0 : number * 60;
         }
         $(this).val(getTiming(convertToTiming(input)));
+    });
+}
+
+function saveProfileParams()
+{
+
+    const front_pc = $("input[name=strip_front_pc]")[0].checked;
+    const strip_mode = $("select[name=strip_mode]");
+    if(front_pc && parseInt(strip_mode.val()) === 2)
+    {
+        strip_mode.val(0);
+    }
+    strip_mode.find(".strip-mode-select-opt-disableable").prop("disabled", front_pc);
+    $.ajax("/api/save/profile/params", {
+            method: "POST",
+            data: JSON.stringify({
+                "profile_n": profile_n,
+                "name": $("#profile-name").val(),
+                "flags": (front_pc ? (1 << 2) : 0) | strip_mode.val()
+            })
+        }
+    ).fail(function(e)
+    {
+        console.error(e);
     });
 }

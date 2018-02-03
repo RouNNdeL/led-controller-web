@@ -18,13 +18,17 @@ class Profile
     public $digital_devices = array();
     /** @var AnalogDevice[] */
     public $analog_devices = array();
+    /** @var  int */
+    public $flags;
 
     function __construct($name)
     {
         $this->name = $name;
+        $this->flags = 0;
 
         array_push($this->analog_devices, AnalogDevice::_off());
         array_push($this->analog_devices, AnalogDevice::_off());
+        array_push($this->digital_devices, DigitalDevice::_off());
         array_push($this->digital_devices, DigitalDevice::_off());
         array_push($this->digital_devices, DigitalDevice::_off());
         array_push($this->digital_devices, DigitalDevice::_off());
@@ -35,8 +39,6 @@ class Profile
      */
     public function setName(string $name)
     {
-        if(strlen($name) > 30)
-            throw new InvalidArgumentException("Name can only be 30 bytes long");
         $this->name = $name;
     }
 
@@ -52,11 +54,13 @@ class Profile
     {
         $arr = array();
         /** @type Device[] */
+        $arr["devices"] = array();
         $merge = array_merge($this->analog_devices, $this->digital_devices);
         foreach($merge as $i => $device)
         {
-            $arr[$i] = $device->toJson();
+            $arr["devices"][$i] = $device->toJson();
         }
+        $arr["flags"] = $this->flags;
         return $arr;
     }
 

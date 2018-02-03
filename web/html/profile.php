@@ -84,7 +84,7 @@ TAG;
         </div>
 TAG;
 
-        $visible =  $data->getAvrIndex($n_profile) !== false ? "hidden-xs-up" : "";
+        $visible = $data->getAvrIndex($n_profile) !== false ? "hidden-xs-up" : "";
         $str_profile_inactive = Utils::getString("warning_profile_inactive");
         $str_profile_inactive = str_replace("\$n", $data->getActiveProfileIndex(), $str_profile_inactive);
         echo <<<TAG
@@ -99,14 +99,33 @@ TAG;
             <div class="card">
                 <div class="card-header">
                     <div class="form-group mb-0">
-                        <label for="profile-name"><?php echo Utils::getString("profile_name") ?></label>
+                        <label for="profile-name" class="mb-1"><?php echo Utils::getString("profile_name") ?></label>
                         <?php
                         $name_placeholder = Utils::getInstance()->getString("default_profile_name");
                         $name_placeholder = str_replace("\$n", $n_profile + 1, $name_placeholder);
                         $name = $profile->getName();
                         ?>
-                        <input type="text" class="form-control" id="profile-name" value="<?php echo $name ?>"
+                        <input type="text" class="form-control mb-2" id="profile-name" value="<?php echo $name ?>"
                                placeholder="<?php echo $name_placeholder ?>" name="profile_name">
+                        <h6><?php echo Utils::getString("profile_strip_params")?></h6>
+                        <label for="strip-mode-select" class="mb-2"><?php echo Utils::getString("profile_strip_mode")?></label>
+                        <select id="strip-mode-select" class="form-control mb-2" name="profile_strip_mode">
+                            <option value="1"<?php echo $profile->flags & 1 && ~$profile->flags & ~2 ? "selected" : ""?>>
+                                <?php echo Utils::getString("profile_strip_mode_loop")?></option>
+                            <option value="0"<?php echo ~$profile->flags & ~3 ? "selected" : ""?>>
+                                <?php echo Utils::getString("profile_strip_mode_strip")?></option>
+                            <option value="2" class="strip-mode-select-opt-disableable"
+                                <?php echo $profile->flags & 2 && ~$profile->flags & ~1 ? "selected" : "";
+                                echo $profile->flags & (1 << 2) ? "disabled" : ""?>>
+                                <?php echo Utils::getString("profile_strip_mode_strip_one_led")?></option>
+                        </select>
+                        <div class="checkbox">
+                            <label>
+                                <input name="strip_front_pc" type="checkbox"
+                                    <?php echo $profile->flags & (1 << 2) ? "checked" : ""?>>
+                                <?php echo Utils::getString("profile_strip_front_pc")?>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -136,6 +155,8 @@ TAG;
                         class="device-header"><?php echo Utils::getString("profile_settings_pc") ?></h4>
                     <h4 id="header-gpu"
                         class="device-header hidden-xs-up"><?php echo Utils::getString("profile_settings_gpu") ?></h4>
+                    <h4 id="header-strip"
+                        class="device-header hidden-xs-up"><?php echo Utils::getString("profile_settings_strip") ?></h4>
                     <?php
                     for($i = 0; $i < $data->getFanCount(); $i++)
                     {
@@ -152,6 +173,9 @@ TAG;
                     </div>
                     <div id="device-gpu" class="device-settings-container hidden-xs-up">
                         <?php echo $profile->analog_devices[1]->toHTML("gpu"); ?>
+                    </div>
+                    <div id="device-strip" class="device-settings-container hidden-xs-up">
+                        <?php echo $profile->digital_devices[3]->toHTML("strip"); ?>
                     </div>
                     <?php
                     for($i = 0; $i < $data->getFanCount(); $i++)

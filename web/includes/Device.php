@@ -33,9 +33,12 @@ abstract class Device
             </div>
         </div>";
 
-    const INPUT_TEMPLATE = "<div class=\"col-sm-6 col-md-6 col-lg-4 col-xl-3 form-group px-1 mb-1\"><label class=\"mb-0\">\$label</label>
-                            <input class=\"form-control\" type=\"text\" name=\"\$name\" 
-                                    placeholder=\"\$placeholder\" value=\"\$value\" ></div>";
+    const INPUT_TEMPLATE_ARGUMENTS = "<div class=\"col-sm-6 col-md-6 col-lg-4 col-xl-3 form-group px-1 mb-1\"><label class=\"mb-0\">\$label</label>
+                            <input class=\"form-control\" type=\"number\" name=\"\$name\" 
+                                    placeholder=\"\$placeholder\" value=\"\$value\" step=\"1\" min=\"0\" max=\"255\"></div>";
+    const INPUT_TEMPLATE_TIMES = "<div class=\"col-sm-6 col-md-6 col-lg-4 col-xl-3 form-group px-1 mb-1\"><label class=\"mb-0\">\$label</label>
+                            <input class=\"form-control\" type=\"number\" name=\"\$name\" placeholder=\"\$placeholder\"
+                             value=\"\$value\" step=\"0.0625\" min=\"0\" max=\"900\"></div>";
 
     const HIDDEN_TEMPLATE = "<input type=\"hidden\" name=\"\$name\" value=\"\$value\">";
 
@@ -218,7 +221,7 @@ abstract class Device
                                             </select></div>";
                         break;
                     default:
-                        $template = self::INPUT_TEMPLATE;
+                        $template = self::INPUT_TEMPLATE_ARGUMENTS;
                         $template = str_replace("\$label", Utils::getString("profile_arguments_$name"), $template);
                         $template = str_replace("\$name", "arg_" . $name, $template);
                         $template = str_replace("\$placeholder", $argument, $template);
@@ -233,7 +236,7 @@ abstract class Device
             if(($timings & (1 << (5 - $i))) > 0)
             {
                 $t = self::getTiming($this->timings[$i]);
-                $template = self::INPUT_TEMPLATE;
+                $template = self::INPUT_TEMPLATE_TIMES;
                 $template = str_replace("\$label", Utils::getString("profile_timing_$timing_strings[$i]"), $template);
                 $template = str_replace("\$name", "time_" . $timing_strings[$i], $template);
                 $template = str_replace("\$placeholder", $t, $template);

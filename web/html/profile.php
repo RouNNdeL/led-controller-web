@@ -109,7 +109,7 @@ TAG;
                                placeholder="<?php echo $name_placeholder ?>" name="profile_name">
                         <h6><?php echo Utils::getString("profile_strip_params")?></h6>
                         <label for="strip-mode-select" class="mb-2"><?php echo Utils::getString("profile_strip_mode")?></label>
-                        <select id="strip-mode-select" class="form-control mb-2" name="profile_strip_mode">
+                        <select id="strip-mode-select" class="form-control mb-2" name="strip_mode">
                             <option value="1"<?php echo $profile->flags & 1 && ~$profile->flags & ~2 ? "selected" : ""?>>
                                 <?php echo Utils::getString("profile_strip_mode_loop")?></option>
                             <option value="0"<?php echo ~$profile->flags & ~3 ? "selected" : ""?>>

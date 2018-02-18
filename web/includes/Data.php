@@ -496,7 +496,8 @@ class Data
             $t = str_replace("\$device", $device_url, $template);
             $t = str_replace("\$name", str_replace("\$n", ($i + 1), $fan), $t);
             $t = str_replace("\$value", $this->brightness_array[2 + $i], $t);
-            $t = str_replace("\$class", $i < $this->getFanCount() ? "" : "hidden-xs-up", $t);
+            $t = str_replace("\$class", $i < $this->getFanCount() ? "brightness-slider-fan" :
+                                                                    "brightness-slider-fan hidden-xs-up", $t);
 
 
             $html .= $t;

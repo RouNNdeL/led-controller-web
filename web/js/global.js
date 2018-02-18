@@ -14,6 +14,8 @@ $(function()
     const sliders = [$("#brightness-pc").slider(options), $("#brightness-gpu").slider(options),
         $("#brightness-fan-1").slider(options), $("#brightness-fan-2").slider(options),
         $("#brightness-fan-3").slider(options), $("#brightness-strip").slider(options)];
+
+    const fan_slider_containers = $(".brightness-slider-fan");
     let changes = false;
 
     function save(full)
@@ -38,6 +40,12 @@ $(function()
         }
         json.auto_increment = parseFloat(json.auto_increment);
         let data = JSON.stringify(json);
+
+        fan_slider_containers.addClass("hidden-xs-up");
+        for(let i = 0; i < json.fan_count; i++)
+        {
+            fan_slider_containers.eq(i).removeClass("hidden-xs-up");
+        }
 
         $.ajax("/api/save/global", {
             method: "POST",
@@ -160,6 +168,12 @@ $(function()
                         }
                     }
                     $("select[name=fan_count]").val(globals.fan_count);
+
+                    fan_slider_containers.addClass("hidden-xs-up");
+                    for(let i = 0; i < globals.fan_count; i++)
+                    {
+                        fan_slider_containers.eq(i).removeClass("hidden-xs-up");
+                    }
 
                     let auto_increment = $("input[name=auto_increment]");
                     if(!auto_increment.is(":focus"))

@@ -33,7 +33,7 @@ try
     $profile->setName($name);
     $profile->flags = $json["flags"];
     Data::save();
-    $tcp_update = array("type" => "profile_flags", "options"=> array("n" => $profile_n), "data" => $json["flags"]);
+    $tcp_update = array("type" => "profile_flags", "options"=> array("n" => $data->getAvrIndex($profile_n)), "data" => $json["flags"]);
     tcp_send(json_encode($tcp_update));
     echo "{\"status\":\"success\"}";
 }

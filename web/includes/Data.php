@@ -24,8 +24,8 @@ class Data
     private $current_profile;
     public $enabled;
     public $csgo_enabled;
+    public $brightness_array;
 
-    private $brightness;
     private $fan_count;
     private $auto_increment;
 
@@ -60,7 +60,7 @@ class Data
         $this->current_profile = $current_profile;
         $this->enabled = $enabled;
         $this->csgo_enabled = $csgo_enabled;
-        $this->brightness = $brightness;
+        $this->brightness_array = array($brightness, $brightness, $brightness, $brightness, $brightness, $brightness);
         $this->fan_count = $fan_count;
         $this->auto_increment = $auto_increment;
         $this->profiles = $profiles;
@@ -93,16 +93,6 @@ class Data
     public function setFanCount(int $fan_count)
     {
         $this->fan_count = $fan_count;
-    }
-
-    public function getBrightness()
-    {
-        return ceil($this->brightness / 2.55);
-    }
-
-    public function setBrightness($percent)
-    {
-        $this->brightness = ceil($percent * 2.55);
     }
 
     /**
@@ -304,7 +294,7 @@ class Data
     {
         $array = array();
 
-        $array["brightness"] = $web ? $this->getBrightness() : $this->brightness;
+        $array["brightness"] = $this->brightness_array;
         $array["profile_count"] = sizeof($this->active_indexes);
         $array["current_profile"] = $this->current_profile;
         $array["highlight_profile_index"] = $this->getActiveProfileIndex();
@@ -457,6 +447,59 @@ class Data
             $html .= "<li  class=\"nav-item\" role=\"presentation\"" .
                 "><a id=\"device-link-$device_url\" href=\"#$device_url\" class=\"nav-link device-link\">"
                 . str_replace("\$n", $i + 1, $fan) . "</a></li>";
+        }
+
+        return $html;
+    }
+
+    public function getBrightnessSlidersHtml()
+    {
+        $template = "<label for=\"brightness-\$device\" class=\"mr-4 \$class\">\$name<br>
+                        <input id=\"brightness-\$device\"
+                               type=\"text\"
+                               name=\"brightness-\$device\"
+                               data-provide=\"slider\"
+                               data-slider-min=\"0\"
+                               data-slider-max=\"100\"
+                               data-slider-step=\"1\"
+                               data-slider-value=\"\$value\"
+                               data-slider-tooltip=\"show\"></label>";
+
+        $pc = Utils::getString("options_brightness_pc");
+        $gpu = Utils::getString("options_brightness_gpu");
+        $strip = Utils::getString("options_brightness_strip");
+        $fan = Utils::getString("options_brightness_digital");
+
+        $html = "";
+
+        $t = str_replace("\$device", "pc", $template);
+        $t = str_replace("\$name", $pc, $t);
+        $t = str_replace("\$class", "", $t);
+        $t = str_replace("\$value", $this->brightness_array[0], $t);
+        $html .= $t;
+
+        $t = str_replace("\$device", "gpu", $template);
+        $t = str_replace("\$name", $gpu, $t);
+        $t = str_replace("\$class", "", $t);
+        $t = str_replace("\$value", $this->brightness_array[1], $t);
+        $html .= $t;
+
+        $t = str_replace("\$device", "strip", $template);
+        $t = str_replace("\$name", $strip, $t);
+        $t = str_replace("\$class", "", $t);
+        $t = str_replace("\$value", $this->brightness_array[5], $t);
+        $html .= $t;
+
+        for($i = 0; $i < 3; $i++)
+        {
+            $device_url = "fan-" . ($i + 1);
+            $t = str_replace("\$device", $device_url, $template);
+            $t = str_replace("\$name", str_replace("\$n", ($i + 1), $fan), $t);
+            $t = str_replace("\$value", $this->brightness_array[2 + $i], $t);
+            $t = str_replace("\$class", $i < $this->getFanCount() ? "" : "hidden-xs-up", $t);
+
+
+            $html .= $t;
         }
 
         return $html;

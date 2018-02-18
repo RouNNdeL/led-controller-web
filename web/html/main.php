@@ -44,115 +44,119 @@ $data = Data::getInstance();
 TAG;
     ?>
     <form id="global-form">
-        <div class="checkbox">
-            <label>
-                <input name="enabled" type="checkbox"
-                    <?php if(Data::getInstance()->enabled) echo " checked" ?>>
-                <?php echo Utils::getInstance()->getString("options_enabled") ?>
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input name="csgo_enabled" type="checkbox"
-                    <?php if(Data::getInstance()->csgo_enabled) echo " checked" ?>>
-                <?php echo Utils::getInstance()->getString("options_csgo_enabled") ?>
-            </label>
-        </div>
-        <label>
-            <?php echo Utils::getString("options_digital_count"); ?>
-            <select class="form-control" name="fan_count">
-                <?php
-                for($i = 0; $i < 4; $i++)
-                {
-                    if($i == Data::getInstance()->getFanCount())
-                    {
-                        echo "<option value=\"$i\" selected>$i</option>";
-                    }
-                    else
-                    {
-                        echo "<option value=\"$i\">$i</option>";
-                    }
-                }
-                ?>
-            </select>
-        </label>
-        <br>
-        <label>
-            <?php echo Utils::getString("options_global_current") ?>
-            <select class="form-control" name="current_profile">
-                <?php
-                foreach($data->getActiveProfilesInOrder() as $i => $profile)
-                {
-                    $name = $profile->getName();
-                    $selected = $data->getActiveProfileIndex() === $i ? "selected" : "";
-                    echo "<option value=\"$i\" $selected>$name</option>";
-                }
-                ?>
-            </select>
-        </label>
-        <br>
-        <label>
-            <?php echo Utils::getString("options_global_auto_increment") ?>
-            <input type="text" class="form-control" id="auto-increment"
-                   value="<?php echo $data->getAutoIncrement() . "s" ?>"
-                   placeholder="0" name="auto_increment" autocomplete="off" aria-autocomplete="none" spellcheck="false">
-        </label>
-        <br>
-        <div class="row my-2">
-            <div class="col-lg-3 col-sm-6 mb-3 mb-sm-0">
-                <div class="card full-height">
-                    <div class="card-header">
-                        <label class="mb-0"><?php echo Utils::getString("options_active_order") ?></label>
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <h4><?php echo Utils::getString("options_main") ?></h4>
+                        <div class="checkbox">
+                            <label>
+                                <input name="enabled" type="checkbox"
+                                    <?php if(Data::getInstance()->enabled) echo " checked" ?>>
+                                <?php echo Utils::getInstance()->getString("options_enabled") ?>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input name="csgo_enabled" type="checkbox"
+                                    <?php if(Data::getInstance()->csgo_enabled) echo " checked" ?>>
+                                <?php echo Utils::getInstance()->getString("options_csgo_enabled") ?>
+                            </label>
+                        </div>
+                        <label>
+                            <?php echo Utils::getString("options_digital_count"); ?>
+                            <select class="form-control" name="fan_count">
+                                <?php
+                                for($i = 0; $i < 4; $i++)
+                                {
+                                    if($i == Data::getInstance()->getFanCount())
+                                    {
+                                        echo "<option value=\"$i\" selected>$i</option>";
+                                    }
+                                    else
+                                    {
+                                        echo "<option value=\"$i\">$i</option>";
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </label>
+                        <br>
+                        <label>
+                            <?php echo Utils::getString("options_global_current") ?>
+                            <select class="form-control" name="current_profile">
+                                <?php
+                                foreach($data->getActiveProfilesInOrder() as $i => $profile)
+                                {
+                                    $name = $profile->getName();
+                                    $selected = $data->getActiveProfileIndex() === $i ? "selected" : "";
+                                    echo "<option value=\"$i\" $selected>$name</option>";
+                                }
+                                ?>
+                            </select>
+                        </label>
+                        <br>
+                        <label>
+                            <?php echo Utils::getString("options_global_auto_increment") ?>
+                            <input type="text" class="form-control" id="auto-increment"
+                                   value="<?php echo $data->getAutoIncrement() . "s" ?>"
+                                   placeholder="0" name="auto_increment" autocomplete="off" aria-autocomplete="none"
+                                   spellcheck="false">
+                        </label></div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <h4><?php echo Utils::getString("options_brightness") ?></h4>
+                        <?php
+                        echo $data->getBrightnessSlidersHtml();
+                        ?>
                     </div>
-                    <div class="card-body full-height">
-                        <ul class="list-group full-height" id="globals-profiles-active">
-                            <?php
-                            foreach($data->getActiveProfilesInOrder() as $i => $profile)
-                            {
-                                $class = $data->getActiveProfileIndex() === $i ? " highlight" : "";
-                                $name = $profile->getName();
-                                echo "<li class=\"list-group-item not-selectable$class\" data-index=\"$i\">$name</li>";
-                            }
-                            ?>
-                        </ul>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <h4><?php echo Utils::getString("options_profile_order") ?></h4>
+                    </div>
+                </div>
+                <div class="row my-2">
+                    <div class="col-lg-3 col-sm-6 mb-3 mb-sm-0">
+                        <div class="card full-height">
+                            <div class="card-header">
+                                <label class="mb-0"><?php echo Utils::getString("options_active_order") ?></label>
+                            </div>
+                            <div class="card-body full-height">
+                                <ul class="list-group full-height" id="globals-profiles-active">
+                                    <?php
+                                    foreach($data->getActiveProfilesInOrder() as $i => $profile)
+                                    {
+                                        $class = $data->getActiveProfileIndex() === $i ? " highlight" : "";
+                                        $name = $profile->getName();
+                                        echo "<li class=\"list-group-item not-selectable$class\" data-index=\"$i\">$name</li>";
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 pl-sm-0">
+                        <div class="card full-height">
+                            <div class="card-header">
+                                <label class="mb-0"><?php echo Utils::getString("options_inactive_order") ?></label>
+                            </div>
+                            <div class="card-body full-height">
+                                <ul class="list-group full-height" id="globals-profiles-inactive"
+                                    style="min-height: 50px">
+                                    <?php
+                                    foreach($data->getInactiveProfilesInOrder() as $i => $profile)
+                                    {
+                                        $name = $profile->getName();
+                                        echo "<li class=\"list-group-item not-selectable\" data-index=\"$i\">$name</li>";
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6 pl-sm-0">
-                <div class="card full-height">
-                    <div class="card-header">
-                        <label class="mb-0"><?php echo Utils::getString("options_inactive_order") ?></label>
-                    </div>
-                    <div class="card-body full-height">
-                        <ul class="list-group full-height" id="globals-profiles-inactive" style="min-height: 50px">
-                            <?php
-                            foreach($data->getInactiveProfilesInOrder() as $i => $profile)
-                            {
-                                $name = $profile->getName();
-                                echo "<li class=\"list-group-item not-selectable\" data-index=\"$i\">$name</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
-        <label>
-            <?php echo Utils::getString("options_global_brightness") ?>
-            <br>
-            <div class="px-2">
-                <input id="brightness-slider"
-                       type="text"
-                       name="brightness"
-                       data-provide="slider"
-                       data-slider-min="0"
-                       data-slider-max="100"
-                       data-slider-step="1"
-                       data-slider-value="<?php echo Data::getInstance()->getBrightness() ?>"
-                       data-slider-tooltip="show"
-                >
-            </div>
-        </label>
     </form>
     <br>
     <button id="btn-save" class="btn btn-primary" disabled><?php echo Utils::getString("options_save") ?></button>

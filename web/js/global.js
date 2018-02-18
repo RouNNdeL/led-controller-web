@@ -7,10 +7,13 @@ $(function()
 {
     const form = $("#global-form");
     const save_btn = $("#btn-save");
-    const slider = $("#brightness-slider").slider({
+    const options = {
         tooltip: "always",
         tooltip_position: "bottom"
-    });
+    };
+    const sliders = [$("#brightness-pc").slider(options), $("#brightness-gpu").slider(options),
+        $("#brightness-fan-1").slider(options), $("#brightness-fan-2").slider(options),
+        $("#brightness-fan-3").slider(options), $("#brightness-strip").slider(options)];
     let changes = false;
 
     function save(full)
@@ -23,7 +26,10 @@ $(function()
         delete json.current_profile;
         if(full === true)
         {
-            json.brightness = parseInt(json.brightness);
+            json.brightness = [parseInt($("#brightness-pc").val()), parseInt($("#brightness-gpu").val()),
+                parseInt($("#brightness-fan-1").val()), parseInt($("#brightness-fan-2").val()),
+                    parseInt($("#brightness-fan-3").val()), parseInt($("#brightness-strip").val())];
+
             json.order = getProfileOrder();
         }
         else
@@ -146,7 +152,13 @@ $(function()
                     $("select[name=current_profile]").val(globals.highlight_profile_index);
                     $("input[name=enabled]")[0].checked = globals.leds_enabled;
                     $("input[name=csgo_enabled]")[0].checked = globals.csgo_enabled;
-                    slider.slider("setValue", globals.brightness);
+                    for(let i = 0; i < globals.brightness.length; i++)
+                    {
+                        if(sliders[i] !== undefined && sliders[i] !== null && typeof  sliders[i].slider === "function")
+                        {
+                            sliders[i].slider("setValue", globals.brightness[i]);
+                        }
+                    }
                     $("select[name=fan_count]").val(globals.fan_count);
 
                     let auto_increment = $("input[name=auto_increment]");

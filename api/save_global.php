@@ -45,8 +45,8 @@ try
     if(isset($json["fan_count"]) && is_int($json["fan_count"]) && $json["fan_count"] >= 0 && $json["fan_count"] <= 3)
         $data->setFanCount($json["fan_count"]);
 
-    if(isset($json["brightness"]) && is_int($json["brightness"]) && $json["brightness"] >= 0 && $json["brightness"] <= 100)
-        $data->setBrightness($json["brightness"]);
+    if(isset($json["brightness"]) && is_array($json["brightness"]))
+        $data->brightness_array = $json["brightness"];
 
     if(isset($json["auto_increment"]))
         $auto_increment = $data->setAutoIncrement($json["auto_increment"]);

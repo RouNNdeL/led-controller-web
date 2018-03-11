@@ -330,10 +330,28 @@ class DeviceSetting
         jump_buttons.off("click");
         jump_buttons.click(function(e)
         {
-            const color_index = $(this).parent().parent().index();
             const swatch_count = it.parent.find(".color-container").length;
             const form = it.formToJson();
-            const effect_length = (form.times[0] + form.times[1] + form.times[2] + form.times[3]) * form.args.color_cycles;
+            let color_count = 1;
+            if(form.args.pieces_color_count !== undefined && form.args.pieces_color_count > 0)
+            {
+                color_count = form.args.pieces_color_count;
+            }
+            else if(form.args.rotating_color_count !== undefined && form.args.rotating_color_count > 0)
+            {
+                color_count = form.args.rotating_color_count;
+            }
+            else if(form.args.fill_fade_color_count !== undefined && form.args.fill_fade_color_count > 0)
+            {
+                color_count = form.args.fill_fade_color_count;
+            }
+            let color_cycles = 1;
+            if(form.args.color_cycles !== undefined && form.args.color_cycles !== 0)
+            {
+                color_cycles = form.args.color_cycles;
+            }
+            const color_index = Math.floor($(this).parent().parent().index()/color_count);
+            const effect_length = (form.times[0] + form.times[1] + form.times[2] + form.times[3]) * color_cycles;
             const full_length = effect_length * swatch_count;
             $.ajax("/api/jump_frame", {
                 method: "POST",

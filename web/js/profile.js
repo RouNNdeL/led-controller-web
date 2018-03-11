@@ -333,7 +333,7 @@ class DeviceSetting
             const color_index = $(this).parent().parent().index();
             const swatch_count = it.parent.find(".color-container").length;
             const form = it.formToJson();
-            const effect_length = form.times[0] + form.times[1] + form.times[2] + form.times[3];
+            const effect_length = (form.times[0] + form.times[1] + form.times[2] + form.times[3]) * form.args.color_cycles;
             const full_length = effect_length * swatch_count;
             $.ajax("/api/jump_frame", {
                 method: "POST",

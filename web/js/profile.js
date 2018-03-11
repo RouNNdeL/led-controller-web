@@ -470,11 +470,26 @@ function refreshColorPickers()
 function registerFormListeners()
 {
     const timings = $(".timing-container").find("input");
-    const inputs = $("input,select").not(timings).not("select.effect-select, #profile-name,select[name=strip_mode],input[name=strip_front_pc]");
+    const args = $(".args-container").find("input[type=text]");
+    const inputs = $("input,select").not(timings).not(args).not("select.effect-select, #profile-name,select[name=strip_mode],input[name=strip_front_pc]");
+
+    timings.off("change");
+    args.off("change");
     inputs.off("change");
+
     inputs.change(function(e)
     {
         changes = true;
+    });
+    args.change(function(e)
+    {
+        changes = true;
+        let input = $(this).val();
+        try{
+            input = math.eval(input);
+            $(this).val(input);
+        }
+        catch(e){$(this).val(0);}
     });
     timings.change(function(e)
     {
@@ -484,6 +499,17 @@ function registerFormListeners()
         {
             let number = parseFloat(input);
             input = isNaN(number) ? 0 : number * 60;
+        }
+        else
+        {
+            try
+            {
+                input = math.eval(input);
+            }
+            catch(e)
+            {
+                input = 0;
+            }
         }
         $(this).val(getTiming(convertToTiming(input)));
     });

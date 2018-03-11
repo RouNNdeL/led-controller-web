@@ -27,5 +27,6 @@ RewriteRule ^/?api/save/profile/?$ api/save_devices.php
 RewriteRule ^/?api/save/profile/params/?$ api/save_profile_params.php
 RewriteRule ^/?api/enable_leds/?$ api/enable_leds.php
 RewriteRule ^/?api/change_profile/?$ api/change_profile.php
+RewriteRule ^/?api/jump_frame/?$ api/jump_frame.php
 RewriteRule ^/?api/explicit_save/?$ api/explicit_save.php
 RewriteRule ^/?api/events/?$ api/update_stream.php

@@ -4,13 +4,18 @@
 "use strict";
 
 const REGEX_DEVICE = /(pc|gpu|strip|fan-(\d))/;
-const COLOR_TEMPLATE = "<div class=\"color-container row mb-1\">\n            <div class=\"col-auto ml-3\">\n                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\"><span class=\"oi oi-trash\"></span></button>\n            </div>\n            <div class=\"col pl-1\">\n                <div class=\"input-group colorpicker-component\" title=\"Using input value\">\n                    <input type=\"text\" class=\"form-control color-input\" value=\"$color\" autocomplete=\"off\" \n                    aria-autocomplete=\"none\" spellcheck=\"false\"/>\n                    <span class=\"input-group-addon\"><i></i></span>\n                </div>\n            </div>\n        </div>";
-
+const COLOR_TEMPLATE = "<div class=\"color-container row mb-1\">\n            <div class=\"col-auto ml-3\">\n                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\" title=\"$title_delete\"><span class=\"oi oi-trash\"></span></button>\n            </div>\n            <div class=\"col-auto ml-1\">\n                <button class=\"btn color-jump-btn\" type=\"button\" role=\"button\" title=\"$title_jump\"><span class=\"oi oi-action-redo\"></span></button>\n            </div>\n            <div class=\"col pl-1\">\n                <div class=\"input-group colorpicker-component\">\n                    <input type=\"text\" class=\"form-control color-input\" value=\"$color\" autocomplete=\"off\" \n                    aria-autocomplete=\"none\" spellcheck=\"false\"/>\n                    <span class=\"input-group-addon\"><i></i></span>\n                </div>\n            </div>\n        </div>";
+const FPS = 64;
 
 let profile_n;
 let profile_index;
 let changes = false;
 let previous_hash = window.location.hash;
+let string_title_delete;
+let string_title_jump;
+
+$.ajax("/api/get_string.php?name=profile_btn_hint_delete").done(response => string_title_delete = response.string);
+$.ajax("/api/get_string.php?name=profile_btn_hint_jump").done(response => string_title_jump = response.string);
 
 $(function()
 {
@@ -123,7 +128,8 @@ $(function()
     });
 
     $("#device-settings-submit").click(event => saveAll(false));
-    $("#device-settings-submit-force").click(event => {
+    $("#device-settings-submit-force").click(event =>
+    {
         if(confirm(string_confirm_force_apply))
         {
             saveAll(true);
@@ -307,7 +313,7 @@ class DeviceSetting
     refreshListeners()
     {
         const it = this;
-        let del_buttons = this.parent.find(".color-delete-btn");
+        const del_buttons = this.parent.find(".color-delete-btn");
         del_buttons.off("click");
         del_buttons.click(function(e)
         {
@@ -318,6 +324,24 @@ class DeviceSetting
             {
                 del_buttons.prop("disabled", true);
             }
+        });
+
+        const jump_buttons = this.parent.find(".color-jump-btn");
+        jump_buttons.off("click");
+        jump_buttons.click(function(e)
+        {
+            const color_index = $(this).parent().parent().index();
+            const swatch_count = it.parent.find(".color-container").length;
+            const form = it.formToJson();
+            const effect_length = form.times[0] + form.times[1] + form.times[2] + form.times[3];
+            const full_length = effect_length * swatch_count;
+            $.ajax("/api/jump_frame", {
+                method: "POST",
+                data: JSON.stringify({
+                    profile_n: profile_n,
+                    frame: (effect_length * color_index + form.times[0] - form.times[5] + full_length) % full_length * FPS
+                })
+            });
         });
     }
 
@@ -406,7 +430,8 @@ function hex(x)
 
 function getColorSwatch(n)
 {
-    return $.parseHTML(COLOR_TEMPLATE.replace("$label", "color-" + n).replace("$color", "#ff0000"));
+    return $.parseHTML(COLOR_TEMPLATE.replace("$label", "color-" + n).replace("$color", "#ff0000")
+        .replace("$title_delete", string_title_delete).replace("$title_jump", string_title_jump));
 }
 
 function refreshColorPickers()

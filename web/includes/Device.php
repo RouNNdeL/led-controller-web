@@ -22,7 +22,10 @@ abstract class Device
         COLOR_TEMPLATE =
         "<div class=\"color-container row mb-1\">
             <div class=\"col-auto ml-3\">
-                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\"><span class=\"oi oi-trash\"></span></button>
+                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\" title=\"\$title_delete\"><span class=\"oi oi-trash\"></span></button>
+            </div>
+            <div class=\"col-auto ml-1\">
+                <button class=\"btn color-jump-btn\" type=\"button\" role=\"button\" title=\"\$title_jump\"><span class=\"oi oi-action-redo\"></span></button>
             </div>
             <div class=\"col pl-1\">
                 <div class=\"input-group colorpicker-component\">
@@ -140,6 +143,8 @@ abstract class Device
             $template = str_replace("\$active", $i == 0 ? "checked" : "", $template);
             $template = str_replace("\$label", "color-$i", $template);
             $template = str_replace("\$color", "#" . strtolower($this->getColors()[$i]), $template);
+            $template = str_replace("\$title_delete", Utils::getString("profile_btn_hint_delete"), $template);
+            $template = str_replace("\$title_jump", Utils::getString("profile_btn_hint_jump"), $template);
             $colors_html .= $template;
         }
 

@@ -53,12 +53,12 @@ div.color-box
     font-family: monospace;
     font-size: 1.2rem;
 }
-.color-delete-btn
+.color-delete-btn, .color-jump-btn
 {
     width: 37px;
     height: 37px;
 }
-.color-delete-btn > .oi
+.color-delete-btn > .oi, .color-jump-btn > .oi
 {
     right: 5px;
 }

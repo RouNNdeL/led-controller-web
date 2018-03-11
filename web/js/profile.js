@@ -28,14 +28,13 @@ $(function()
     const warning_profile = $("#profile-warning-diff-profile");
     const warning_inactive = $("#profile-warning-profile-inactive");
     let string_confirm_delete;
+    let string_confirm_force_apply;
 
     refreshColorPickers();
     registerFormListeners();
 
-    $.ajax("/api/get_string.php?name=profile_delete_confirm").done(response =>
-    {
-        string_confirm_delete = response.string;
-    });
+    $.ajax("/api/get_string.php?name=profile_delete_confirm").done(response => string_confirm_delete = response.string);
+    $.ajax("/api/get_string.php?name=profile_apply_force_confirm").done(response => string_confirm_force_apply = response.string);
 
     $(window).on("hashchange", function()
     {
@@ -123,10 +122,19 @@ $(function()
         }
     });
 
-    $("#device-settings-submit").click(event =>
+    $("#device-settings-submit").click(event => saveAll(false));
+    $("#device-settings-submit-force").click(event => {
+        if(confirm(string_confirm_force_apply))
+        {
+            saveAll(true);
+        }
+    });
+
+    function saveAll(force)
     {
         const forms = {
             profile_n: profile_n,
+            force: force,
             devices: []
         };
         for(let i = 0; i < devices.length; i++)
@@ -145,7 +153,7 @@ $(function()
         {
             console.error(err);
         });
-    });
+    }
 });
 
 $(window).on("beforeunload", function(e)

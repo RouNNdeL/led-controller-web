@@ -53,6 +53,8 @@
   "profile_devices": "Devices",
   "profile_colors": "Colors",
   "profile_apply": "Apply",
+  "profile_apply_force": "Force apply",
+  "profile_apply_force_confirm": "Note: Only use this if the Device is not displaying the profile properly and no changes are detected when applying normally. This can can happen if the Device is unexpectedly rebooted and or loses power before saving.",
   "profile_effect": "Effect",
   "profile_effect_off": "Turned Off",
   "profile_effect_static": "Static",

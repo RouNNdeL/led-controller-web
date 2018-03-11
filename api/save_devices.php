@@ -14,7 +14,7 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST')
     exit(0);
 }
 $json = json_decode(file_get_contents("php://input"), true);
-if($json == false || !isset($json["devices"]) || !isset($json["profile_n"]))
+if($json == false || !isset($json["devices"]) || !isset($json["profile_n"]) || !isset($json["force"]))
 {
     echo "{\"status\":\"error\",\"message\":\"Invalid JSON\"}";
     http_response_code(400);
@@ -74,7 +74,7 @@ else
     $avr_index = $data->getAvrIndex($json["profile_n"]);
     $data->addModified($json["profile_n"]);
 
-    if($changes)
+    if($changes || $json["force"] === true)
     {
         $tcp_online = tcp_send($profile->toSend($avr_index));
         if($tcp_online)

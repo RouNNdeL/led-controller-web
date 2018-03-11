@@ -193,6 +193,8 @@ HTML;
                 <div class="card-footer">
                     <button id="device-settings-submit"
                             class="btn btn-primary"><?php echo Utils::getString("profile_apply"); ?></button>
+                    <button id="device-settings-submit-force"
+                            class="btn btn-warning"><?php echo Utils::getString("profile_apply_force"); ?></button>
                 </div>
             </div>
         </div>

@@ -15,10 +15,8 @@ class DigitalDevice extends Device
     const EFFECT_FADING = 104;
     const EFFECT_RAINBOW = 105;
     const EFFECT_FILLING = 106;
-    const EFFECT_FILLING_FADE = 117;
     const EFFECT_MARQUEE = 107;
     const EFFECT_ROTATING = 108;
-    const EFFECT_RAINBOW_ROTATING = 116;
     const EFFECT_SWEEP = 109;
     const EFFECT_ANDROID_PB = 110;
     const EFFECT_TWO_HALVES = 111;
@@ -26,6 +24,9 @@ class DigitalDevice extends Device
     const EFFECT_HIGHS = 113;
     const EFFECT_SOURCES = 114;
     const EFFECT_PIECES = 115;
+    const EFFECT_RAINBOW_ROTATING = 116;
+    const EFFECT_FILLING_FADE = 117;
+    const EFFECT_SPECTRUM = 118;
     const EFFECT_DEMO = 199;
 
     const DIRECTION_CW = 1;
@@ -91,6 +92,8 @@ class DigitalDevice extends Device
                 return 0b010001;
             case self::EFFECT_PIECES:
                 return 0b001111;
+            case self::EFFECT_SPECTRUM:
+                return 0b001111;
             case self::EFFECT_DEMO:
                 return 0b000001;
             default:
@@ -142,6 +145,9 @@ class DigitalDevice extends Device
 
             case self::EFFECT_FILLING_FADE:
                 return self::AVR_EFFECT_FILLING_FADE;
+
+            case self::EFFECT_SPECTRUM:
+                return self::AVR_EFFECT_SPECTRUM;
 
             default:
                 return self::AVR_EFFECT_BREATHE;
@@ -208,6 +214,12 @@ class DigitalDevice extends Device
                 $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
                 $array[1] = $this->args["pieces_color_count"];
                 $array[2] = $this->args["pieces_piece_count"];
+                break;
+            }
+            case self::EFFECT_SPECTRUM:
+            {
+                $array[0] = ($this->args["direction"] << 0) | ($this->args["spectrum_mode"] << 2);
+                $array[1] = $this->args["spectrum_color_count"];
                 break;
             }
             case self::EFFECT_RAINBOW:
@@ -401,6 +413,20 @@ class DigitalDevice extends Device
         return new self($colors, self::EFFECT_PIECES, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 
+    public static function _spectrum()
+    {
+        return self::spectrum(array("FF0000", "0000FF"), 5, 1, 2, 0, 1, 1,2);
+    }
+
+    public static function spectrum(array $colors, int $on, int $fade, int $rotating, int $offset, bool $direction, int $mode, int $color_count)
+    {
+        $args = array();
+        $args["direction"] = $direction;
+        $args["spectrum_mode"] = $mode;
+        $args["spectrum_color_count"] = $color_count;
+        return new self($colors, self::EFFECT_SPECTRUM, 0, 0, $on, $fade, $rotating, $offset, $args);
+    }
+
     public static function fromJson(array $json)
     {
         $t = $json["times"];
@@ -439,6 +465,8 @@ class DigitalDevice extends Device
                 return self::_rotating();
             case self::EFFECT_PIECES:
                 return self::_pieces();
+                case self::EFFECT_SPECTRUM:
+                return self::_spectrum();
             default:
                 throw new InvalidArgumentException("Unknown effect: " . $effect);
         }
@@ -460,6 +488,7 @@ class DigitalDevice extends Device
         $effects[self::EFFECT_MARQUEE] = "effect_marquee";
         $effects[self::EFFECT_ROTATING] = "effect_rotating";
         $effects[self::EFFECT_PIECES] = "effect_pieces";
+        $effects[self::EFFECT_SPECTRUM] = "effect_spectrum";
         /*$effects[self::EFFECT_SWEEP] = "effect_sweep";
         $effects[self::EFFECT_ANDROID_PB] = "effect_android_pb";
         $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";

@@ -17,6 +17,8 @@ abstract class Device
     const AVR_EFFECT_FILL = 0x04;
     const AVR_EFFECT_ROTATING = 0x05;
     const AVR_EFFECT_PIECES = 0x0C;
+    const AVR_EFFECT_PARTICLES = 0x06;
+    const AVR_EFFECT_SPECTRUM = 0x07;
 
     const /** @noinspection CssInvalidPropertyValue */
         COLOR_TEMPLATE =

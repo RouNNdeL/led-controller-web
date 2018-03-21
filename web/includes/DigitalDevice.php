@@ -19,7 +19,6 @@ class DigitalDevice extends Device
     const EFFECT_ROTATING = 108;
     const EFFECT_SWEEP = 109;
     const EFFECT_ANDROID_PB = 110;
-    const EFFECT_TWO_HALVES = 111;
     const EFFECT_DOUBLE_FILL = 112;
     const EFFECT_HIGHS = 113;
     const EFFECT_SOURCES = 114;
@@ -27,6 +26,8 @@ class DigitalDevice extends Device
     const EFFECT_RAINBOW_ROTATING = 116;
     const EFFECT_FILLING_FADE = 117;
     const EFFECT_SPECTRUM = 118;
+    const EFFECT_TWO_HALVES = 119;
+    const EFFECT_TWO_HALVES_FADE = 120;
     const EFFECT_DEMO = 199;
 
     const DIRECTION_CW = 1;
@@ -52,6 +53,10 @@ class DigitalDevice extends Device
         parent::__construct($colors, $effect, $off, $fadein, $on, $fadeout, $rotating, $offset, $args);
     }
 
+    /**
+     * Order of bits: Off, Fade-in, On, Fade-out, Rotation, Offset
+     * @return int
+     */
     public function getTimingsForEffect()
     {
         switch($this->effect)
@@ -67,7 +72,7 @@ class DigitalDevice extends Device
             case self::EFFECT_FADING:
                 return 0b001101;
             case self::EFFECT_RAINBOW_ROTATING:
-                return 0b00011;
+                return 0b000011;
             case self::EFFECT_RAINBOW:
                 return 0b000101;
             case self::EFFECT_FILLING:
@@ -83,7 +88,9 @@ class DigitalDevice extends Device
             case self::EFFECT_ANDROID_PB:
                 return 0b111001;
             case self::EFFECT_TWO_HALVES:
-                return 0b111001;
+                return 0b111101;
+            case self::EFFECT_TWO_HALVES_FADE:
+                return 0b001101;
             case self::EFFECT_DOUBLE_FILL:
                 return 0b111001;
             case self::EFFECT_HIGHS:
@@ -141,9 +148,11 @@ class DigitalDevice extends Device
                 return self::AVR_EFFECT_PIECES;
 
             case self::EFFECT_FILLING:
+            case self::EFFECT_TWO_HALVES:
                 return self::AVR_EFFECT_FILL;
 
             case self::EFFECT_FILLING_FADE:
+            case self::EFFECT_TWO_HALVES_FADE:
                 return self::AVR_EFFECT_FILLING_FADE;
 
             case self::EFFECT_SPECTRUM:
@@ -167,19 +176,18 @@ class DigitalDevice extends Device
                 break;
             }
             case self::EFFECT_FILLING:
-            {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
-                    ($this->args["fill_fade_return"] << 2);
-                $array[1] = $this->args["fill_fade_color_count"];
-                $array[2] = $this->args["fill_fade_piece_count"];
-                $array[3] = $this->args["fill_fade_direction1"];
-                $array[4] = $this->args["fill_fade_direction2"];
-                break;
-            }
             case self::EFFECT_FILLING_FADE:
             {
+                if(isset($this->args["fade_smooth"]))
+                {
+                    $fade_smooth = $this->args["fade_smooth"];
+                }
+                else
+                {
+                    $fade_smooth = 0;
+                }
                 $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
-                    ($this->args["fill_fade_return"] << 2) | ($this->args["fade_smooth"] << 3);
+                    ($this->args["fill_fade_return"] << 2) | ($fade_smooth << 3);
                 $array[1] = $this->args["fill_fade_color_count"];
                 $array[2] = $this->args["fill_fade_piece_count"];
                 $array[3] = $this->args["fill_fade_direction1"];
@@ -234,8 +242,27 @@ class DigitalDevice extends Device
                 $array[0] = ($this->args["direction"] << 0) | ($this->args["rainbow_mode"] << 2);
                 $array[1] = $this->args["rainbow_brightness"];
                 $array[2] = $this->args["rainbow_sources"];
-            }
                 break;
+            }
+            case self::EFFECT_TWO_HALVES:
+            case self::EFFECT_TWO_HALVES_FADE:
+                {
+                    if(isset($this->args["fade_smooth"]))
+                    {
+                        $fade_smooth = $this->args["fade_smooth"];
+                    }
+                    else
+                    {
+                        $fade_smooth = 0;
+                    }
+                    $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
+                        ($this->args["two_halves_return"] << 2) | ($fade_smooth << 3);
+                    $array[1] = $this->args["two_halves_color_count"];
+                    $array[2] = 2;
+                    $array[3] = $this->args["direction"] ? 1 : 2;
+                    $array[4] = 0;
+                    break;
+                }
         }
 
         return $array;
@@ -428,6 +455,41 @@ class DigitalDevice extends Device
         return new self($colors, self::EFFECT_SPECTRUM, 0, 0, $on, $fade, $rotating, $offset, $args);
     }
 
+    public static function _two_halves()
+    {
+        return self::two_halves(array("#FF0000"), 1, .5, 1, .5, 0, true, 1, 1, 0, 1);
+    }
+
+    public static function two_halves(array $colors, float $off, float $fadein, float $on, float $fadeout, float $offset,
+                                      bool $smooth, int $color_count, int $color_cycles, int $return, int $direction)
+    {
+        $args = array();
+        $args["direction"] = $direction;
+        $args["smooth"] = $smooth;
+        $args["two_halves_return"] = $return;
+        $args["two_halves_color_count"] = $color_count;
+        $args["color_cycles"] = $color_cycles;
+        return new self($colors, self::EFFECT_TWO_HALVES_FADE, $off, $fadein, $on, $fadeout, 0, $offset, $args);
+    }
+
+    public static function _two_halves_fade()
+    {
+        return self::two_halves_fade(array("#FF0000"),  1, .5, 0, true, 1, 1, 0, 1, true);
+    }
+
+    public static function two_halves_fade(array $colors, float $on, float $fade, float $offset,
+                                      bool $smooth, int $color_count, int $color_cycles, int $return, int $direction, bool $fade_smooth)
+    {
+        $args = array();
+        $args["direction"] = $direction;
+        $args["smooth"] = $smooth;
+        $args["fade_smooth"] = $fade_smooth;
+        $args["two_halves_return"] = $return;
+        $args["two_halves_color_count"] = $color_count;
+        $args["color_cycles"] = $color_cycles;
+        return new self($colors, self::EFFECT_TWO_HALVES_FADE, 0, 0, $on, $fade, 0, $offset, $args);
+    }
+
     public static function fromJson(array $json)
     {
         $t = $json["times"];
@@ -466,8 +528,12 @@ class DigitalDevice extends Device
                 return self::_rotating();
             case self::EFFECT_PIECES:
                 return self::_pieces();
-                case self::EFFECT_SPECTRUM:
+            case self::EFFECT_SPECTRUM:
                 return self::_spectrum();
+            case self::EFFECT_TWO_HALVES:
+                return self::_two_halves();
+            case self::EFFECT_TWO_HALVES_FADE:
+                return self::_two_halves_fade();
             default:
                 throw new InvalidArgumentException("Unknown effect: " . $effect);
         }
@@ -490,6 +556,8 @@ class DigitalDevice extends Device
         $effects[self::EFFECT_ROTATING] = "effect_rotating";
         $effects[self::EFFECT_PIECES] = "effect_pieces";
         $effects[self::EFFECT_SPECTRUM] = "effect_spectrum";
+        $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";
+        $effects[self::EFFECT_TWO_HALVES_FADE] = "effect_two_halves_fade";
         /*$effects[self::EFFECT_SWEEP] = "effect_sweep";
         $effects[self::EFFECT_ANDROID_PB] = "effect_android_pb";
         $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";

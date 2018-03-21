@@ -216,6 +216,7 @@ abstract class Device
                     case "smooth":
                     case "fade_smooth":
                     case "fill_fade_return":
+                    case "two_halves_return":
                         $str_yes = Utils::getString("yes");
                         $str_no = Utils::getString("no");
                         $str = Utils::getString("profile_arguments_" . $name);

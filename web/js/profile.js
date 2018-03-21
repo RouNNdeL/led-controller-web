@@ -345,6 +345,10 @@ class DeviceSetting
             {
                 color_count = form.args.fill_fade_color_count;
             }
+            else if(form.args.spectrum_color_count !== undefined && form.args.spectrum_color_count > 0)
+            {
+                color_count = form.args.spectrum_color_count;
+            }
             let color_cycles = 1;
             if(form.args.color_cycles !== undefined && form.args.color_cycles !== 0)
             {

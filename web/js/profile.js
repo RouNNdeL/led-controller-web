@@ -46,6 +46,10 @@ $(function()
         handleHash();
     });
 
+    $(".swatches-container").sortable({
+        handle: ".input-group-addon"
+    });
+
     profile_name.on("input", function()
     {
         let val = $(this).val();

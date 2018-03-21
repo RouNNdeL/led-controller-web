@@ -33,7 +33,7 @@ abstract class Device
                 <div class=\"input-group colorpicker-component\">
                     <input type=\"text\" class=\"form-control color-input\" value=\"\$color\" autocomplete=\"off\" 
                     aria-autocomplete=\"none\" spellcheck=\"false\"/>
-                    <span class=\"input-group-addon\"><i></i></span>
+                    <span class=\"input-group-addon color-swatch-handle\"><i></i></span>
                 </div>
             </div>
         </div>";

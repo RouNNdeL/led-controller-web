@@ -4,7 +4,7 @@
 "use strict";
 
 const REGEX_DEVICE = /(pc|gpu|strip|fan-(\d))/;
-const COLOR_TEMPLATE = "<div class=\"color-container row mb-1\">\n            <div class=\"col-auto ml-3\">\n                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\" title=\"$title_delete\"><span class=\"oi oi-trash\"></span></button>\n            </div>\n            <div class=\"col-auto ml-1\">\n                <button class=\"btn color-jump-btn\" type=\"button\" role=\"button\" title=\"$title_jump\"><span class=\"oi oi-action-redo\"></span></button>\n            </div>\n            <div class=\"col pl-1\">\n                <div class=\"input-group colorpicker-component\">\n                    <input type=\"text\" class=\"form-control color-input\" value=\"$color\" autocomplete=\"off\" \n                    aria-autocomplete=\"none\" spellcheck=\"false\"/>\n                    <span class=\"input-group-addon\"><i></i></span>\n                </div>\n            </div>\n        </div>";
+const COLOR_TEMPLATE = "<div class=\"color-container row mb-1\">\n            <div class=\"col-auto ml-3\">\n                <button class=\"btn btn-danger color-delete-btn\" type=\"button\" role=\"button\" title=\"$title_delete\"><span class=\"oi oi-trash\"></span></button>\n            </div>\n            <div class=\"col-auto ml-1\">\n                <button class=\"btn color-jump-btn\" type=\"button\" role=\"button\" title=\"$title_jump\"><span class=\"oi oi-action-redo\"></span></button>\n            </div>\n            <div class=\"col pl-1\">\n                <div class=\"input-group colorpicker-component\">\n                    <input type=\"text\" class=\"form-control color-input\" value=\"$color\" autocomplete=\"off\" \n                    aria-autocomplete=\"none\" spellcheck=\"false\"/>\n                    <span class=\"input-group-addon color-swatch-handle\"><i></i></span>\n                </div>\n            </div>\n        </div>";
 const FPS = 64;
 
 let profile_n;
@@ -47,7 +47,7 @@ $(function()
     });
 
     $(".swatches-container").sortable({
-        handle: ".input-group-addon"
+        handle: ".color-swatch-handle"
     });
 
     profile_name.on("input", function()

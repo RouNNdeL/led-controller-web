@@ -218,8 +218,9 @@ class DigitalDevice extends Device
             }
             case self::EFFECT_SPECTRUM:
             {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["spectrum_mode"] << 2);
+                $array[0] = ($this->args["direction"] << 0);
                 $array[1] = $this->args["spectrum_color_count"];
+                $array[2] = $this->args["spectrum_modes"];
                 break;
             }
             case self::EFFECT_RAINBOW:
@@ -415,14 +416,14 @@ class DigitalDevice extends Device
 
     public static function _spectrum()
     {
-        return self::spectrum(array("FF0000", "0000FF"), 5, 1, 2, 0, 1, 1,2);
+        return self::spectrum(array("FF0000", "0000FF"), 5, 1, 2, 0, 1, 0,2);
     }
 
-    public static function spectrum(array $colors, int $on, int $fade, int $rotating, int $offset, bool $direction, int $mode, int $color_count)
+    public static function spectrum(array $colors, int $on, int $fade, int $rotating, int $offset, bool $direction, int $modes, int $color_count)
     {
         $args = array();
         $args["direction"] = $direction;
-        $args["spectrum_mode"] = $mode;
+        $args["spectrum_modes"] = $modes;
         $args["spectrum_color_count"] = $color_count;
         return new self($colors, self::EFFECT_SPECTRUM, 0, 0, $on, $fade, $rotating, $offset, $args);
     }

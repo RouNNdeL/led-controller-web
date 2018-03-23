@@ -271,7 +271,8 @@ class DigitalDevice extends Device
                 }
             case self::EFFECT_PARTICLES:
                 {
-                    $array[0] = $this->args["particles_size"];
+                    $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                    $array[1] = $this->args["particles_size"];
                     break;
                 }
         }
@@ -503,12 +504,14 @@ class DigitalDevice extends Device
 
     public static function _particles()
     {
-        return self::particles(array("#FF0000"), 2, 1, 4, 0, 4);
+        return self::particles(array("#FF0000"), 2, 1, 4, 0, self::DIRECTION_CW, true, 4);
     }
 
-    public static function particles(array $colors, float $speed, float $delay, float $group_delay, float $offset, int $size)
+    public static function particles(array $colors, float $speed, float $delay, float $group_delay, float $offset, int $direction, bool $smooth, int $size)
     {
         $args = array();
+        $args["direction"] = $direction;
+        $args["smooth"] = $smooth;
         $args["particles_size"] = $size;
         return new self($colors, self::EFFECT_PARTICLES, $speed, $delay, $group_delay, 0, 0, $offset, $args);
     }

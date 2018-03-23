@@ -78,6 +78,7 @@
   "profile_timing_fadeout": "Fade out",
   "profile_timing_rotation": "Rotation",
   "profile_timing_offset": "Offset",
+  "profile_timing_fade": "Fade",
   "profile_direction_cw": "Clockwise",
   "profile_direction_ccw": "Counter-clockwise",
   "profile_arguments": "Arguments",

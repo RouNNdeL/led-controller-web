@@ -8,7 +8,7 @@
  */
 abstract class Device
 {
-    const TIMING_STRINGS = ["off", "fadein", "on", "fadeout", "rotation", "offset"];
+    const TIMING_STRINGS = ["off", "fadein", "on", "fadeout", "rotation", "offset", "fade"];
 
     const AVR_EFFECT_BREATHE = 0x00;
     const AVR_EFFECT_FADE = 0x01;
@@ -239,13 +239,16 @@ abstract class Device
             }
         }
 
+
+        $fade = ($timings & (1 << 2)) > 0 && ((~$timings) & (1 << 4)) > 0;
         for($i = 0; $i < 6; $i++)
         {
             if(($timings & (1 << (5 - $i))) > 0)
             {
                 $t = self::getTiming($this->timings[$i]);
                 $template = self::INPUT_TEMPLATE_TIMES;
-                $template = str_replace("\$label", Utils::getString("profile_timing_$timing_strings[$i]"), $template);
+                $t_string = $i == 3 && $fade ? $timing_strings[6] : $timing_strings[$i];
+                $template = str_replace("\$label", Utils::getString("profile_timing_$t_string"), $template);
                 $template = str_replace("\$name", "time_" . $timing_strings[$i], $template);
                 $template = str_replace("\$placeholder", $t, $template);
                 $template = str_replace("\$value", $t, $template);

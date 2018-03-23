@@ -248,6 +248,8 @@ abstract class Device
                 $t = self::getTiming($this->timings[$i]);
                 $template = self::INPUT_TEMPLATE_TIMES;
                 $t_string = $i == 3 && $fade ? $timing_strings[6] : $timing_strings[$i];
+                if($this instanceof DigitalDevice && $this->effect === DigitalDevice::EFFECT_PARTICLES)
+                    $t_string = "particles_" . $t_string;
                 $template = str_replace("\$label", Utils::getString("profile_timing_$t_string"), $template);
                 $template = str_replace("\$name", "time_" . $timing_strings[$i], $template);
                 $template = str_replace("\$placeholder", $t, $template);

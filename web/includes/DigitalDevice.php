@@ -28,6 +28,7 @@ class DigitalDevice extends Device
     const EFFECT_SPECTRUM = 118;
     const EFFECT_TWO_HALVES = 119;
     const EFFECT_TWO_HALVES_FADE = 120;
+    const EFFECT_PARTICLES = 121;
     const EFFECT_DEMO = 199;
 
     const DIRECTION_CW = 1;
@@ -101,6 +102,8 @@ class DigitalDevice extends Device
                 return 0b001111;
             case self::EFFECT_SPECTRUM:
                 return 0b001111;
+            case self::EFFECT_PARTICLES:
+                return 0b111001;
             case self::EFFECT_DEMO:
                 return 0b000001;
             default:
@@ -158,8 +161,11 @@ class DigitalDevice extends Device
             case self::EFFECT_SPECTRUM:
                 return self::AVR_EFFECT_SPECTRUM;
 
+            case self::AVR_EFFECT_PARTICLES:
+                return self::AVR_EFFECT_SPECTRUM;
+
             default:
-                return self::AVR_EFFECT_BREATHE;
+                throw new InvalidArgumentException("Unknown effect: ".$this->effect);
         }
     }
 
@@ -490,6 +496,18 @@ class DigitalDevice extends Device
         return new self($colors, self::EFFECT_TWO_HALVES_FADE, 0, 0, $on, $fade, 0, $offset, $args);
     }
 
+    public static function _particles()
+    {
+        return self::particles(array ("#FF0000"), 2,1,4,0,4);
+    }
+
+    public static function particles(array $colors, float $speed, float $delay, float $group_delay, float $offset, int $size)
+    {
+        $args = array();
+        $args["particles_size"] = $size;
+        return new self($colors, self::EFFECT_PARTICLES, $speed, $delay, $group_delay, 0, 0, $offset, $args);
+    }
+
     public static function fromJson(array $json)
     {
         $t = $json["times"];
@@ -534,6 +552,8 @@ class DigitalDevice extends Device
                 return self::_two_halves();
             case self::EFFECT_TWO_HALVES_FADE:
                 return self::_two_halves_fade();
+            case self::EFFECT_PARTICLES:
+                return self::_particles();
             default:
                 throw new InvalidArgumentException("Unknown effect: " . $effect);
         }
@@ -558,6 +578,7 @@ class DigitalDevice extends Device
         $effects[self::EFFECT_SPECTRUM] = "effect_spectrum";
         $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";
         $effects[self::EFFECT_TWO_HALVES_FADE] = "effect_two_halves_fade";
+        $effects[self::EFFECT_PARTICLES] = "effect_particles";
         /*$effects[self::EFFECT_SWEEP] = "effect_sweep";
         $effects[self::EFFECT_ANDROID_PB] = "effect_android_pb";
         $effects[self::EFFECT_TWO_HALVES] = "effect_two_halves";

@@ -419,6 +419,34 @@ class Data
         return self::$instance;
     }
 
+    public function formatDebug($frame, bool $csgo_running)
+    {
+        $profile_count = sizeof($this->profiles);
+        $inactive_indexes = "[".implode(", ",$this->inactive_indexes)."]";
+        $active_indexes ="[".implode(", ",$this->active_indexes)."]";
+        $brightness_array = "[".implode(", ",$this->brightness_array)."]";
+        $avr_indexes = "[".implode(", ",$this->avr_indexes)."]";
+        $old_avr_indexes = "[".implode(", ",$this->old_avr_indexes)."]";
+        $avr_order = "[".implode(", ",$this->avr_order)."]";
+        $modified_profiles = "[".implode(", ",$this->modified_profiles)."]";
+        $text = "=================== Data info ===================<br>".
+                "enabled: $this->enabled<br>".
+                "csgo_enabled: $this->csgo_enabled<br>".
+                "brightness_array: $brightness_array<br>".
+                "current_profile: $this->current_profile<br>".
+                "profile_count: $profile_count<br>".
+                "active_indexes: $active_indexes<br>".
+                "inactive_indexes: $inactive_indexes<br>".
+                "avr_indexes: $avr_indexes<br>".
+                "old_avr_indexes: $old_avr_indexes<br>".
+                "avr_order: $avr_order<br>".
+                "modified_profiles: $modified_profiles<br><br>".
+                "================== Device info ==================<br>".
+                "frame: $frame<br>".
+                "csgo_running: $csgo_running<br>";
+        return $text;
+    }
+
     public function getDeviceNavbarHtml()
     {
         $html = "";

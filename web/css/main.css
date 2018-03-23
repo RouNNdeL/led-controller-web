@@ -52,6 +52,11 @@ a.nav-link.bold
     user-select: none;
 }
 
+.monospace
+{
+    font-family: monospace;
+}
+
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */

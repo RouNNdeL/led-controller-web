@@ -161,8 +161,8 @@ class DigitalDevice extends Device
             case self::EFFECT_SPECTRUM:
                 return self::AVR_EFFECT_SPECTRUM;
 
-            case self::AVR_EFFECT_PARTICLES:
-                return self::AVR_EFFECT_SPECTRUM;
+            case self::EFFECT_PARTICLES:
+                return self::AVR_EFFECT_PARTICLES;
 
             default:
                 throw new InvalidArgumentException("Unknown effect: " . $this->effect);
@@ -272,6 +272,7 @@ class DigitalDevice extends Device
             case self::EFFECT_PARTICLES:
                 {
                     $array[0] = $this->args["particles_size"];
+                    break;
                 }
         }
 

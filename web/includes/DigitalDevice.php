@@ -165,7 +165,7 @@ class DigitalDevice extends Device
                 return self::AVR_EFFECT_SPECTRUM;
 
             default:
-                throw new InvalidArgumentException("Unknown effect: ".$this->effect);
+                throw new InvalidArgumentException("Unknown effect: " . $this->effect);
         }
     }
 
@@ -176,80 +176,80 @@ class DigitalDevice extends Device
         switch($this->effect)
         {
             case self::EFFECT_BREATHING:
-            {
-                $array[1] = $this->args["breathe_min_val"];
-                $array[2] = $this->args["breathe_max_val"];
-                break;
-            }
+                {
+                    $array[1] = $this->args["breathe_min_val"];
+                    $array[2] = $this->args["breathe_max_val"];
+                    break;
+                }
             case self::EFFECT_FILLING:
             case self::EFFECT_FILLING_FADE:
-            {
-                if(isset($this->args["fade_smooth"]))
                 {
-                    $fade_smooth = $this->args["fade_smooth"];
+                    if(isset($this->args["fade_smooth"]))
+                    {
+                        $fade_smooth = $this->args["fade_smooth"];
+                    }
+                    else
+                    {
+                        $fade_smooth = 0;
+                    }
+                    $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
+                        ($this->args["fill_fade_return"] << 2) | ($fade_smooth << 3);
+                    $array[1] = $this->args["fill_fade_color_count"];
+                    $array[2] = $this->args["fill_fade_piece_count"];
+                    $array[3] = $this->args["fill_fade_direction1"];
+                    $array[4] = $this->args["fill_fade_direction2"];
+                    break;
                 }
-                else
-                {
-                    $fade_smooth = 0;
-                }
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1) |
-                    ($this->args["fill_fade_return"] << 2) | ($fade_smooth << 3);
-                $array[1] = $this->args["fill_fade_color_count"];
-                $array[2] = $this->args["fill_fade_piece_count"];
-                $array[3] = $this->args["fill_fade_direction1"];
-                $array[4] = $this->args["fill_fade_direction2"];
-                break;
-            }
             case self::EFFECT_STATIC:
             case self::EFFECT_BLINKING:
-            {
-                $array[1] = 0;
-                $array[2] = 255;
-                break;
-            }
+                {
+                    $array[1] = 0;
+                    $array[2] = 255;
+                    break;
+                }
             case self::EFFECT_MARQUEE:
-            {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
-                $array[1] = 1;
-                $array[2] = 4;
-                $array[3] = 2;
-                break;
-            }
+                {
+                    $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                    $array[1] = 1;
+                    $array[2] = 4;
+                    $array[3] = 2;
+                    break;
+                }
             case self::EFFECT_ROTATING:
-            {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
-                $array[1] = $this->args["rotating_color_count"];
-                $array[2] = $this->args["rotating_element_count"];
-                $array[3] = $this->args["rotating_led_count"];
-                break;
-            }
+                {
+                    $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                    $array[1] = $this->args["rotating_color_count"];
+                    $array[2] = $this->args["rotating_element_count"];
+                    $array[3] = $this->args["rotating_led_count"];
+                    break;
+                }
             case self::EFFECT_PIECES:
-            {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
-                $array[1] = $this->args["pieces_color_count"];
-                $array[2] = $this->args["pieces_piece_count"];
-                break;
-            }
+                {
+                    $array[0] = ($this->args["direction"] << 0) | ($this->args["smooth"] << 1);
+                    $array[1] = $this->args["pieces_color_count"];
+                    $array[2] = $this->args["pieces_piece_count"];
+                    break;
+                }
             case self::EFFECT_SPECTRUM:
-            {
-                $array[0] = ($this->args["direction"] << 0);
-                $array[1] = $this->args["spectrum_color_count"];
-                $array[2] = $this->args["spectrum_modes"];
-                break;
-            }
+                {
+                    $array[0] = ($this->args["direction"] << 0);
+                    $array[1] = $this->args["spectrum_color_count"];
+                    $array[2] = $this->args["spectrum_modes"];
+                    break;
+                }
             case self::EFFECT_RAINBOW:
-            {
-                $array[0] = (1 << 3);
-                $array[1] = $this->args["rainbow_brightness"];
-                break;
-            }
+                {
+                    $array[0] = (1 << 3);
+                    $array[1] = $this->args["rainbow_brightness"];
+                    break;
+                }
             case self::EFFECT_RAINBOW_ROTATING:
-            {
-                $array[0] = ($this->args["direction"] << 0) | ($this->args["rainbow_mode"] << 2);
-                $array[1] = $this->args["rainbow_brightness"];
-                $array[2] = $this->args["rainbow_sources"];
-                break;
-            }
+                {
+                    $array[0] = ($this->args["direction"] << 0) | ($this->args["rainbow_mode"] << 2);
+                    $array[1] = $this->args["rainbow_brightness"];
+                    $array[2] = $this->args["rainbow_sources"];
+                    break;
+                }
             case self::EFFECT_TWO_HALVES:
             case self::EFFECT_TWO_HALVES_FADE:
                 {
@@ -268,6 +268,10 @@ class DigitalDevice extends Device
                     $array[3] = $this->args["direction"] ? 1 : 2;
                     $array[4] = 0;
                     break;
+                }
+            case self::EFFECT_PARTICLES:
+                {
+                    $array[0] = $this->args["particles_size"];
                 }
         }
 
@@ -416,7 +420,7 @@ class DigitalDevice extends Device
 
     public static function _rotating()
     {
-        return self::rotating(array("FF0000", "0000FF"), 4, 1, 2,0, 1, 1, 1, 2, 3);
+        return self::rotating(array("FF0000", "0000FF"), 4, 1, 2, 0, 1, 1, 1, 2, 3);
     }
 
     public static function rotating(array $colors, int $on, int $fade, int $rotating, int $offset, bool $smooth,
@@ -433,7 +437,7 @@ class DigitalDevice extends Device
 
     public static function _pieces()
     {
-        return self::pieces(array("FF0000", "0000FF"), 4, 1, 2,0, 1, 1, 2, 4);
+        return self::pieces(array("FF0000", "0000FF"), 4, 1, 2, 0, 1, 1, 2, 4);
     }
 
     public static function pieces(array $colors, int $on, int $fade, int $rotating, int $offset, bool $smooth,
@@ -449,7 +453,7 @@ class DigitalDevice extends Device
 
     public static function _spectrum()
     {
-        return self::spectrum(array("FF0000", "0000FF"), 5, 1, 2, 0, 1, 0,2);
+        return self::spectrum(array("FF0000", "0000FF"), 5, 1, 2, 0, 1, 0, 2);
     }
 
     public static function spectrum(array $colors, int $on, int $fade, int $rotating, int $offset, bool $direction, int $modes, int $color_count)
@@ -480,11 +484,11 @@ class DigitalDevice extends Device
 
     public static function _two_halves_fade()
     {
-        return self::two_halves_fade(array("#FF0000"),  1, .5, 0, true, 1, 1, 0, 1, true);
+        return self::two_halves_fade(array("#FF0000"), 1, .5, 0, true, 1, 1, 0, 1, true);
     }
 
     public static function two_halves_fade(array $colors, float $on, float $fade, float $offset,
-                                      bool $smooth, int $color_count, int $color_cycles, int $return, int $direction, bool $fade_smooth)
+                                           bool $smooth, int $color_count, int $color_cycles, int $return, int $direction, bool $fade_smooth)
     {
         $args = array();
         $args["direction"] = $direction;
@@ -498,7 +502,7 @@ class DigitalDevice extends Device
 
     public static function _particles()
     {
-        return self::particles(array ("#FF0000"), 2,1,4,0,4);
+        return self::particles(array("#FF0000"), 2, 1, 4, 0, 4);
     }
 
     public static function particles(array $colors, float $speed, float $delay, float $group_delay, float $offset, int $size)

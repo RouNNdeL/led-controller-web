@@ -28,7 +28,7 @@ require_once(__DIR__ . "/../includes/html_head.php");
     </div>
     <div class="row justify-content-center">
         <div class="col col-auto">
-            <p class="monospace"><?php echo Data::getInstance()->formatDebug("&lt;unknown&gt;", true)?></p>
+            <p class="monospace" id="debug-data"><?php echo Data::getInstance()->formatDebug(null)?></p>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -36,7 +36,7 @@ require_once(__DIR__ . "/../includes/html_head.php");
             <button class="btn debug-button" data-action="increment" data-value="-64">-64</button>
             <button class="btn debug-button" data-action="increment" data-value="-4">-4</button>
             <button class="btn debug-button" data-action="increment" data-value="-1">-1</button>
-            <button class="btn debug-button" data-action="pause" data-value="1"><span class="oi oi-media-pause"></span></button>
+            <button class="btn debug-button" data-action="pause" data-value="1"><span id="debug-pause-icon" class="oi oi-media-pause"></span></button>
             <button class="btn debug-button" data-action="increment" data-value="1">+1</button>
             <button class="btn debug-button" data-action="increment" data-value="4">+4</button>
             <button class="btn debug-button" data-action="increment" data-value="64">+64</button>

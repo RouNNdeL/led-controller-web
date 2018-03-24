@@ -30,4 +30,6 @@ RewriteRule ^/?api/change_profile/?$ api/change_profile.php
 RewriteRule ^/?api/jump_frame/?$ api/jump_frame.php
 RewriteRule ^/?api/explicit_save/?$ api/explicit_save.php
 RewriteRule ^/?api/events/?$ api/update_stream.php
-RewriteRule ^/?api/debug/?$ api/debug.php
+RewriteRule ^/?api/debug/control?$ api/debug_control.php
+RewriteRule ^/?api/debug/info?$ api/debug_info.php
+RewriteRule ^/?api/debug/stream?$ api/debug_stream.php

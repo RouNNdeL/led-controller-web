@@ -419,7 +419,11 @@ class Data
         return self::$instance;
     }
 
-    public function formatDebug($frame, bool $csgo_running)
+    /**
+     * @param array|null $device_json
+     * @return string
+     */
+    public function formatDebug($device_json)
     {
         $profile_count = sizeof($this->profiles);
         $inactive_indexes = "[".implode(", ",$this->inactive_indexes)."]";
@@ -441,9 +445,38 @@ class Data
                 "old_avr_indexes: $old_avr_indexes<br>".
                 "avr_order: $avr_order<br>".
                 "modified_profiles: $modified_profiles<br><br>".
-                "================== Device info ==================<br>".
-                "frame: $frame<br>".
-                "csgo_running: $csgo_running<br>";
+                "================== Device info ==================<br>";
+        if($device_json !== null && $device_json !== false)
+        {
+            foreach($device_json as $item => $value)
+            {
+                if(is_string($value) || is_int($value) || is_float($value))
+                {
+                    $text .= "$item: $value<br>";
+                }
+                else if(is_array($value))
+                {
+                    $s = "[".implode(", ",$value)."]";
+                    $text .= "$item: $s<br>";
+                }
+                else if(is_bool($value))
+                {
+                    $s = $value ? "true" : "false";
+                    $text .= "$item: $s<br>";
+                }
+                else
+                {
+                    ob_start();
+                    var_dump($value);
+                    $result = ob_get_clean();
+                    $text .= "$item: $$result";
+                }
+            }
+        }
+        else
+        {
+            $text .= htmlspecialchars("<device offline>")."<br>";
+        }
         return $text;
     }
 

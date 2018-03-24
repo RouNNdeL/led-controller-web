@@ -228,6 +228,16 @@ abstract class Device
                                                 <option value=\"" . 0 . "\"$selected1>$str_no</option>
                                             </select></div>";
                         break;
+                    case "two_halves_color_count":
+                        $str = Utils::getString("profile_arguments_" . $name);
+                        $selected0 = $argument === 2 ? " selected" : "";
+                        $selected1 = $argument === 1 ? "" : " selected";
+                        $arguments_html .= "<div class=\"col-auto px-1\"><label class=\"mb-0\">$str</label>
+                                            <select class=\"form-control\" name=\"arg_$name\">
+                                                <option value=\"" . 1 . "\"$selected0>1</option>
+                                                <option value=\"" . 2 . "\"$selected1>2</option>
+                                            </select></div>";
+                        break;
                     default:
                         $template = self::INPUT_TEMPLATE_ARGUMENTS;
                         $template = str_replace("\$label", Utils::getString("profile_arguments_$name"), $template);
